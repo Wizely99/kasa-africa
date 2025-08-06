@@ -1,8 +1,25 @@
-import { NavigationGroup, SidebarLayout, UserInfo } from "../patient/PatientLayoutClient"
-import { Home, Users, FileText, Pill, MessageSquare, BookOpen, Calendar } from "lucide-react"
+"use client";
+import {
+  NavigationGroup,
+  SidebarLayout,
+  UserInfo,
+} from "../patient/PatientLayoutClient";
+import {
+  Home,
+  Users,
+  FileText,
+  Pill,
+  MessageSquare,
+  BookOpen,
+  Calendar,
+} from "lucide-react";
 
 // Doctor Layout
-export function DoctorLayoutClient({ children }: { children: React.ReactNode }) {
+export function DoctorLayoutClient({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const doctorNavigation: NavigationGroup[] = [
     {
       title: "Overview",
@@ -64,14 +81,14 @@ export function DoctorLayoutClient({ children }: { children: React.ReactNode }) 
         },
       ],
     },
-  ]
+  ];
 
   const userInfo: UserInfo = {
     name: "Dr. Sarah Smith",
     email: "dr.smith@kasaafrica.com",
     role: "Doctor",
     initials: "SS",
-  }
+  };
 
   return (
     <SidebarLayout
@@ -85,5 +102,5 @@ export function DoctorLayoutClient({ children }: { children: React.ReactNode }) 
     >
       {children}
     </SidebarLayout>
-  )
+  );
 }

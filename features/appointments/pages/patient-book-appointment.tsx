@@ -1,12 +1,25 @@
-"use client"
+"use client";
 
-import { Badge } from "@/components/ui/badge"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Clock, DollarSign, MapPin, Search, Star } from "lucide-react"
-import { useState } from "react"
-import { BookingForm } from "../components/booking-form"
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Clock, DollarSign, MapPin, Search, Star } from "lucide-react";
+import { useState } from "react";
+import { BookingForm } from "../components/booking-form";
+import { SearchInput } from "@/components/common/SearchInput";
 
 // Mock doctors data
 const mockDoctors = [
@@ -21,7 +34,8 @@ const mockDoctors = [
     avatar: "/placeholder.svg?height=100&width=100&text=EC",
     isAvailable: true,
     nextAvailable: "Today 2:30 PM",
-    about: "Specialized in skin disorders, acne treatment, and cosmetic dermatology with 8+ years of experience.",
+    about:
+      "Specialized in skin disorders, acne treatment, and cosmetic dermatology with 8+ years of experience.",
     education: "MD from Harvard Medical School",
     languages: ["English", "Spanish"],
   },
@@ -36,7 +50,8 @@ const mockDoctors = [
     avatar: "/placeholder.svg?height=100&width=100&text=MC",
     isAvailable: true,
     nextAvailable: "Tomorrow 10:00 AM",
-    about: "Expert in cardiovascular diseases, heart surgery, and preventive cardiology.",
+    about:
+      "Expert in cardiovascular diseases, heart surgery, and preventive cardiology.",
     education: "MD from Johns Hopkins University",
     languages: ["English", "Mandarin"],
   },
@@ -51,7 +66,8 @@ const mockDoctors = [
     avatar: "/placeholder.svg?height=100&width=100&text=SJ",
     isAvailable: false,
     nextAvailable: "Jan 20, 9:00 AM",
-    about: "Dedicated pediatrician focusing on child development and family healthcare.",
+    about:
+      "Dedicated pediatrician focusing on child development and family healthcare.",
     education: "MD from Stanford University",
     languages: ["English", "French"],
   },
@@ -66,7 +82,8 @@ const mockDoctors = [
     avatar: "/placeholder.svg?height=100&width=100&text=JW",
     isAvailable: true,
     nextAvailable: "Today 4:00 PM",
-    about: "Orthopedic surgeon specializing in sports injuries and joint replacement.",
+    about:
+      "Orthopedic surgeon specializing in sports injuries and joint replacement.",
     education: "MD from Mayo Clinic",
     languages: ["English"],
   },
@@ -81,7 +98,8 @@ const mockDoctors = [
     avatar: "/placeholder.svg?height=100&width=100&text=LR",
     isAvailable: true,
     nextAvailable: "Tomorrow 2:00 PM",
-    about: "Neurologist with expertise in brain disorders, epilepsy, and migraine treatment.",
+    about:
+      "Neurologist with expertise in brain disorders, epilepsy, and migraine treatment.",
     education: "MD from UCLA Medical School",
     languages: ["English", "Spanish"],
   },
@@ -96,11 +114,12 @@ const mockDoctors = [
     avatar: "/placeholder.svg?height=100&width=100&text=RK",
     isAvailable: true,
     nextAvailable: "Today 11:30 AM",
-    about: "General practitioner providing comprehensive primary care for all ages.",
+    about:
+      "General practitioner providing comprehensive primary care for all ages.",
     education: "MD from University of Washington",
     languages: ["English", "Korean"],
   },
-]
+];
 
 const specializations = [
   "All Specializations",
@@ -110,48 +129,54 @@ const specializations = [
   "Neurology",
   "Orthopedics",
   "Pediatrics",
-]
+];
 
 export default function PatientBookAppointment() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedSpecialization, setSelectedSpecialization] = useState("All Specializations")
-  const [selectedDoctor, setSelectedDoctor] = useState<any>(null)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSpecialization, setSelectedSpecialization] = useState(
+    "All Specializations"
+  );
+  const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
   const [appointmentData, setAppointmentData] = useState({
     date: "",
     time: "",
     type: "",
     notes: "",
-  })
+  });
 
   const filteredDoctors = mockDoctors.filter((doctor) => {
     const matchesSearch =
       doctor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      doctor.specialization.toLowerCase().includes(searchQuery.toLowerCase())
+      doctor.specialization.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesSpecialization =
-      selectedSpecialization === "All Specializations" || doctor.specialization === selectedSpecialization
-    return matchesSearch && matchesSpecialization
-  })
-
+      selectedSpecialization === "All Specializations" ||
+      doctor.specialization === selectedSpecialization;
+    return matchesSearch && matchesSpecialization;
+  });
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Book Appointment</h1>
-        <p className="text-muted-foreground">Find and book appointments with available doctors</p>
+        <p className="text-muted-foreground">
+          Find and book appointments with available doctors
+        </p>
       </div>
 
       {/* Search and Filter */}
-      <div className="flex gap-4">
-        <div className="flex-1 relative">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Search doctors by name or specialization..."
+      <div className="flex gap-4 justify-center items-center">
+        <div className="flex-1 relative ">
+          <SearchInput
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10"
+            placeholder="Search doctors by name or specialization..."
           />
         </div>
-        <Select value={selectedSpecialization} onValueChange={setSelectedSpecialization}>
+
+        <Select
+          value={selectedSpecialization}
+          onValueChange={setSelectedSpecialization}
+        >
           <SelectTrigger className="w-[200px]">
             <SelectValue />
           </SelectTrigger>
@@ -182,7 +207,9 @@ export default function PatientBookAppointment() {
                   <div className="flex items-center gap-1 mt-1">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     <span className="text-sm font-medium">{doctor.rating}</span>
-                    <span className="text-sm text-muted-foreground">({doctor.experience} years exp.)</span>
+                    <span className="text-sm text-muted-foreground">
+                      ({doctor.experience} years exp.)
+                    </span>
                   </div>
                 </div>
               </div>
@@ -208,7 +235,7 @@ export default function PatientBookAppointment() {
                   {doctor.isAvailable ? "Available" : "Busy"}
                 </Badge>
 
-                <BookingForm doctor={doctor}/>
+                  <BookingForm doctor={doctor} />
               </div>
             </CardContent>
           </Card>
@@ -217,9 +244,11 @@ export default function PatientBookAppointment() {
 
       {filteredDoctors.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No doctors found matching your criteria.</p>
+          <p className="text-muted-foreground">
+            No doctors found matching your criteria.
+          </p>
         </div>
       )}
     </div>
-  )
+  );
 }
