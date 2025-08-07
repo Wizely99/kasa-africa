@@ -63,7 +63,7 @@ export const BookingForm = ({ doctor }: { doctor: any }) => {
           Book Now
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="w-[700px] max-w-none">
         <DialogHeader>
           <DialogTitle>Book Appointment with {doctor.name}</DialogTitle>
           <DialogDescription>

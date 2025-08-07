@@ -41,7 +41,7 @@ export function DoctorLayoutClient({
         },
         {
           title: "Availability",
-          url: "/doctor/slots",
+          url: "/doctor/availability",
           icon: Calendar,
         },
       ],
