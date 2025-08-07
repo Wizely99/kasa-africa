@@ -5,7 +5,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { MedicalRecord } from "./types";
+import { MedicalRecord } from "../types/patient";
 
 interface PatientHistoryTabProps {
   medicalHistory: MedicalRecord[];

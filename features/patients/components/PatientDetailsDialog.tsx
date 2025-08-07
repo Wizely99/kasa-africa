@@ -6,11 +6,11 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Patient } from "./types";
 import { PatientOverviewTab } from "./PatientOverviewTab";
 import { PatientHistoryTab } from "./PatientHistoryTab";
 import { PatientPrescriptionsTab } from "./PatientPrescriptionsTab";
 import { PatientVitalsTab } from "./PatientVitalsTab";
+import { Patient } from "../types/patient";
 
 interface PatientDetailsDialogProps {
   patient: Patient | null;

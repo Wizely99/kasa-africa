@@ -6,7 +6,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Prescription } from "./types";
+import { Prescription } from "../types/patient";
 
 interface PatientPrescriptionsTabProps {
   prescriptions: Prescription[];

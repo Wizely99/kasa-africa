@@ -23,7 +23,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Patient } from "./types";
+import { Patient } from "../types/patient";
 
 interface PatientsTableProps {
   patients: Patient[];

@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import {
+  Search,
   ShoppingCart,
+  Plus,
   Star,
   Package,
   DollarSign,
@@ -19,15 +21,18 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatsCard } from "../components/StatsCard";
-import { CartItem, OrderData } from "../types";
-import { Product } from "../types/product";
-import { mockProducts } from "../data";
-import { SearchFilters } from "../components/pharmacy/PharmacySearchFilters";
-import { CartItemsList } from "../components/pharmacy/CartItemsList";
-import { ProductDetailsDialog } from "../components/pharmacy/ProductDetailsDialog";
-import { OrderSummary } from "../components/pharmacy/OrderSummary";
-import { CheckoutDialog } from "../components/pharmacy/CheckoutDialog";
-import { ProductCard } from "../components/pharmacy/ProductCard";
+import { ProductCard } from "./components/ProductCard";
+import { ProductDetailsDialog } from "./components/ProductDetailsDialog";
+import { CheckoutDialog } from "./components/CheckoutDialog";
+import { SearchFilters } from "./components/SearchFilters";
+import { CartItem } from "./components/CartItem";
+import { OrderSummary } from "./components/OrderSummary";
+import {
+  Product,
+  CartItem as CartItemType,
+  OrderData,
+} from "./components/types";
+import { mockProducts } from "./data/mockProducts";
 
 const categories = [
   "All Categories",
@@ -45,7 +50,7 @@ export default function Pharmacy() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [sortBy, setSortBy] = useState("featured");
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartItems, setCartItems] = useState<CartItemType[]>([]);
   const [showCheckout, setShowCheckout] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [showProductDialog, setShowProductDialog] = useState(false);
@@ -227,7 +232,6 @@ export default function Pharmacy() {
 
           {/* Products Grid */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}
@@ -250,7 +254,7 @@ export default function Pharmacy() {
           )}
         </TabsContent>
 
-        <TabsContent value="cart" className="space-y-4 ">
+        <TabsContent value="cart" className="space-y-4">
           {cartItems.length === 0 ? (
             <Card>
               <CardContent className="p-8 text-center">
@@ -258,11 +262,7 @@ export default function Pharmacy() {
                 <p className="text-muted-foreground mb-4">Your cart is empty</p>
                 <Button
                   onClick={() =>
-                    (
-                      document.querySelector(
-                        '[value="products"]'
-                      ) as HTMLElement | null
-                    )?.click()
+                    document.querySelector('[value="products"]')?.click()
                   }
                 >
                   Browse Products
@@ -282,21 +282,22 @@ export default function Pharmacy() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <CartItemsList
-                      items={cartItems}
-                      onUpdateQuantity={updateQuantity}
-                      onRemoveItem={removeFromCart}
-                    />
+                    {cartItems.map((item) => (
+                      <CartItem
+                        key={item.productId}
+                        item={item}
+                        onUpdateQuantity={updateQuantity}
+                        onRemove={removeFromCart}
+                      />
+                    ))}
                   </CardContent>
                 </Card>
               </div>
 
               <div>
                 <OrderSummary
-                  items={cartItems}
-                  hasPrescriptionItems={cartItems.some(
-                    (item) => item.product.requiresPrescription
-                  )}
+                  cartItems={cartItems}
+                  totalAmount={getTotalAmount()}
                   onCheckout={() => setShowCheckout(true)}
                 />
               </div>
@@ -311,7 +312,7 @@ export default function Pharmacy() {
         open={showProductDialog}
         onOpenChange={setShowProductDialog}
         onAddToCart={addToCart}
-        onBuyNow={() => {
+        onCheckout={() => {
           if (selectedProduct) {
             addToCart(selectedProduct, 1);
             setShowCheckout(true);
@@ -324,11 +325,12 @@ export default function Pharmacy() {
       <CheckoutDialog
         open={showCheckout}
         onOpenChange={setShowCheckout}
-        items={cartItems}
+        cartItems={cartItems}
         orderData={orderData}
+        totalAmount={getTotalAmount()}
+        totalItems={getTotalItems()}
         onOrderDataChange={setOrderData}
         onPlaceOrder={handlePlaceOrder}
-        onBackToCart={() => setShowCheckout(false)}
       />
     </div>
   );

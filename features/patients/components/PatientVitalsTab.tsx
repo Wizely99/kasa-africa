@@ -5,7 +5,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
-import { VitalSigns } from "./types";
+import { VitalSigns } from "../types/patient";
 
 interface PatientVitalsTabProps {
   vitals: VitalSigns;
