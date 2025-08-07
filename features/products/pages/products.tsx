@@ -1,20 +1,46 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Plus, Search, MoreHorizontal, Edit, Trash2, Package } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { useState, useEffect } from "react";
+import {
+  Plus,
+  Search,
+  MoreHorizontal,
+  Edit,
+  Trash2,
+  Package,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   Dialog,
   DialogContent,
@@ -22,83 +48,93 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog"
-import { getProductsAction, getProductCategoriesAction } from "@/features/products/actions/product-actions"
-import { AddProductForm } from "@/features/products/components/add-product-form"
-import { EditProductForm } from "@/features/products/components/edit-product-form"
-import type { Product, ProductCategory } from "@/features/products/types/product"
+} from "@/components/ui/dialog";
+import {
+  getProductsAction,
+  getProductCategoriesAction,
+} from "@/features/products/actions/product-actions";
+import { AddProductForm } from "@/features/products/components/add-product-form";
+import { EditProductForm } from "@/features/products/components/edit-product-form";
+import type {
+  Product,
+  ProductCategory,
+} from "@/features/products/types/product";
 
 export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([])
-  const [categories, setCategories] = useState<ProductCategory[]>([])
-  const [loading, setLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("all")
-  const [selectedStatus, setSelectedStatus] = useState("all")
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [currentProduct, setCurrentProduct] = useState<Product | null>(null)
+  const [products, setProducts] = useState<Product[]>([]);
+  const [categories, setCategories] = useState<ProductCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
 
   useEffect(() => {
-    loadData()
-  }, [selectedCategory, selectedStatus])
+    loadData();
+  }, [selectedCategory, selectedStatus]);
 
   const loadData = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const [productsResult, categoriesResult] = await Promise.all([
         getProductsAction(selectedCategory, selectedStatus),
         getProductCategoriesAction(),
-      ])
+      ]);
 
       if (productsResult.success) {
-        setProducts(productsResult.data)
+        setProducts(productsResult.data);
       }
       if (categoriesResult.success) {
-        setCategories(categoriesResult.data)
+        setCategories(categoriesResult.data);
       }
     } catch (error) {
-      console.error("Failed to load data:", error)
+      console.error("Failed to load data:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const filteredProducts = products.filter(
     (product) =>
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.manufacturer.toLowerCase().includes(searchQuery.toLowerCase()),
-  )
+      product.manufacturer.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
       case "inactive":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
+        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
       case "discontinued":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
+        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
+        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
     }
-  }
+  };
 
   const handleProductAdded = () => {
-    setIsAddDialogOpen(false)
-    loadData()
-  }
+    setIsAddDialogOpen(false);
+    loadData();
+  };
 
   const handleProductEdited = () => {
-    setIsEditDialogOpen(false)
-    loadData()
-  }
+    setIsEditDialogOpen(false);
+    loadData();
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Products Management</h1>
-          <p className="text-muted-foreground">Manage your pharmacy inventory and product catalog</p>
+          <h1 className="text-3xl font-bold tracking-tight">
+            Products Management
+          </h1>
+          <p className="text-muted-foreground">
+            Manage your pharmacy inventory and product catalog
+          </p>
         </div>
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
@@ -107,12 +143,17 @@ export default function ProductsPage() {
               Add Product
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="w-[90vw] md:w-[600px] max-h-none h-[500px] max-w-none">
             <DialogHeader>
               <DialogTitle>Add New Product</DialogTitle>
-              <DialogDescription>Add a new product to your pharmacy inventory</DialogDescription>
+              <DialogDescription>
+                Add a new product to your pharmacy inventory
+              </DialogDescription>
             </DialogHeader>
-            <AddProductForm categories={categories} onSuccess={handleProductAdded} />
+            <AddProductForm
+              categories={categories}
+              onSuccess={handleProductAdded}
+            />
           </DialogContent>
         </Dialog>
       </div>
@@ -121,12 +162,16 @@ export default function ProductsPage() {
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
+            <CardTitle className="text-sm font-medium">
+              Total Products
+            </CardTitle>
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{products.length}</div>
-            <p className="text-xs text-muted-foreground">Active inventory items</p>
+            <p className="text-xs text-muted-foreground">
+              Active inventory items
+            </p>
           </CardContent>
         </Card>
         <Card>
@@ -135,7 +180,9 @@ export default function ProductsPage() {
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{products.filter((p) => p.inStock).length}</div>
+            <div className="text-2xl font-bold">
+              {products.filter((p) => p.inStock).length}
+            </div>
             <p className="text-xs text-muted-foreground">Available products</p>
           </CardContent>
         </Card>
@@ -145,7 +192,9 @@ export default function ProductsPage() {
             <Package className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{products.filter((p) => p.stockQuantity < 50).length}</div>
+            <div className="text-2xl font-bold">
+              {products.filter((p) => p.stockQuantity < 50).length}
+            </div>
             <p className="text-xs text-muted-foreground">Need restocking</p>
           </CardContent>
         </Card>
@@ -165,7 +214,9 @@ export default function ProductsPage() {
       <Card>
         <CardHeader>
           <CardTitle>Product Inventory</CardTitle>
-          <CardDescription>Manage and monitor your product catalog</CardDescription>
+          <CardDescription>
+            Manage and monitor your product catalog
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="flex gap-4 mb-6">
@@ -180,7 +231,10 @@ export default function ProductsPage() {
                 />
               </div>
             </div>
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <Select
+              value={selectedCategory}
+              onValueChange={setSelectedCategory}
+            >
               <SelectTrigger className="w-[200px]">
                 <SelectValue placeholder="All Categories" />
               </SelectTrigger>
@@ -229,13 +283,18 @@ export default function ProductsPage() {
                     <TableCell>
                       <div className="flex items-center gap-3">
                         <img
-                          src={product.image || "/placeholder.svg?height=40&width=40"}
+                          src={
+                            product.image ||
+                            "/placeholder.svg?height=40&width=40"
+                          }
                           alt={product.name}
                           className="h-10 w-10 rounded-md object-cover"
                         />
                         <div>
                           <div className="font-medium">{product.name}</div>
-                          <div className="text-sm text-muted-foreground">{product.manufacturer}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {product.manufacturer}
+                          </div>
                         </div>
                       </div>
                     </TableCell>
@@ -253,7 +312,8 @@ export default function ProductsPage() {
                     </TableCell>
                     <TableCell>
                       <Badge className={getStatusColor(product.status)}>
-                        {product.status.charAt(0).toUpperCase() + product.status.slice(1)}
+                        {product.status.charAt(0).toUpperCase() +
+                          product.status.slice(1)}
                       </Badge>
                     </TableCell>
                     <TableCell>
@@ -273,25 +333,30 @@ export default function ProductsPage() {
                         <DropdownMenuContent align="end">
                           <DropdownMenuLabel>Actions</DropdownMenuLabel>
                           <Dialog
-                            open={isEditDialogOpen && currentProduct?.id === product.id}
+                            open={
+                              isEditDialogOpen &&
+                              currentProduct?.id === product.id
+                            }
                             onOpenChange={setIsEditDialogOpen}
                           >
                             <DialogTrigger asChild>
                               <DropdownMenuItem
                                 onSelect={(e) => {
-                                  e.preventDefault() // Prevent dropdown from closing immediately
-                                  setCurrentProduct(product)
-                                  setIsEditDialogOpen(true)
+                                  e.preventDefault(); // Prevent dropdown from closing immediately
+                                  setCurrentProduct(product);
+                                  setIsEditDialogOpen(true);
                                 }}
                               >
                                 <Edit className="h-4 w-4 mr-2" />
                                 Edit Product
                               </DropdownMenuItem>
                             </DialogTrigger>
-                            <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+                            <DialogContent className="">
                               <DialogHeader>
                                 <DialogTitle>Edit Product</DialogTitle>
-                                <DialogDescription>Modify the details of this product</DialogDescription>
+                                <DialogDescription>
+                                  Modify the details of this product
+                                </DialogDescription>
                               </DialogHeader>
                               {currentProduct && (
                                 <EditProductForm
@@ -317,5 +382,5 @@ export default function ProductsPage() {
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

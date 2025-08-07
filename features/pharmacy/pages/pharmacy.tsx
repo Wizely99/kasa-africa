@@ -1,17 +1,46 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Search, ShoppingCart, Plus, Minus, Trash2, Star, Package, DollarSign, TrendingUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Separator } from "@/components/ui/separator"
+import { useState } from "react";
+import {
+  Search,
+  ShoppingCart,
+  Plus,
+  Minus,
+  Trash2,
+  Star,
+  Package,
+  DollarSign,
+  TrendingUp,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Separator } from "@/components/ui/separator";
+import { StatsCard } from "../components/StatsCard";
 
 // Enhanced mock pharmacy products data
 const mockProducts = [
@@ -40,7 +69,8 @@ const mockProducts = [
   {
     id: "2",
     name: "Amoxicillin 250mg",
-    description: "Broad-spectrum antibiotic for treating bacterial infections including respiratory tract infections.",
+    description:
+      "Broad-spectrum antibiotic for treating bacterial infections including respiratory tract infections.",
     price: 24.99,
     category: "Antibiotics",
     inStock: true,
@@ -58,7 +88,8 @@ const mockProducts = [
   {
     id: "3",
     name: "Vitamin D3 1000IU",
-    description: "Essential vitamin D supplement for bone health, immune system support, and calcium absorption.",
+    description:
+      "Essential vitamin D supplement for bone health, immune system support, and calcium absorption.",
     price: 18.99,
     originalPrice: 22.99,
     category: "Vitamins",
@@ -79,7 +110,8 @@ const mockProducts = [
   {
     id: "4",
     name: "Lisinopril 10mg",
-    description: "ACE inhibitor medication for treating high blood pressure and heart failure.",
+    description:
+      "ACE inhibitor medication for treating high blood pressure and heart failure.",
     price: 32.99,
     category: "Cardiovascular",
     inStock: true,
@@ -97,7 +129,8 @@ const mockProducts = [
   {
     id: "5",
     name: "Omega-3 Fish Oil",
-    description: "Premium fish oil supplement rich in EPA and DHA for heart and brain health support.",
+    description:
+      "Premium fish oil supplement rich in EPA and DHA for heart and brain health support.",
     price: 29.99,
     originalPrice: 34.99,
     category: "Supplements",
@@ -118,7 +151,8 @@ const mockProducts = [
   {
     id: "6",
     name: "Insulin Pen",
-    description: "Pre-filled insulin pen for convenient diabetes management with precise dosing.",
+    description:
+      "Pre-filled insulin pen for convenient diabetes management with precise dosing.",
     price: 89.99,
     category: "Diabetes Care",
     inStock: true,
@@ -136,7 +170,8 @@ const mockProducts = [
   {
     id: "7",
     name: "Ibuprofen 400mg",
-    description: "Anti-inflammatory pain reliever for muscle pain, arthritis, and menstrual cramps.",
+    description:
+      "Anti-inflammatory pain reliever for muscle pain, arthritis, and menstrual cramps.",
     price: 14.99,
     originalPrice: 17.99,
     category: "Pain Relief",
@@ -156,7 +191,8 @@ const mockProducts = [
   {
     id: "8",
     name: "Multivitamin Complex",
-    description: "Complete daily multivitamin with essential vitamins and minerals for overall health.",
+    description:
+      "Complete daily multivitamin with essential vitamins and minerals for overall health.",
     price: 24.99,
     category: "Vitamins",
     inStock: true,
@@ -175,7 +211,8 @@ const mockProducts = [
   {
     id: "9",
     name: "Albuterol Inhaler",
-    description: "Fast-acting bronchodilator for asthma and COPD symptom relief.",
+    description:
+      "Fast-acting bronchodilator for asthma and COPD symptom relief.",
     price: 45.99,
     category: "Respiratory",
     inStock: true,
@@ -193,7 +230,8 @@ const mockProducts = [
   {
     id: "10",
     name: "Probiotic Capsules",
-    description: "Advanced probiotic formula with 10 billion CFU for digestive and immune health.",
+    description:
+      "Advanced probiotic formula with 10 billion CFU for digestive and immune health.",
     price: 34.99,
     originalPrice: 39.99,
     category: "Digestive Health",
@@ -210,7 +248,7 @@ const mockProducts = [
     activeIngredient: "Lactobacillus blend",
     packSize: "30 capsules",
   },
-]
+];
 
 const categories = [
   "All Categories",
@@ -222,167 +260,170 @@ const categories = [
   "Diabetes Care",
   "Respiratory",
   "Digestive Health",
-]
+];
 
 interface CartItem {
-  productId: string
-  product: any
-  quantity: number
+  productId: string;
+  product: any;
+  quantity: number;
 }
 
 interface OrderData {
-  deliveryAddress: string
-  notes: string
-  paymentMethod: string
-  prescriptionFiles: File[]
+  deliveryAddress: string;
+  notes: string;
+  paymentMethod: string;
+  prescriptionFiles: File[];
 }
 
 export default function Pharmacy() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("All Categories")
-  const [sortBy, setSortBy] = useState("featured")
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
-  const [showCheckout, setShowCheckout] = useState(false)
-  const [selectedProduct, setSelectedProduct] = useState<any>(null)
-  const [showProductDialog, setShowProductDialog] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [sortBy, setSortBy] = useState("featured");
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [showCheckout, setShowCheckout] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<any>(null);
+  const [showProductDialog, setShowProductDialog] = useState(false);
   const [orderData, setOrderData] = useState<OrderData>({
     deliveryAddress: "",
     notes: "",
     paymentMethod: "card",
     prescriptionFiles: [],
-  })
+  });
 
   const filteredProducts = mockProducts
     .filter((product) => {
       const matchesSearch =
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.tags.some((tag) => tag.toLowerCase().includes(searchQuery.toLowerCase()))
-      const matchesCategory = selectedCategory === "All Categories" || product.category === selectedCategory
-      return matchesSearch && matchesCategory
+        product.tags.some((tag) =>
+          tag.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+      const matchesCategory =
+        selectedCategory === "All Categories" ||
+        product.category === selectedCategory;
+      return matchesSearch && matchesCategory;
     })
     .sort((a, b) => {
       switch (sortBy) {
         case "price-low":
-          return a.price - b.price
+          return a.price - b.price;
         case "price-high":
-          return b.price - a.price
+          return b.price - a.price;
         case "rating":
-          return b.rating - a.rating
+          return b.rating - a.rating;
         case "name":
-          return a.name.localeCompare(b.name)
+          return a.name.localeCompare(b.name);
         default:
-          return (b.featured ? 1 : 0) - (a.featured ? 1 : 0)
+          return (b.featured ? 1 : 0) - (a.featured ? 1 : 0);
       }
-    })
+    });
 
   const addToCart = (product: any, quantity = 1) => {
     setCartItems((prev) => {
-      const existingItem = prev.find((item) => item.productId === product.id)
+      const existingItem = prev.find((item) => item.productId === product.id);
       if (existingItem) {
         return prev.map((item) =>
-          item.productId === product.id ? { ...item, quantity: item.quantity + quantity } : item,
-        )
+          item.productId === product.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
       }
-      return [...prev, { productId: product.id, product, quantity }]
-    })
-  }
+      return [...prev, { productId: product.id, product, quantity }];
+    });
+  };
 
   const updateQuantity = (productId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(productId)
-      return
+      removeFromCart(productId);
+      return;
     }
-    setCartItems((prev) => prev.map((item) => (item.productId === productId ? { ...item, quantity } : item)))
-  }
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.productId === productId ? { ...item, quantity } : item
+      )
+    );
+  };
 
   const removeFromCart = (productId: string) => {
-    setCartItems((prev) => prev.filter((item) => item.productId !== productId))
-  }
+    setCartItems((prev) => prev.filter((item) => item.productId !== productId));
+  };
 
   const getTotalAmount = () => {
-    return cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
-  }
+    return cartItems.reduce(
+      (sum, item) => sum + item.product.price * item.quantity,
+      0
+    );
+  };
 
   const getTotalItems = () => {
-    return cartItems.reduce((sum, item) => sum + item.quantity, 0)
-  }
+    return cartItems.reduce((sum, item) => sum + item.quantity, 0);
+  };
 
   const handlePlaceOrder = () => {
-    console.log("Placing order:", { items: cartItems, ...orderData })
-    alert("Order placed successfully! You will receive a confirmation email shortly.")
-    setCartItems([])
-    setShowCheckout(false)
+    console.log("Placing order:", { items: cartItems, ...orderData });
+    alert(
+      "Order placed successfully! You will receive a confirmation email shortly."
+    );
+    setCartItems([]);
+    setShowCheckout(false);
     setOrderData({
       deliveryAddress: "",
       notes: "",
       paymentMethod: "card",
       prescriptionFiles: [],
-    })
-  }
+    });
+  };
 
   const handleViewProduct = (product: any) => {
-    setSelectedProduct(product)
-    setShowProductDialog(true)
-  }
+    setSelectedProduct(product);
+    setShowProductDialog(true);
+  };
 
   // Calculate stats
-  const totalProducts = mockProducts.length
-  const totalRevenue = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
-  const averageRating = mockProducts.reduce((sum, product) => sum + product.rating, 0) / mockProducts.length
+  const totalProducts = mockProducts.length;
+  const totalRevenue = cartItems.reduce(
+    (sum, item) => sum + item.product.price * item.quantity,
+    0
+  );
+  const averageRating =
+    mockProducts.reduce((sum, product) => sum + product.rating, 0) /
+    mockProducts.length;
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Pharmacy</h1>
-        <p className="text-muted-foreground">Browse and order medicines and healthcare products</p>
+        <p className="text-muted-foreground">
+          Browse and order medicines and healthcare products
+        </p>
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Products</CardTitle>
-            <Package className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{totalProducts}</div>
-            <p className="text-xs text-muted-foreground">Available for order</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Cart Value</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">${totalRevenue.toFixed(2)}</div>
-            <p className="text-xs text-muted-foreground">{getTotalItems()} items in cart</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Rating</CardTitle>
-            <Star className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{averageRating.toFixed(1)}</div>
-            <p className="text-xs text-muted-foreground">Customer satisfaction</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Featured Products</CardTitle>
-            <TrendingUp className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{mockProducts.filter((p) => p.featured).length}</div>
-            <p className="text-xs text-muted-foreground">Recommended items</p>
-          </CardContent>
-        </Card>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <StatsCard
+          title="Total Products"
+          value={totalProducts}
+          description="Available for order"
+          icon={Package}
+        />
+        <StatsCard
+          title="Cart Value"
+          value={`$${totalRevenue.toFixed(2)}`}
+          description={`${getTotalItems()} items in cart`}
+          icon={DollarSign}
+        />
+        <StatsCard
+          title="Average Rating"
+          value={averageRating.toFixed(1)}
+          description="Customer satisfaction"
+          icon={Star}
+        />
+        <StatsCard
+          title="Featured Products"
+          value={mockProducts.filter((p) => p.featured).length}
+          description="Recommended items"
+          icon={TrendingUp}
+        />
       </div>
 
       <Tabs defaultValue="products" className="space-y-4">
@@ -390,7 +431,10 @@ export default function Pharmacy() {
           <TabsList>
             <TabsTrigger value="products">Browse Products</TabsTrigger>
             <TabsTrigger value="cart">
-              Cart ({cartItems.length}){cartItems.length > 0 && <Badge className="ml-2">{getTotalItems()}</Badge>}
+              Cart ({cartItems.length})
+              {cartItems.length > 0 && (
+                <Badge className="ml-2">{getTotalItems()}</Badge>
+              )}
             </TabsTrigger>
           </TabsList>
 
@@ -416,7 +460,10 @@ export default function Pharmacy() {
                     className="pl-10"
                   />
                 </div>
-                <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                <Select
+                  value={selectedCategory}
+                  onValueChange={setSelectedCategory}
+                >
                   <SelectTrigger className="w-[200px]">
                     <SelectValue />
                   </SelectTrigger>
@@ -435,8 +482,12 @@ export default function Pharmacy() {
                   <SelectContent>
                     <SelectItem value="featured">Featured</SelectItem>
                     <SelectItem value="name">Name A-Z</SelectItem>
-                    <SelectItem value="price-low">Price: Low to High</SelectItem>
-                    <SelectItem value="price-high">Price: High to Low</SelectItem>
+                    <SelectItem value="price-low">
+                      Price: Low to High
+                    </SelectItem>
+                    <SelectItem value="price-high">
+                      Price: High to Low
+                    </SelectItem>
                     <SelectItem value="rating">Highest Rated</SelectItem>
                   </SelectContent>
                 </Select>
@@ -447,21 +498,34 @@ export default function Pharmacy() {
           {/* Products Grid */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {filteredProducts.map((product) => (
-              <Card key={product.id} className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer">
-                <div className="aspect-square relative" onClick={() => handleViewProduct(product)}>
+              <Card
+                key={product.id}
+                className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+              >
+                <div
+                  className="aspect-square relative"
+                  onClick={() => handleViewProduct(product)}
+                >
                   <img
                     src={product.image || "/placeholder.svg"}
                     alt={product.name}
                     className="object-cover w-full h-full"
                   />
                   {product.discount && (
-                    <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">-{product.discount}%</Badge>
+                    <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+                      -{product.discount}%
+                    </Badge>
                   )}
                   {product.featured && (
-                    <Badge className="absolute top-2 right-2 bg-yellow-500 hover:bg-yellow-600">Featured</Badge>
+                    <Badge className="absolute top-2 right-2 bg-yellow-500 hover:bg-yellow-600">
+                      Featured
+                    </Badge>
                   )}
                   {product.requiresPrescription && (
-                    <Badge variant="outline" className="absolute bottom-2 left-2 bg-white">
+                    <Badge
+                      variant="outline"
+                      className="absolute bottom-2 left-2 bg-white"
+                    >
                       Rx Required
                     </Badge>
                   )}
@@ -470,7 +534,9 @@ export default function Pharmacy() {
                 <CardHeader className="pb-2">
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
-                      <CardTitle className="text-lg line-clamp-2">{product.name}</CardTitle>
+                      <CardTitle className="text-lg line-clamp-2">
+                        {product.name}
+                      </CardTitle>
                       <CardDescription className="text-sm">
                         {product.manufacturer} • {product.packSize}
                       </CardDescription>
@@ -486,37 +552,59 @@ export default function Pharmacy() {
                         <Star
                           key={i}
                           className={`h-4 w-4 ${
-                            i < Math.floor(product.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                            i < Math.floor(product.rating)
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "text-gray-300"
                           }`}
                         />
                       ))}
                     </div>
-                    <span className="text-sm font-medium">{product.rating}</span>
-                    <span className="text-sm text-muted-foreground">({product.reviews})</span>
+                    <span className="text-sm font-medium">
+                      {product.rating}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      ({product.reviews})
+                    </span>
                   </div>
                 </CardHeader>
 
                 <CardContent className="space-y-4">
-                  <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
+                  <p className="text-sm text-muted-foreground line-clamp-2">
+                    {product.description}
+                  </p>
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-xl font-bold">${product.price}</span>
+                      <span className="text-xl font-bold">
+                        ${product.price}
+                      </span>
                       {product.originalPrice && (
-                        <span className="text-sm text-muted-foreground line-through">${product.originalPrice}</span>
+                        <span className="text-sm text-muted-foreground line-through">
+                          ${product.originalPrice}
+                        </span>
                       )}
                     </div>
                     <Badge variant={product.inStock ? "default" : "secondary"}>
-                      {product.inStock ? `${product.stockQuantity} in stock` : "Out of stock"}
+                      {product.inStock
+                        ? `${product.stockQuantity} in stock`
+                        : "Out of stock"}
                     </Badge>
                   </div>
 
                   <div className="flex gap-2">
-                    <Button className="flex-1" disabled={!product.inStock} onClick={() => addToCart(product)}>
+                    <Button
+                      className="flex-1"
+                      disabled={!product.inStock}
+                      onClick={() => addToCart(product)}
+                    >
                       <Plus className="h-4 w-4 mr-2" />
                       Add to Cart
                     </Button>
-                    <Button variant="outline" size="icon" onClick={() => handleViewProduct(product)}>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      onClick={() => handleViewProduct(product)}
+                    >
                       <Search className="h-4 w-4" />
                     </Button>
                   </div>
@@ -529,7 +617,9 @@ export default function Pharmacy() {
             <Card>
               <CardContent className="p-8 text-center">
                 <Package className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-                <p className="text-muted-foreground">No products found. Try adjusting your search criteria.</p>
+                <p className="text-muted-foreground">
+                  No products found. Try adjusting your search criteria.
+                </p>
               </CardContent>
             </Card>
           )}
@@ -541,7 +631,13 @@ export default function Pharmacy() {
               <CardContent className="p-8 text-center">
                 <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <p className="text-muted-foreground mb-4">Your cart is empty</p>
-                <Button onClick={() => document.querySelector('[value="products"]')?.click()}>Browse Products</Button>
+                <Button
+                  onClick={() =>
+                    document.querySelector('[value="products"]')?.click()
+                  }
+                >
+                  Browse Products
+                </Button>
               </CardContent>
             </Card>
           ) : (
@@ -549,12 +645,19 @@ export default function Pharmacy() {
               <div className="lg:col-span-2">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Shopping Cart ({getTotalItems()} items)</CardTitle>
-                    <CardDescription>Review your items before checkout</CardDescription>
+                    <CardTitle>
+                      Shopping Cart ({getTotalItems()} items)
+                    </CardTitle>
+                    <CardDescription>
+                      Review your items before checkout
+                    </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     {cartItems.map((item) => (
-                      <div key={item.productId} className="flex items-center gap-4 p-4 border rounded-lg">
+                      <div
+                        key={item.productId}
+                        className="flex items-center gap-4 p-4 border rounded-lg"
+                      >
                         <img
                           src={item.product.image || "/placeholder.svg"}
                           alt={item.product.name}
@@ -562,12 +665,17 @@ export default function Pharmacy() {
                         />
 
                         <div className="flex-1">
-                          <h4 className="font-medium text-lg">{item.product.name}</h4>
+                          <h4 className="font-medium text-lg">
+                            {item.product.name}
+                          </h4>
                           <p className="text-sm text-muted-foreground">
-                            {item.product.manufacturer} • {item.product.packSize}
+                            {item.product.manufacturer} •{" "}
+                            {item.product.packSize}
                           </p>
                           <div className="flex items-center gap-2 mt-1">
-                            <span className="font-medium text-lg">${item.product.price}</span>
+                            <span className="font-medium text-lg">
+                              ${item.product.price}
+                            </span>
                             {item.product.originalPrice && (
                               <span className="text-sm text-muted-foreground line-through">
                                 ${item.product.originalPrice}
@@ -587,23 +695,37 @@ export default function Pharmacy() {
                               variant="outline"
                               size="icon"
                               className="h-8 w-8 bg-transparent"
-                              onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                              onClick={() =>
+                                updateQuantity(
+                                  item.productId,
+                                  item.quantity - 1
+                                )
+                              }
                             >
                               <Minus className="h-4 w-4" />
                             </Button>
-                            <span className="w-12 text-center font-medium">{item.quantity}</span>
+                            <span className="w-12 text-center font-medium">
+                              {item.quantity}
+                            </span>
                             <Button
                               variant="outline"
                               size="icon"
                               className="h-8 w-8 bg-transparent"
-                              onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                              onClick={() =>
+                                updateQuantity(
+                                  item.productId,
+                                  item.quantity + 1
+                                )
+                              }
                             >
                               <Plus className="h-4 w-4" />
                             </Button>
                           </div>
 
                           <div className="text-right min-w-[100px]">
-                            <p className="font-bold text-lg">${(item.product.price * item.quantity).toFixed(2)}</p>
+                            <p className="font-bold text-lg">
+                              ${(item.product.price * item.quantity).toFixed(2)}
+                            </p>
                           </div>
 
                           <Button
@@ -647,15 +769,22 @@ export default function Pharmacy() {
                       </div>
                     </div>
 
-                    {cartItems.some((item) => item.product.requiresPrescription) && (
+                    {cartItems.some(
+                      (item) => item.product.requiresPrescription
+                    ) && (
                       <div className="p-3 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
                         <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                          ⚠️ Some items require a prescription. You'll need to upload it during checkout.
+                          ⚠️ Some items require a prescription. You'll need to
+                          upload it during checkout.
                         </p>
                       </div>
                     )}
 
-                    <Button onClick={() => setShowCheckout(true)} className="w-full" size="lg">
+                    <Button
+                      onClick={() => setShowCheckout(true)}
+                      className="w-full"
+                      size="lg"
+                    >
                       Proceed to Checkout
                     </Button>
                   </CardContent>
@@ -684,11 +813,20 @@ export default function Pharmacy() {
                     className="object-cover w-full h-full rounded-lg"
                   />
                   {selectedProduct.discount && (
-                    <Badge className="absolute top-2 left-2 bg-red-500">-{selectedProduct.discount}%</Badge>
+                    <Badge className="absolute top-2 left-2 bg-red-500">
+                      -{selectedProduct.discount}%
+                    </Badge>
                   )}
-                  {selectedProduct.featured && <Badge className="absolute top-2 right-2 bg-yellow-500">Featured</Badge>}
+                  {selectedProduct.featured && (
+                    <Badge className="absolute top-2 right-2 bg-yellow-500">
+                      Featured
+                    </Badge>
+                  )}
                   {selectedProduct.requiresPrescription && (
-                    <Badge variant="outline" className="absolute bottom-2 left-2 bg-white">
+                    <Badge
+                      variant="outline"
+                      className="absolute bottom-2 left-2 bg-white"
+                    >
                       Rx Required
                     </Badge>
                   )}
@@ -701,13 +839,19 @@ export default function Pharmacy() {
                         <Star
                           key={i}
                           className={`h-4 w-4 ${
-                            i < Math.floor(selectedProduct.rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                            i < Math.floor(selectedProduct.rating)
+                              ? "fill-yellow-400 text-yellow-400"
+                              : "text-gray-300"
                           }`}
                         />
                       ))}
                     </div>
-                    <span className="font-medium">{selectedProduct.rating}</span>
-                    <span className="text-muted-foreground">({selectedProduct.reviews} reviews)</span>
+                    <span className="font-medium">
+                      {selectedProduct.rating}
+                    </span>
+                    <span className="text-muted-foreground">
+                      ({selectedProduct.reviews} reviews)
+                    </span>
                   </div>
 
                   <div className="flex flex-wrap gap-1">
@@ -723,20 +867,32 @@ export default function Pharmacy() {
               <div className="space-y-4">
                 <div>
                   <h2 className="text-2xl font-bold">{selectedProduct.name}</h2>
-                  <p className="text-muted-foreground">{selectedProduct.manufacturer}</p>
+                  <p className="text-muted-foreground">
+                    {selectedProduct.manufacturer}
+                  </p>
                 </div>
 
                 <div className="flex items-center gap-3">
-                  <span className="text-3xl font-bold">${selectedProduct.price}</span>
+                  <span className="text-3xl font-bold">
+                    ${selectedProduct.price}
+                  </span>
                   {selectedProduct.originalPrice && (
-                    <span className="text-xl text-muted-foreground line-through">${selectedProduct.originalPrice}</span>
+                    <span className="text-xl text-muted-foreground line-through">
+                      ${selectedProduct.originalPrice}
+                    </span>
                   )}
-                  <Badge variant={selectedProduct.inStock ? "default" : "secondary"}>
-                    {selectedProduct.inStock ? `${selectedProduct.stockQuantity} in stock` : "Out of stock"}
+                  <Badge
+                    variant={selectedProduct.inStock ? "default" : "secondary"}
+                  >
+                    {selectedProduct.inStock
+                      ? `${selectedProduct.stockQuantity} in stock`
+                      : "Out of stock"}
                   </Badge>
                 </div>
 
-                <p className="text-muted-foreground">{selectedProduct.description}</p>
+                <p className="text-muted-foreground">
+                  {selectedProduct.description}
+                </p>
 
                 <div className="grid gap-3">
                   <div className="flex justify-between">
@@ -762,8 +918,8 @@ export default function Pharmacy() {
                     className="flex-1"
                     disabled={!selectedProduct.inStock}
                     onClick={() => {
-                      addToCart(selectedProduct)
-                      setShowProductDialog(false)
+                      addToCart(selectedProduct);
+                      setShowProductDialog(false);
                     }}
                   >
                     <Plus className="h-4 w-4 mr-2" />
@@ -772,9 +928,9 @@ export default function Pharmacy() {
                   <Button
                     variant="outline"
                     onClick={() => {
-                      addToCart(selectedProduct, 1)
-                      setShowCheckout(true)
-                      setShowProductDialog(false)
+                      addToCart(selectedProduct, 1);
+                      setShowCheckout(true);
+                      setShowProductDialog(false);
                     }}
                     disabled={!selectedProduct.inStock}
                   >
@@ -802,7 +958,10 @@ export default function Pharmacy() {
                 <h3 className="font-semibold text-lg">Order Summary</h3>
                 <div className="space-y-3">
                   {cartItems.map((item) => (
-                    <div key={item.productId} className="flex justify-between items-center text-sm">
+                    <div
+                      key={item.productId}
+                      className="flex justify-between items-center text-sm"
+                    >
                       <div className="flex items-center gap-2">
                         <img
                           src={item.product.image || "/placeholder.svg"}
@@ -813,7 +972,9 @@ export default function Pharmacy() {
                           {item.product.name} x {item.quantity}
                         </span>
                       </div>
-                      <span className="font-medium">${(item.product.price * item.quantity).toFixed(2)}</span>
+                      <span className="font-medium">
+                        ${(item.product.price * item.quantity).toFixed(2)}
+                      </span>
                     </div>
                   ))}
                   <Separator />
@@ -855,7 +1016,13 @@ export default function Pharmacy() {
                   </div>
                   <div>
                     <Label htmlFor="prescription">Upload Prescription</Label>
-                    <Input id="prescription" type="file" accept=".pdf,.jpg,.jpeg,.png" multiple className="mt-1" />
+                    <Input
+                      id="prescription"
+                      type="file"
+                      accept=".pdf,.jpg,.jpeg,.png"
+                      multiple
+                      className="mt-1"
+                    />
                     <p className="text-xs text-muted-foreground mt-1">
                       Accepted formats: PDF, JPG, PNG. Maximum 5MB per file.
                     </p>
@@ -874,7 +1041,12 @@ export default function Pharmacy() {
                     id="address"
                     placeholder="Enter your complete delivery address including street, city, state, and ZIP code..."
                     value={orderData.deliveryAddress}
-                    onChange={(e) => setOrderData((prev) => ({ ...prev, deliveryAddress: e.target.value }))}
+                    onChange={(e) =>
+                      setOrderData((prev) => ({
+                        ...prev,
+                        deliveryAddress: e.target.value,
+                      }))
+                    }
                     className="mt-1"
                     rows={3}
                   />
@@ -885,7 +1057,12 @@ export default function Pharmacy() {
                     id="notes"
                     placeholder="Any special delivery instructions, preferred delivery time, etc..."
                     value={orderData.notes}
-                    onChange={(e) => setOrderData((prev) => ({ ...prev, notes: e.target.value }))}
+                    onChange={(e) =>
+                      setOrderData((prev) => ({
+                        ...prev,
+                        notes: e.target.value,
+                      }))
+                    }
                     className="mt-1"
                     rows={2}
                   />
@@ -897,7 +1074,9 @@ export default function Pharmacy() {
                 <h3 className="font-semibold text-lg">Payment Method</h3>
                 <Select
                   value={orderData.paymentMethod}
-                  onValueChange={(value) => setOrderData((prev) => ({ ...prev, paymentMethod: value }))}
+                  onValueChange={(value) =>
+                    setOrderData((prev) => ({ ...prev, paymentMethod: value }))
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -931,12 +1110,16 @@ export default function Pharmacy() {
             <Button variant="outline" onClick={() => setShowCheckout(false)}>
               Back to Cart
             </Button>
-            <Button onClick={handlePlaceOrder} disabled={!orderData.deliveryAddress} size="lg">
+            <Button
+              onClick={handlePlaceOrder}
+              disabled={!orderData.deliveryAddress}
+              size="lg"
+            >
               Place Order (${(getTotalAmount() * 1.08).toFixed(2)})
             </Button>
           </div>
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

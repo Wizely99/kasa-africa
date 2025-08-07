@@ -1,32 +1,48 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Upload, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { createProductSchema, type CreateProductFormData } from "../schemas/product-schemas"
-import { createProductAction } from "../actions/product-actions"
-import type { ProductCategory } from "../types/product"
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Upload, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import {
+  createProductSchema,
+  type CreateProductFormData,
+} from "../schemas/product-schemas";
+import { createProductAction } from "../actions/product-actions";
+import type { ProductCategory } from "../types/product";
 
 interface AddProductFormProps {
-  categories: ProductCategory[]
-  onSuccess: () => void
+  categories: ProductCategory[];
+  onSuccess: () => void;
 }
 
 export function AddProductForm({ categories, onSuccess }: AddProductFormProps) {
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState("")
-  const [selectedImage, setSelectedImage] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string>("")
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
 
   const form = useForm<CreateProductFormData>({
     resolver: zodResolver(createProductSchema),
@@ -35,51 +51,54 @@ export function AddProductForm({ categories, onSuccess }: AddProductFormProps) {
       stockQuantity: 0,
       price: 0,
     },
-  })
+  });
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
+    const file = event.target.files?.[0];
     if (file) {
-      setSelectedImage(file)
-      const reader = new FileReader()
+      setSelectedImage(file);
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const removeImage = () => {
-    setSelectedImage(null)
-    setImagePreview("")
-  }
+    setSelectedImage(null);
+    setImagePreview("");
+  };
 
   const onSubmit = async (data: CreateProductFormData) => {
-    setSubmitting(true)
-    setError("")
+    setSubmitting(true);
+    setError("");
 
     try {
       const result = await createProductAction({
         ...data,
         image: selectedImage || undefined,
-      })
+      });
 
       if (result.success) {
-        onSuccess()
+        onSuccess();
       } else {
-        setError("Failed to create product")
+        setError("Failed to create product");
       }
     } catch (error) {
-      console.error("Failed to create product:", error)
-      setError("Failed to create product. Please try again.")
+      console.error("Failed to create product:", error);
+      setError("Failed to create product. Please try again.");
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-6 min-h-[500px]"
+      >
         {error && (
           <Alert variant="destructive">
             <AlertDescription>{error}</AlertDescription>
@@ -141,7 +160,10 @@ export function AddProductForm({ categories, onSuccess }: AddProductFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Category</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select category" />
@@ -172,7 +194,9 @@ export function AddProductForm({ categories, onSuccess }: AddProductFormProps) {
                     step="0.01"
                     placeholder="0.00"
                     {...field}
-                    onChange={(e) => field.onChange(Number.parseFloat(e.target.value) || 0)}
+                    onChange={(e) =>
+                      field.onChange(Number.parseFloat(e.target.value) || 0)
+                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -191,7 +215,9 @@ export function AddProductForm({ categories, onSuccess }: AddProductFormProps) {
                     type="number"
                     placeholder="0"
                     {...field}
-                    onChange={(e) => field.onChange(Number.parseInt(e.target.value) || 0)}
+                    onChange={(e) =>
+                      field.onChange(Number.parseInt(e.target.value) || 0)
+                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -220,12 +246,16 @@ export function AddProductForm({ categories, onSuccess }: AddProductFormProps) {
           render={({ field }) => (
             <FormItem className="flex flex-row items-start space-x-3 space-y-0">
               <FormControl>
-                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                <Checkbox
+                  checked={field.value}
+                  onCheckedChange={field.onChange}
+                />
               </FormControl>
               <div className="space-y-1 leading-none">
                 <FormLabel>Requires Prescription</FormLabel>
                 <p className="text-sm text-muted-foreground">
-                  Check if this product requires a valid prescription to purchase
+                  Check if this product requires a valid prescription to
+                  purchase
                 </p>
               </div>
             </FormItem>
@@ -258,7 +288,9 @@ export function AddProductForm({ categories, onSuccess }: AddProductFormProps) {
                 <Upload className="mx-auto h-12 w-12 text-muted-foreground/50" />
                 <div className="mt-4">
                   <label htmlFor="image-upload" className="cursor-pointer">
-                    <span className="text-sm font-medium text-primary hover:text-primary/80">Upload an image</span>
+                    <span className="text-sm font-medium text-primary hover:text-primary/80">
+                      Upload an image
+                    </span>
                     <input
                       id="image-upload"
                       type="file"
@@ -267,7 +299,9 @@ export function AddProductForm({ categories, onSuccess }: AddProductFormProps) {
                       onChange={handleImageChange}
                     />
                   </label>
-                  <p className="text-sm text-muted-foreground mt-1">PNG, JPG, GIF up to 10MB</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    PNG, JPG, GIF up to 10MB
+                  </p>
                 </div>
               </div>
             </div>
@@ -288,5 +322,5 @@ export function AddProductForm({ categories, onSuccess }: AddProductFormProps) {
         </div>
       </form>
     </Form>
-  )
+  );
 }

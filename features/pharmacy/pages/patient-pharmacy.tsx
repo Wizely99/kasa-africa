@@ -133,6 +133,7 @@ export default function PatientPharmacy() {
   const [selectedCategory, setSelectedCategory] = useState("All Categories")
   const [cartItems, setCartItems] = useState<CartItem[]>([])
   const [showCheckout, setShowCheckout] = useState(false)
+
   const [orderData, setOrderData] = useState({
     deliveryAddress: "",
     notes: "",
@@ -444,6 +445,7 @@ export default function PatientPharmacy() {
           </div>
         </DialogContent>
       </Dialog>
+      
     </div>
   )
 }

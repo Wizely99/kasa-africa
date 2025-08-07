@@ -243,7 +243,7 @@ export default function Orders() {
                             <Eye className="h-4 w-4" />
                           </Button>
                         </DialogTrigger>
-                        <DialogContent className="max-w-2xl">
+                        <DialogContent className="">
                           <DialogHeader>
                             <DialogTitle>Order Details - {order.id}</DialogTitle>
                             <DialogDescription>Complete order information and items</DialogDescription>
