@@ -445,7 +445,7 @@ export default function PatientPharmacy() {
           </div>
         </DialogContent>
       </Dialog>
-      
+      y
     </div>
   )
 }

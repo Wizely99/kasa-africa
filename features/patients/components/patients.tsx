@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -8,23 +9,24 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useSearchParams } from "next/navigation";
-import { PatientDetailsDialog } from "../components/PatientDetailsDialog";
-import { PatientSearchFilters } from "../components/PatientSearchFilters";
-import { PatientsTable } from "../components/PatientsTable";
-import { PatientStatsCards } from "../components/PatientStatsCard";
 import { mockPatients } from "../data";
-// Mock patient dat
+import { Patient } from "../types/patient";
+import { PatientDetailsDialog } from "./PatientDetailsDialog";
+import { PatientSearchFilters } from "./PatientSearchFilters";
+import { PatientsTable } from "./PatientsTable";
+import { PatientStatsCards } from "./PatientStatsCard";
+
+
 
 export default function PatientList() {
   const searchParams = useSearchParams();
   const view = searchParams.get("view");
   const isDocView = view === "doctor";
 
-  const [patients, setPatients] = useState(mockPatients);
+  const [patients, setPatients] = useState<Patient[]>(mockPatients);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
-  const [selectedPatient, setSelectedPatient] = useState<any>(null);
+  const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [showPatientDialog, setShowPatientDialog] = useState(false);
 
   const filteredPatients = patients.filter((patient) => {
@@ -43,7 +45,7 @@ export default function PatientList() {
   const totalPatients = patients.length;
   const upcomingAppointments = patients.filter((p) => p.nextAppointment).length;
 
-  const handleViewPatient = (patient: any) => {
+  const handleViewPatient = (patient: Patient) => {
     setSelectedPatient(patient);
     setShowPatientDialog(true);
   };
