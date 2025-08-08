@@ -45,7 +45,7 @@ export function ProductCard({
         )}
         {product.requiresPrescription && (
           <Badge
-            variant="outline"
+            variant={product.requiresPrescription ? "rx" : "default"}
             className="absolute bottom-0 left-2 bg-white z-10"
           >
             Rx Required

@@ -29,7 +29,7 @@ export function ProductDetailsDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-4xl w-full max-h-[90vh] h-auto overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Product Details</DialogTitle>
           <DialogDescription>Complete product information</DialogDescription>
@@ -84,7 +84,7 @@ export function ProductDetailsDialog({
               </div>
 
               <div className="flex flex-wrap gap-1">
-                {product.tags.map((tag) => (
+                {product.tags?.map((tag) => (
                   <Badge key={tag} variant="secondary" className="text-xs">
                     {tag}
                   </Badge>
