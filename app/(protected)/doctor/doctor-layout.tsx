@@ -3,7 +3,7 @@ import {
   NavigationGroup,
   SidebarLayout,
   UserInfo,
-} from "../patient/PatientLayoutClient";
+} from "../patient/sidebar-layout";
 import {
   Home,
   Users,

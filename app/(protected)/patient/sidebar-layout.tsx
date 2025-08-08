@@ -90,25 +90,24 @@ export function SidebarLayout({
 }: SidebarLayoutProps) {
   const pathname = usePathname();
 
-  // Check if a navigation item is active
-  const isActiveItem = (itemUrl: string) => {
-    if (pathname === itemUrl) return true;
-    // Handle nested routes - e.g., /patient/appointments/123 should highlight /patient/appointments
-    if (itemUrl !== "/" && pathname.startsWith(itemUrl + "/")) return true;
-    return false;
-  };
+const isActiveItem = (itemUrl: string) => {
+  // Remove trailing slashes for consistent comparison
+  const normalizedPathname = pathname.replace(/\/$/, '') || '/';
+  const normalizedItemUrl = itemUrl.replace(/\/$/, '') || '/';
+  
+  // Exact match
+  if (normalizedPathname === normalizedItemUrl) return true;
+  
+  // Check if current path starts with the item URL (for nested routes)
+  if (normalizedItemUrl !== '/' && normalizedPathname.startsWith(normalizedItemUrl + '/')) {
+    return true;
+  }
+  
+  return false;
+};
 
   return (
-    <>
-      <style jsx global>{`
-        .scrollbar-hide {
-          -ms-overflow-style: none; /* Internet Explorer 10+ */
-          scrollbar-width: none; /* Firefox */
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-          display: none; /* Safari and Chrome */
-        }
-      `}</style>
+
       <SidebarProvider>
         <Sidebar variant="inset">
           <SidebarHeader>
@@ -132,10 +131,11 @@ export function SidebarLayout({
                   <SidebarMenu>
                     {group.items.map((item) => (
                       <SidebarMenuItem key={item.title}>
-                        <SidebarMenuButton
-                          asChild
-                          isActive={isActiveItem(item.url)}
-                        >
+                    <SidebarMenuButton
+  asChild
+  isActive={isActiveItem(item.url)}
+  className={isActiveItem(item.url) ? "bg-primary text-primary-foreground" : ""}
+>
                           <Link href={item.url}>
                             <item.icon />
                             <span>{item.title}</span>
@@ -236,6 +236,5 @@ export function SidebarLayout({
           <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
         </SidebarInset>
       </SidebarProvider>
-    </>
   );
 }

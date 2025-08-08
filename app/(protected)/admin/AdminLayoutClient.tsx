@@ -1,6 +1,6 @@
 "use client"
 import { Home, BarChart3, UserPlus, Users, Pill, Archive, ShoppingCart, MessageSquare, BookOpen, Calendar } from "lucide-react"
-import { NavigationGroup, SidebarLayout, UserInfo } from "../patient/PatientLayoutClient"
+import { NavigationGroup, SidebarLayout, UserInfo } from "../patient/sidebar-layout"
 
 // Admin Layout
 export function AdminLayoutClient({ children }: { children: React.ReactNode }) {

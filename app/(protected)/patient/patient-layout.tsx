@@ -1,6 +1,6 @@
 "use client"
 import { Home, Calendar, Pill, FileText, ShoppingCart, BookOpen, MessageSquare, Users } from "lucide-react"
-import { NavigationGroup, SidebarLayout, UserInfo } from "./PatientLayoutClient"
+import { NavigationGroup, SidebarLayout, UserInfo } from "./sidebar-layout"
 
 
 // Patient Layout
