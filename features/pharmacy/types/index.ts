@@ -13,10 +13,13 @@ interface BaseProduct {
   rating?: any
   dosage?: string
   packSize?: string;
+  activeIngredient?: string;
+  tags?: string[];
 }
 
 interface RegularProduct extends BaseProduct {
   discount?: number;
+  originalPrice?: number;
   featured?: boolean;
 }
 
