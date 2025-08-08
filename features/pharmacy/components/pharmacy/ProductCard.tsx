@@ -2,8 +2,8 @@ import { Eye, Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
-import { PharmacyProduct } from "../../types";
 import Image from "next/image";
+import { PharmacyProduct } from "../../types";
 
 interface ProductCardProps {
   product: PharmacyProduct;
@@ -18,7 +18,7 @@ export function ProductCard({
 }: ProductCardProps) {
   return (
     <div className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer border rounded-lg">
-      <div className=" h-30 relative" onClick={() => onViewProduct(product)}>
+      <div className="h-48 relative" onClick={() => onViewProduct(product)}>
         <Image
           width={400}
           height={450}
@@ -26,20 +26,27 @@ export function ProductCard({
           alt={product.name}
           className="object-cover w-full h-full"
         />
+
         {product.discount && (
-          <Badge className="absolute top-2 left-2 bg-red-500 hover:bg-red-600">
+          <Badge
+            variant={product.discount ? "discount" : "default"}
+            className="absolute top-2 left-2  hover:bg-red-600 z-10"
+          >
             -{product.discount}%
           </Badge>
         )}
         {product.featured && (
-          <Badge className="absolute top-2 right-2 bg-yellow-500 hover:bg-yellow-600">
+          <Badge
+            variant={product.featured ? "featured" : "default"}
+            className="absolute top-2 right-2 bg-yellow-500 hover:bg-yellow-600 z-10"
+          >
             Featured
           </Badge>
         )}
         {product.requiresPrescription && (
           <Badge
             variant="outline"
-            className="absolute bottom-2 left-2 bg-white "
+            className="absolute bottom-0 left-2 bg-white z-10"
           >
             Rx Required
           </Badge>
@@ -52,9 +59,9 @@ export function ProductCard({
             <h3 className="text-lg font-semibold line-clamp-2">
               {product.name}
             </h3>
-            {/* <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               {product.manufacturer} • {product.packSize}
-            </p> */}
+            </p>
           </div>
           <Badge variant="secondary" className="ml-2">
             {product.category}
@@ -87,7 +94,7 @@ export function ProductCard({
         <div className="flex items-center justify-between mt-4">
           <div className="flex items-center gap-2">
             <span className="text-xl font-bold">${product.price}</span>
-            {product.originalPrice && (
+            {"originalPrice" in product && product.originalPrice && (
               <span className="text-sm text-muted-foreground line-through">
                 ${product.originalPrice}
               </span>

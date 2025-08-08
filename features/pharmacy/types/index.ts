@@ -1,22 +1,32 @@
-export interface PharmacyProduct  {
+interface BaseProduct {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  inStock: boolean;
+  stockQuantity: number;
+  requiresPrescription: boolean;
+  manufacturer: string;
+  image?: string;
   reviews?: any
   rating?: any
-  discount: any
-  featured: any
-  originalPrice: any
-  id: string
-  name: string
-  description: string
-  price: number
-  category: string
-  inStock: boolean
-  stockQuantity: number
-  image?: string
-  requiresPrescription: boolean
-  manufacturer: string
   dosage?: string
+  packSize?: string;
 }
 
+interface RegularProduct extends BaseProduct {
+  discount?: number;
+  featured?: boolean;
+}
+
+interface FeaturedProduct extends BaseProduct {
+  discount: number;
+  originalPrice: number;
+  featured: true;
+}
+
+export type PharmacyProduct = RegularProduct | FeaturedProduct;
 export interface CartItem {
   productId: string;
   product: PharmacyProduct;
@@ -29,3 +39,5 @@ export interface OrderData {
   paymentMethod: string;
   prescriptionFiles: File[];
 }
+
+

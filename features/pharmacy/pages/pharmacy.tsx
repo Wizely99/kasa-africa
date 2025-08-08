@@ -19,8 +19,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatsCard } from "../components/StatsCard";
-import { CartItem, OrderData } from "../types";
-import { Product } from "../types/product";
+import { CartItem, OrderData, PharmacyProduct } from "../types";
 import { mockProducts } from "../data";
 import { SearchFilters } from "../components/pharmacy/PharmacySearchFilters";
 import { CartItemsList } from "../components/pharmacy/CartItemsList";
@@ -47,7 +46,7 @@ export default function Pharmacy() {
   const [sortBy, setSortBy] = useState("featured");
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showCheckout, setShowCheckout] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [selectedProduct, setSelectedProduct] = useState<PharmacyProduct | null>(null);
   const [showProductDialog, setShowProductDialog] = useState(false);
   const [orderData, setOrderData] = useState<OrderData>({
     deliveryAddress: "",
@@ -84,7 +83,7 @@ export default function Pharmacy() {
       }
     });
 
-  const addToCart = (product: Product, quantity = 1) => {
+  const addToCart = (product: PharmacyProduct, quantity = 1) => {
     setCartItems((prev) => {
       const existingItem = prev.find((item) => item.productId === product.id);
       if (existingItem) {
@@ -140,7 +139,7 @@ export default function Pharmacy() {
     });
   };
 
-  const handleViewProduct = (product: Product) => {
+  const handleViewProduct = (product: PharmacyProduct) => {
     setSelectedProduct(product);
     setShowProductDialog(true);
   };
@@ -311,11 +310,9 @@ export default function Pharmacy() {
         open={showProductDialog}
         onOpenChange={setShowProductDialog}
         onAddToCart={addToCart}
-        onBuyNow={() => {
-          if (selectedProduct) {
-            addToCart(selectedProduct, 1);
-            setShowCheckout(true);
-          }
+        onBuyNow={(product) => {
+          addToCart(product, 1);
+          setShowCheckout(true);
           setShowProductDialog(false);
         }}
       />
