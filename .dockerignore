@@ -1,0 +1,16 @@
+# .dockerignore
+node_modules
+.env*
+!.env.example
+.git
+.next
+*.log
+coverage
+.nyc_output
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+README.md
+.eslintrc.json
+*.tsbuildinfo

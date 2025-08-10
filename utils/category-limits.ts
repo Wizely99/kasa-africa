@@ -46,4 +46,3 @@ export const getCategoryLabelColor = (label: keyof FieldCategory):string=> {
     return ""
     }
   };
-  

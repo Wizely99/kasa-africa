@@ -1,9 +1,8 @@
-import React from 'react'
+import { MedicalRecordsPage } from "@/features/medical-records"
 
-const page = () => {
-  return (
-    <div>page</div>
-  )
+export default function DoctorRecordsPage() {
+  // In a real app, get the doctor ID from authentication
+  const doctorId = "doctor-1"
+
+  return <MedicalRecordsPage doctorId={doctorId} showPatientControls={false} />
 }
-
-export default page

@@ -1,58 +1,53 @@
-import { Toaster } from "@/components/ui/toaster";
-import { Providers } from "@/providers/auth";
-import QueryProvider from "@/providers/query-provider";
-import { retrieveServerSession } from "@/utils/auth/options";
-import type { Metadata } from "next";
-import { ThemeProvider } from "next-themes";
-import { Poppins } from 'next/font/google';
-import "./globals.css";
+import type React from "react"
+import { Toaster } from "@/components/ui/toaster"
+import QueryProvider from "@/providers/query-provider"
+import type { Metadata } from "next"
+import { Poppins } from "next/font/google"
+import "./globals.css"
+import { Providers } from "@/providers/auth"
+import { retrieveServerSession } from "@/utils/auth/options"
+import { ThemeProvider } from "@/components/theme-provider"
 
 const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700'],
-  variable: '--font-poppins',
-});
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-poppins",
+})
 
 export const metadata: Metadata = {
-  title: "Viaservice PDF Document Processor",
-  description: "Upload and process PDF documents",
+  title: "KasaAfrica - Healthcare Platform",
+  description: "Connecting you to quality healthcare across Africa",
+    generator: 'v0.dev'
 }
 
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
-
   const session = await retrieveServerSession();
 
-
-  
   return (
-    <html lang="en">
-
-
-      <body
-        className={poppins.variable}
-      >
+    <html lang="en" suppressHydrationWarning>
+      <body className={poppins.variable}>
         <ThemeProvider
-          attribute="class"
+          // attribute="class"
           defaultTheme="light"
-          enableSystem
-          disableTransitionOnChange
+          // enableSystem
+          // disableTransitionOnChange={false}
+          // themes={["light", "dark", "system"]}
+          storageKey="kasaafrica-theme"
         >
-          <Providers session={session}>
+             <Providers session={session}>
 
-            <QueryProvider>
-              <main>
-
-                  {children}
-              </main>
-              <Toaster />
-            </QueryProvider>
-          </Providers>
+          <QueryProvider>
+            <main className="min-h-screen bg-background font-sans antialiased">{children}</main>
+            <Toaster />
+          </QueryProvider>
+             </Providers>
         </ThemeProvider>
+
       </body>
     </html>
-  );
+  )
 }

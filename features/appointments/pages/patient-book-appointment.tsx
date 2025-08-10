@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -19,7 +18,7 @@ import {
 import { Clock, DollarSign, MapPin, Search, Star } from "lucide-react";
 import { useState } from "react";
 import { BookingForm } from "../components/booking-form";
-import { SearchInput } from "@/components/common/SearchInput";
+import SearchInput from "@/components/common/SearchInput";
 
 // Mock doctors data
 const mockDoctors = [

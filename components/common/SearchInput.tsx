@@ -1,27 +1,36 @@
-import { Search } from "lucide-react";
-import { Input } from "../ui/input";
+"use client"
 
-export function SearchInput({
+import * as React from "react"
+import { Search } from 'lucide-react'
+import { Input } from "@/components/ui/input"
+import { cn } from "@/lib/utils"
+
+type SearchInputProps = {
+  value?: string
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  placeholder?: string
+  className?: string
+  "aria-label"?: string
+}
+
+export default function SearchInput({
   value,
   onChange,
   placeholder = "Search...",
-}: {
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  placeholder?: string;
-}) {
+  className,
+  "aria-label": ariaLabel = "Search",
+}: SearchInputProps) {
   return (
-    <div className="relative w-full">
-      <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-        <Search className="h-5 w-5 text-muted-foreground" />
-      </div>
+    <div className={cn("relative", className)}>
+      <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      {/* IMPORTANT: Input is a void element and must not have children */}
       <Input
-        type="text"
-        placeholder={placeholder}
         value={value}
         onChange={onChange}
-        className="pl-10"
+        placeholder={placeholder}
+        aria-label={ariaLabel}
+        className="pl-9"
       />
     </div>
-  );
+  )
 }

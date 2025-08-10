@@ -42,5 +42,3 @@ export interface OrderData {
   paymentMethod: string;
   prescriptionFiles: File[];
 }
-
-

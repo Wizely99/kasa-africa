@@ -1,9 +1,9 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Clock, AlertCircle, CalendarIcon, FileText, CreditCard } from "lucide-react"
+import { Clock, AlertCircle, CalendarIcon, FileText, CreditCard, MapPin, Video, Phone } from "lucide-react"
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -15,9 +15,11 @@ import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Label } from "@/components/ui/label"
 import { bookAppointmentSchema, type BookAppointmentFormData } from "../schemas/appointment-schemas"
-import { getDoctorSlotsAction, bookAppointmentAction } from "../actions/appointment-actions"
-import type { Doctor, AppointmentSlot } from "../types/appointment"
+import { getDoctorSlotsAction, bookAppointmentAction, getFacilitiesAction } from "../actions/appointment-actions"
+import type { Doctor, Facility } from "../types/appointment"
 import { cn } from "@/lib/utils"
 
 interface AppointmentBookingFormProps {
@@ -26,9 +28,20 @@ interface AppointmentBookingFormProps {
   onCancel: () => void
 }
 
+interface TimeSlot {
+  id: string
+  doctorId: string
+  date: string
+  time: string
+  duration: number
+  isAvailable: boolean
+  price: number
+}
+
 export function AppointmentBookingForm({ doctor, onSuccess, onCancel }: AppointmentBookingFormProps) {
   const [selectedDate, setSelectedDate] = useState<Date>()
-  const [availableSlots, setAvailableSlots] = useState<AppointmentSlot[]>([])
+  const [availableSlots, setAvailableSlots] = useState<TimeSlot[]>([])
+  const [facilities, setFacilities] = useState<Facility[]>([])
   const [loading, setLoading] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string>("")
@@ -37,9 +50,26 @@ export function AppointmentBookingForm({ doctor, onSuccess, onCancel }: Appointm
     resolver: zodResolver(bookAppointmentSchema),
     defaultValues: {
       doctorId: doctor.id,
-      type: "consultation",
+      patientId: "patient-1", // Replace with actual patient ID
+      appointmentType: "IN_PERSON",
+      status: "SCHEDULED",
     },
   })
+
+  // Load facilities on component mount
+  useEffect(() => {
+    const loadFacilities = async () => {
+      const result = await getFacilitiesAction()
+      if (result.success) {
+        setFacilities(result.data)
+        // Set default facility if only one available
+        if (result.data.length === 1) {
+          form.setValue("facilityId", result.data[0].id)
+        }
+      }
+    }
+    loadFacilities()
+  }, [form])
 
   const handleDateSelect = async (date: Date | undefined) => {
     if (!date) return
@@ -64,15 +94,51 @@ export function AppointmentBookingForm({ doctor, onSuccess, onCancel }: Appointm
     }
   }
 
+  const parseTimeSlot = (timeString: string) => {
+    const [hour, minute] = timeString.split(":").map(Number)
+    return { hour, minute, second: 0, nano: 0 }
+  }
+
   const onSubmit = async (data: BookAppointmentFormData) => {
     setSubmitting(true)
     setError("")
 
     try {
-      const result = await bookAppointmentAction({
-        ...data,
-        patientId: "current-patient-id", // Replace with actual patient ID
-      })
+      // Find selected slot to get time information
+      const selectedSlot = availableSlots.find((slot) => slot.id === data.slotId)
+      if (!selectedSlot) {
+        setError("Please select a time slot")
+        return
+      }
+
+      const startTime = parseTimeSlot(selectedSlot.time)
+      const endTime = {
+        hour: startTime.hour,
+        minute: startTime.minute + selectedSlot.duration,
+        second: 0,
+        nano: 0,
+      }
+
+      // Handle minute overflow
+      if (endTime.minute >= 60) {
+        endTime.hour += Math.floor(endTime.minute / 60)
+        endTime.minute = endTime.minute % 60
+      }
+
+      const appointmentData = {
+        patientId: data.patientId,
+        doctorId: data.doctorId,
+        facilityId: data.facilityId,
+        appointmentDate: data.appointmentDate,
+        startTime,
+        endTime,
+        appointmentType: data.appointmentType,
+        status: data.status,
+        chiefComplaint: data.chiefComplaint,
+        notes: data.notes,
+      }
+
+      const result = await bookAppointmentAction(appointmentData)
 
       if (result.success) {
         onSuccess(result.data)
@@ -88,6 +154,34 @@ export function AppointmentBookingForm({ doctor, onSuccess, onCancel }: Appointm
   }
 
   const selectedSlot = availableSlots.find((slot) => slot.id === form.watch("slotId"))
+  const selectedFacility = facilities.find((facility) => facility.id === form.watch("facilityId"))
+  const appointmentType = form.watch("appointmentType")
+
+  const getAppointmentTypeIcon = (type: string) => {
+    switch (type) {
+      case "IN_PERSON":
+        return <MapPin className="h-4 w-4" />
+      case "VIRTUAL":
+        return <Video className="h-4 w-4" />
+      case "PHONE_CONSULTATION":
+        return <Phone className="h-4 w-4" />
+      default:
+        return <MapPin className="h-4 w-4" />
+    }
+  }
+
+  const getAppointmentTypeLabel = (type: string) => {
+    switch (type) {
+      case "IN_PERSON":
+        return "In-Person Visit"
+      case "VIRTUAL":
+        return "Virtual Consultation"
+      case "PHONE_CONSULTATION":
+        return "Phone Consultation"
+      default:
+        return "In-Person Visit"
+    }
+  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
@@ -143,6 +237,85 @@ export function AppointmentBookingForm({ doctor, onSuccess, onCancel }: Appointm
             <CardContent>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+                  {/* Appointment Type Selection */}
+                  <div className="space-y-4">
+                    <h3 className="font-medium flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Appointment Type
+                    </h3>
+                    <FormField
+                      control={form.control}
+                      name="appointmentType"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <RadioGroup
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                              className="grid grid-cols-1 sm:grid-cols-3 gap-4"
+                            >
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="IN_PERSON" id="in-person" />
+                                <Label htmlFor="in-person" className="flex items-center gap-2 cursor-pointer">
+                                  <MapPin className="h-4 w-4" />
+                                  In-Person Visit
+                                </Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="VIRTUAL" id="virtual" />
+                                <Label htmlFor="virtual" className="flex items-center gap-2 cursor-pointer">
+                                  <Video className="h-4 w-4" />
+                                  Virtual Consultation
+                                </Label>
+                              </div>
+                              <div className="flex items-center space-x-2">
+                                <RadioGroupItem value="PHONE_CONSULTATION" id="phone" />
+                                <Label htmlFor="phone" className="flex items-center gap-2 cursor-pointer">
+                                  <Phone className="h-4 w-4" />
+                                  Phone Consultation
+                                </Label>
+                              </div>
+                            </RadioGroup>
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+
+                  {/* Facility Selection (only for in-person appointments) */}
+                  {appointmentType === "IN_PERSON" && (
+                    <FormField
+                      control={form.control}
+                      name="facilityId"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormLabel>Select Facility</FormLabel>
+                          <Select onValueChange={field.onChange} value={field.value}>
+                            <FormControl>
+                              <SelectTrigger>
+                                <SelectValue placeholder="Choose a facility" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {facilities.map((facility) => (
+                                <SelectItem key={facility.id} value={facility.id}>
+                                  <div className="flex flex-col">
+                                    <span className="font-medium">{facility.name}</span>
+                                    <span className="text-sm text-muted-foreground">
+                                      {facility.address}, {facility.city}
+                                    </span>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  )}
+
                   {/* Date Selection */}
                   <div className="space-y-4">
                     <div>
@@ -153,7 +326,12 @@ export function AppointmentBookingForm({ doctor, onSuccess, onCancel }: Appointm
                       <CalendarComponent
                         mode="single"
                         selected={selectedDate}
-                        onSelect={handleDateSelect}
+                        onSelect={(date) => {
+                          handleDateSelect(date)
+                          if (date) {
+                            form.setValue("appointmentDate", date.toISOString().split("T")[0])
+                          }
+                        }}
                         disabled={(date) => {
                           const today = new Date()
                           today.setHours(0, 0, 0, 0)
@@ -231,22 +409,17 @@ export function AppointmentBookingForm({ doctor, onSuccess, onCancel }: Appointm
 
                     <FormField
                       control={form.control}
-                      name="type"
+                      name="chiefComplaint"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Appointment Type</FormLabel>
-                          <Select onValueChange={field.onChange} defaultValue={field.value}>
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Select appointment type" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              <SelectItem value="consultation">New Consultation</SelectItem>
-                              <SelectItem value="follow-up">Follow-up Visit</SelectItem>
-                              <SelectItem value="check-up">Regular Check-up</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <FormLabel>Chief Complaint / Reason for Visit *</FormLabel>
+                          <FormControl>
+                            <Textarea
+                              placeholder="Please describe your main symptoms or reason for this appointment..."
+                              className="min-h-[80px]"
+                              {...field}
+                            />
+                          </FormControl>
                           <FormMessage />
                         </FormItem>
                       )}
@@ -257,11 +430,11 @@ export function AppointmentBookingForm({ doctor, onSuccess, onCancel }: Appointm
                       name="notes"
                       render={({ field }) => (
                         <FormItem>
-                          <FormLabel>Reason for Visit / Symptoms (Optional)</FormLabel>
+                          <FormLabel>Additional Notes (Optional)</FormLabel>
                           <FormControl>
                             <Textarea
-                              placeholder="Please describe your symptoms, concerns, or reason for this appointment..."
-                              className="min-h-[100px]"
+                              placeholder="Any additional information you'd like the doctor to know..."
+                              className="min-h-[60px]"
                               {...field}
                             />
                           </FormControl>
@@ -316,6 +489,19 @@ export function AppointmentBookingForm({ doctor, onSuccess, onCancel }: Appointm
                   <span>Specialization:</span>
                   <span>{doctor.specialization}</span>
                 </div>
+                <div className="flex justify-between text-sm">
+                  <span>Type:</span>
+                  <span className="flex items-center gap-1">
+                    {getAppointmentTypeIcon(appointmentType)}
+                    {getAppointmentTypeLabel(appointmentType)}
+                  </span>
+                </div>
+                {appointmentType === "IN_PERSON" && selectedFacility && (
+                  <div className="flex justify-between text-sm">
+                    <span>Facility:</span>
+                    <span className="font-medium">{selectedFacility.name}</span>
+                  </div>
+                )}
                 {selectedDate && (
                   <div className="flex justify-between text-sm">
                     <span>Date:</span>
@@ -362,10 +548,21 @@ export function AppointmentBookingForm({ doctor, onSuccess, onCancel }: Appointm
               <CardTitle className="text-sm">Important Notes</CardTitle>
             </CardHeader>
             <CardContent className="text-xs space-y-2 text-muted-foreground">
-              <p>• Please arrive 10 minutes before your appointment</p>
-              <p>• Bring a valid ID and insurance card</p>
-              <p>• You can reschedule up to 24 hours before</p>
-              <p>• Cancellation fee may apply for late cancellations</p>
+              {appointmentType === "IN_PERSON" ? (
+                <>
+                  <p>• Please arrive 10 minutes before your appointment</p>
+                  <p>• Bring a valid ID and insurance card</p>
+                  <p>• You can reschedule up to 24 hours before</p>
+                  <p>• Cancellation fee may apply for late cancellations</p>
+                </>
+              ) : (
+                <>
+                  <p>• You'll receive a meeting link via email</p>
+                  <p>• Test your camera and microphone beforehand</p>
+                  <p>• Ensure stable internet connection</p>
+                  <p>• You can reschedule up to 24 hours before</p>
+                </>
+              )}
             </CardContent>
           </Card>
         </div>

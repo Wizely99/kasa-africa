@@ -15,4 +15,3 @@ export type NavItem = {
   
     onMobileClose?: () => void;
   }
-  

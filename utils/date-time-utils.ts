@@ -12,4 +12,3 @@ export const formatLocalizedDateTime = (date: Date | string): string => {
       minute: '2-digit',
     });
   };
-  

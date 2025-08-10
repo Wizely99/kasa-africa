@@ -1,7 +1,7 @@
 "use client"
 
-import { useState } from "react"
-import { Plus, FileText, Upload, Save, Edit, Trash2 } from "lucide-react"
+import { useState, useCallback } from "react"
+import { Plus, FileText, Upload, Save, Edit, Trash2, File, Image, X, Download, Eye } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -19,6 +19,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { toast } from "@/hooks/use-toast"
 
 interface Medication {
   id: string
@@ -40,11 +41,18 @@ interface LabTest {
   status: "normal" | "high" | "low" | "critical"
 }
 
+interface UploadedFile {
+  id: string
+  file: File
+  preview?: string
+}
+
 export default function DoctorPrescriptions() {
   const [selectedPatient, setSelectedPatient] = useState("")
   const [selectedAppointment, setSelectedAppointment] = useState("")
   const [medications, setMedications] = useState<Medication[]>([])
   const [labResults, setLabResults] = useState<LabTest[]>([])
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([])
 
   // Dialog states for Medication
   const [isAddMedicationOpen, setIsAddMedicationOpen] = useState(false)
@@ -103,6 +111,80 @@ export default function DoctorPrescriptions() {
     { id: "2", patientId: "2", date: "2025-01-15", time: "2:00 PM", type: "Follow-up" },
     { id: "3", patientId: "3", date: "2025-01-16", time: "9:00 AM", type: "Check-up" },
   ]
+
+  // File upload handlers
+  const handleFileUpload = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
+    if (!files) return
+
+    Array.from(files).forEach((file) => {
+      // Validate file type
+      const allowedTypes = [
+        'application/pdf',
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/gif',
+        'image/webp'
+      ]
+      
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "Invalid file type",
+          description: `${file.name} is not a supported file type. Please upload PDF or image files.`,
+          variant: "destructive",
+        })
+        return
+      }
+
+      // Validate file size (10MB limit)
+      if (file.size > 10 * 1024 * 1024) {
+        toast({
+          title: "File too large",
+          description: `${file.name} is too large. Please upload files smaller than 10MB.`,
+          variant: "destructive",
+        })
+        return
+      }
+
+      const uploadedFile: UploadedFile = {
+        id: `file-${Date.now()}-${Math.random()}`,
+        file,
+      }
+
+      // Create preview for images
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          setUploadedFiles(prev => 
+            prev.map(f => 
+              f.id === uploadedFile.id 
+                ? { ...f, preview: e.target?.result as string }
+                : f
+            )
+          )
+        }
+        reader.readAsDataURL(file)
+      }
+
+      setUploadedFiles(prev => [...prev, uploadedFile])
+    })
+
+    // Reset input
+    event.target.value = ''
+  }, [])
+
+  const removeFile = (fileId: string) => {
+    setUploadedFiles(prev => prev.filter(f => f.id !== fileId))
+  }
+
+  const formatFileSize = (bytes: number) => {
+    if (bytes === 0) return '0 Bytes'
+    const k = 1024
+    const sizes = ['Bytes', 'KB', 'MB', 'GB']
+    const i = Math.floor(Math.log(bytes) / Math.log(k))
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
+  }
 
   const resetMedicationForm = () => {
     setMedicationForm({
@@ -175,7 +257,10 @@ export default function DoctorPrescriptions() {
       medications,
       ...prescriptionData,
     })
-    alert("Prescription created successfully!")
+    toast({
+      title: "Success",
+      description: "Prescription created successfully!",
+    })
     // Reset form
     setMedications([])
     setPrescriptionData({ diagnosis: "", instructions: "", validityDays: 90 })
@@ -195,7 +280,10 @@ export default function DoctorPrescriptions() {
         .map((s) => s.trim())
         .filter(Boolean),
     })
-    alert("Diagnosis saved successfully!")
+    toast({
+      title: "Success",
+      description: "Diagnosis saved successfully!",
+    })
   }
 
   const handleUploadLabResults = () => {
@@ -204,10 +292,15 @@ export default function DoctorPrescriptions() {
       appointmentId: selectedAppointment,
       ...labData,
       results: labResults,
+      attachments: uploadedFiles.map(f => f.file),
     })
-    alert("Lab results uploaded successfully!")
+    toast({
+      title: "Success",
+      description: "Lab results uploaded successfully!",
+    })
     // Reset form
     setLabResults([])
+    setUploadedFiles([])
     setLabData({ testName: "", testType: "", notes: "" })
   }
 
@@ -689,7 +782,7 @@ export default function DoctorPrescriptions() {
           <Card>
             <CardHeader>
               <CardTitle>Upload Lab Results</CardTitle>
-              <CardDescription>Add laboratory test results and findings</CardDescription>
+              <CardDescription>Add laboratory test results and upload supporting documents</CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Lab Test Info */}
@@ -724,225 +817,325 @@ export default function DoctorPrescriptions() {
                 </div>
               </div>
 
-              {/* Add Lab Test Result */}
-              <Dialog
-                open={isAddLabTestOpen}
-                onOpenChange={(open) => {
-                  setIsAddLabTestOpen(open)
-                  if (!open) resetLabTestForm()
-                }}
-              >
-                <DialogTrigger asChild>
-                  <Button className="w-fit">
-                    <Plus className="h-4 w-4 mr-2" />
-                    Add Test Result
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Add New Lab Test Result</DialogTitle>
-                    <DialogDescription>Enter details for a specific lab test parameter</DialogDescription>
-                  </DialogHeader>
-                  <div className="grid gap-4 py-4">
-                    <div className="grid gap-4 md:grid-cols-2">
-                      <div>
-                        <Label htmlFor="parameter">Parameter</Label>
-                        <Input
-                          id="parameter"
-                          value={labTestForm.parameter}
-                          onChange={(e) => setLabTestForm((prev) => ({ ...prev, parameter: e.target.value }))}
-                          placeholder="e.g., White Blood Cells"
+              {/* File Upload Section */}
+              <div className="space-y-4">
+                <div>
+                  <Label htmlFor="fileUpload">Upload Lab Reports (PDF or Images)</Label>
+                  <div className="mt-2">
+                    <div className="flex items-center justify-center w-full">
+                      <label
+                        htmlFor="fileUpload"
+                        className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:bg-gray-600"
+                      >
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                          <Upload className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" />
+                          <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
+                            <span className="font-semibold">Click to upload</span> or drag and drop
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            PDF, PNG, JPG, GIF up to 10MB
+                          </p>
+                        </div>
+                        <input
+                          id="fileUpload"
+                          type="file"
+                          className="hidden"
+                          multiple
+                          accept=".pdf,.png,.jpg,.jpeg,.gif,.webp"
+                          onChange={handleFileUpload}
                         />
-                      </div>
-                      <div>
-                        <Label htmlFor="value">Value</Label>
-                        <Input
-                          id="value"
-                          value={labTestForm.value}
-                          onChange={(e) => setLabTestForm((prev) => ({ ...prev, value: e.target.value }))}
-                          placeholder="e.g., 7.2"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="unit">Unit</Label>
-                        <Input
-                          id="unit"
-                          value={labTestForm.unit}
-                          onChange={(e) => setLabTestForm((prev) => ({ ...prev, unit: e.target.value }))}
-                          placeholder="e.g., K/uL"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="referenceRange">Reference Range</Label>
-                        <Input
-                          id="referenceRange"
-                          value={labTestForm.referenceRange}
-                          onChange={(e) => setLabTestForm((prev) => ({ ...prev, referenceRange: e.target.value }))}
-                          placeholder="e.g., 4.0-11.0"
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="status">Status</Label>
-                        <Select
-                          value={labTestForm.status}
-                          onValueChange={(value: "normal" | "high" | "low" | "critical") =>
-                            setLabTestForm((prev) => ({ ...prev, status: value }))
-                          }
-                        >
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="normal">Normal</SelectItem>
-                            <SelectItem value="high">High</SelectItem>
-                            <SelectItem value="low">Low</SelectItem>
-                            <SelectItem value="critical">Critical</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
+                      </label>
                     </div>
                   </div>
-                  <DialogFooter>
-                    <Button variant="outline" onClick={() => setIsAddLabTestOpen(false)}>
-                      Cancel
-                    </Button>
-                    <Button onClick={handleAddLabTest}>Add Test Result</Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
+                </div>
 
-              {/* Lab Results List */}
-              {labResults.length > 0 && (
-                <div className="space-y-4">
-                  <h3 className="font-semibold">Test Results</h3>
-                  {labResults.map((result) => (
-                    <div key={result.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex-1">
-                        <h4 className="font-medium">{result.parameter}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {result.value} {result.unit} (Reference: {result.referenceRange})
-                        </p>
-                        <Badge
-                          variant={
-                            result.status === "normal"
-                              ? "default"
-                              : result.status === "critical"
-                                ? "destructive"
-                                : "secondary"
-                          }
-                          className="mt-1"
-                        >
-                          {result.status.toUpperCase()}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <Dialog
-                          open={isEditLabTestOpen && currentLabTest?.id === result.id}
-                          onOpenChange={(open) => {
-                            setIsEditLabTestOpen(open)
-                            if (!open) resetLabTestForm()
-                          }}
-                        >
-                          <DialogTrigger asChild>
+                {/* Uploaded Files Display */}
+                {uploadedFiles.length > 0 && (
+                  <div className="space-y-4">
+                    <h3 className="font-semibold">Uploaded Files</h3>
+                    <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                      {uploadedFiles.map((uploadedFile) => (
+                        <div key={uploadedFile.id} className="relative border rounded-lg p-4">
+                          <div className="flex items-start justify-between mb-2">
+                            <div className="flex items-center space-x-2 flex-1 min-w-0">
+                              {uploadedFile.file.type === 'application/pdf' ? (
+                                <File className="h-5 w-5 text-red-500 flex-shrink-0" />
+                              ) : (
+                                <Image className="h-5 w-5 text-blue-500 flex-shrink-0" />
+                              )}
+                              <div className="min-w-0 flex-1">
+                                <p className="text-sm font-medium truncate" title={uploadedFile.file.name}>
+                                  {uploadedFile.file.name}
+                                </p>
+                                <p className="text-xs text-muted-foreground">
+                                  {formatFileSize(uploadedFile.file.size)}
+                                </p>
+                              </div>
+                            </div>
                             <Button
                               variant="ghost"
                               size="sm"
-                              onClick={() => {
-                                setCurrentLabTest(result)
-                                setLabTestForm({ ...result })
-                                setIsEditLabTestOpen(true)
-                              }}
+                              onClick={() => removeFile(uploadedFile.id)}
+                              className="text-destructive h-6 w-6 p-0 flex-shrink-0"
                             >
-                              <Edit className="h-4 w-4" />
+                              <X className="h-4 w-4" />
                             </Button>
-                          </DialogTrigger>
-                          <DialogContent>
-                            <DialogHeader>
-                              <DialogTitle>Edit Lab Test Result</DialogTitle>
-                              <DialogDescription>Modify details for this lab test parameter</DialogDescription>
-                            </DialogHeader>
-                            <div className="grid gap-4 py-4">
-                              <div className="grid gap-4 md:grid-cols-2">
-                                <div>
-                                  <Label htmlFor="editParameter">Parameter</Label>
-                                  <Input
-                                    id="editParameter"
-                                    value={labTestForm.parameter}
-                                    onChange={(e) => setLabTestForm((prev) => ({ ...prev, parameter: e.target.value }))}
-                                    placeholder="e.g., White Blood Cells"
-                                  />
-                                </div>
-                                <div>
-                                  <Label htmlFor="editValue">Value</Label>
-                                  <Input
-                                    id="editValue"
-                                    value={labTestForm.value}
-                                    onChange={(e) => setLabTestForm((prev) => ({ ...prev, value: e.target.value }))}
-                                    placeholder="e.g., 7.2"
-                                  />
-                                </div>
-                                <div>
-                                  <Label htmlFor="editUnit">Unit</Label>
-                                  <Input
-                                    id="editUnit"
-                                    value={labTestForm.unit}
-                                    onChange={(e) => setLabTestForm((prev) => ({ ...prev, unit: e.target.value }))}
-                                    placeholder="e.g., K/uL"
-                                  />
-                                </div>
-                                <div>
-                                  <Label htmlFor="editReferenceRange">Reference Range</Label>
-                                  <Input
-                                    id="editReferenceRange"
-                                    value={labTestForm.referenceRange}
-                                    onChange={(e) =>
-                                      setLabTestForm((prev) => ({ ...prev, referenceRange: e.target.value }))
-                                    }
-                                    placeholder="e.g., 4.0-11.0"
-                                  />
-                                </div>
-                                <div>
-                                  <Label htmlFor="editStatus">Status</Label>
-                                  <Select
-                                    value={labTestForm.status}
-                                    onValueChange={(value: "normal" | "high" | "low" | "critical") =>
-                                      setLabTestForm((prev) => ({ ...prev, status: value }))
-                                    }
-                                  >
-                                    <SelectTrigger>
-                                      <SelectValue />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                      <SelectItem value="normal">Normal</SelectItem>
-                                      <SelectItem value="high">High</SelectItem>
-                                      <SelectItem value="low">Low</SelectItem>
-                                      <SelectItem value="critical">Critical</SelectItem>
-                                    </SelectContent>
-                                  </Select>
-                                </div>
+                          </div>
+                          
+                          {/* Image Preview */}
+                          {uploadedFile.preview && (
+                            <div className="mt-2">
+                              <img
+                                src={uploadedFile.preview || "/placeholder.svg"}
+                                alt={uploadedFile.file.name}
+                                className="w-full h-32 object-cover rounded border"
+                              />
+                            </div>
+                          )}
+                          
+                          {/* PDF Preview Placeholder */}
+                          {uploadedFile.file.type === 'application/pdf' && (
+                            <div className="mt-2 flex items-center justify-center h-32 bg-gray-100 rounded border">
+                              <div className="text-center">
+                                <File className="h-8 w-8 text-red-500 mx-auto mb-2" />
+                                <p className="text-xs text-muted-foreground">PDF Document</p>
                               </div>
                             </div>
-                            <DialogFooter>
-                              <Button variant="outline" onClick={() => setIsEditLabTestOpen(false)}>
-                                Cancel
-                              </Button>
-                              <Button onClick={handleEditLabTest}>Save Changes</Button>
-                            </DialogFooter>
-                          </DialogContent>
-                        </Dialog>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => removeLabTest(result.id)}
-                          className="text-destructive"
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Manual Test Results Entry */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold">Manual Test Results Entry</h3>
+                  <p className="text-sm text-muted-foreground">(Optional - if not uploading files)</p>
+                </div>
+
+                {/* Add Lab Test Result */}
+                <Dialog
+                  open={isAddLabTestOpen}
+                  onOpenChange={(open) => {
+                    setIsAddLabTestOpen(open)
+                    if (!open) resetLabTestForm()
+                  }}
+                >
+                  <DialogTrigger asChild>
+                    <Button variant="outline" className="w-fit">
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add Test Result
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add New Lab Test Result</DialogTitle>
+                      <DialogDescription>Enter details for a specific lab test parameter</DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-4 py-4">
+                      <div className="grid gap-4 md:grid-cols-2">
+                        <div>
+                          <Label htmlFor="parameter">Parameter</Label>
+                          <Input
+                            id="parameter"
+                            value={labTestForm.parameter}
+                            onChange={(e) => setLabTestForm((prev) => ({ ...prev, parameter: e.target.value }))}
+                            placeholder="e.g., White Blood Cells"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="value">Value</Label>
+                          <Input
+                            id="value"
+                            value={labTestForm.value}
+                            onChange={(e) => setLabTestForm((prev) => ({ ...prev, value: e.target.value }))}
+                            placeholder="e.g., 7.2"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="unit">Unit</Label>
+                          <Input
+                            id="unit"
+                            value={labTestForm.unit}
+                            onChange={(e) => setLabTestForm((prev) => ({ ...prev, unit: e.target.value }))}
+                            placeholder="e.g., K/uL"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="referenceRange">Reference Range</Label>
+                          <Input
+                            id="referenceRange"
+                            value={labTestForm.referenceRange}
+                            onChange={(e) => setLabTestForm((prev) => ({ ...prev, referenceRange: e.target.value }))}
+                            placeholder="e.g., 4.0-11.0"
+                          />
+                        </div>
+                        <div>
+                          <Label htmlFor="status">Status</Label>
+                          <Select
+                            value={labTestForm.status}
+                            onValueChange={(value: "normal" | "high" | "low" | "critical") =>
+                              setLabTestForm((prev) => ({ ...prev, status: value }))
+                            }
+                          >
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="normal">Normal</SelectItem>
+                              <SelectItem value="high">High</SelectItem>
+                              <SelectItem value="low">Low</SelectItem>
+                              <SelectItem value="critical">Critical</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
+                    <DialogFooter>
+                      <Button variant="outline" onClick={() => setIsAddLabTestOpen(false)}>
+                        Cancel
+                      </Button>
+                      <Button onClick={handleAddLabTest}>Add Test Result</Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+
+                {/* Lab Results List */}
+                {labResults.length > 0 && (
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Manual Test Results</h4>
+                    {labResults.map((result) => (
+                      <div key={result.id} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex-1">
+                          <h4 className="font-medium">{result.parameter}</h4>
+                          <p className="text-sm text-muted-foreground">
+                            {result.value} {result.unit} (Reference: {result.referenceRange})
+                          </p>
+                          <Badge
+                            variant={
+                              result.status === "normal"
+                                ? "default"
+                                : result.status === "critical"
+                                  ? "destructive"
+                                  : "secondary"
+                            }
+                            className="mt-1"
+                          >
+                            {result.status.toUpperCase()}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Dialog
+                            open={isEditLabTestOpen && currentLabTest?.id === result.id}
+                            onOpenChange={(open) => {
+                              setIsEditLabTestOpen(open)
+                              if (!open) resetLabTestForm()
+                            }}
+                          >
+                            <DialogTrigger asChild>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => {
+                                  setCurrentLabTest(result)
+                                  setLabTestForm({ ...result })
+                                  setIsEditLabTestOpen(true)
+                                }}
+                              >
+                                <Edit className="h-4 w-4" />
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Edit Lab Test Result</DialogTitle>
+                                <DialogDescription>Modify details for this lab test parameter</DialogDescription>
+                              </DialogHeader>
+                              <div className="grid gap-4 py-4">
+                                <div className="grid gap-4 md:grid-cols-2">
+                                  <div>
+                                    <Label htmlFor="editParameter">Parameter</Label>
+                                    <Input
+                                      id="editParameter"
+                                      value={labTestForm.parameter}
+                                      onChange={(e) => setLabTestForm((prev) => ({ ...prev, parameter: e.target.value }))}
+                                      placeholder="e.g., White Blood Cells"
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label htmlFor="editValue">Value</Label>
+                                    <Input
+                                      id="editValue"
+                                      value={labTestForm.value}
+                                      onChange={(e) => setLabTestForm((prev) => ({ ...prev, value: e.target.value }))}
+                                      placeholder="e.g., 7.2"
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label htmlFor="editUnit">Unit</Label>
+                                    <Input
+                                      id="editUnit"
+                                      value={labTestForm.unit}
+                                      onChange={(e) => setLabTestForm((prev) => ({ ...prev, unit: e.target.value }))}
+                                      placeholder="e.g., K/uL"
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label htmlFor="editReferenceRange">Reference Range</Label>
+                                    <Input
+                                      id="editReferenceRange"
+                                      value={labTestForm.referenceRange}
+                                      onChange={(e) =>
+                                        setLabTestForm((prev) => ({ ...prev, referenceRange: e.target.value }))
+                                      }
+                                      placeholder="e.g., 4.0-11.0"
+                                    />
+                                  </div>
+                                  <div>
+                                    <Label htmlFor="editStatus">Status</Label>
+                                    <Select
+                                      value={labTestForm.status}
+                                      onValueChange={(value: "normal" | "high" | "low" | "critical") =>
+                                        setLabTestForm((prev) => ({ ...prev, status: value }))
+                                      }
+                                    >
+                                      <SelectTrigger>
+                                        <SelectValue />
+                                      </SelectTrigger>
+                                      <SelectContent>
+                                        <SelectItem value="normal">Normal</SelectItem>
+                                        <SelectItem value="high">High</SelectItem>
+                                        <SelectItem value="low">Low</SelectItem>
+                                        <SelectItem value="critical">Critical</SelectItem>
+                                      </SelectContent>
+                                    </Select>
+                                  </div>
+                                </div>
+                              </div>
+                              <DialogFooter>
+                                <Button variant="outline" onClick={() => setIsEditLabTestOpen(false)}>
+                                  Cancel
+                                </Button>
+                                <Button onClick={handleEditLabTest}>Save Changes</Button>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => removeLabTest(result.id)}
+                            className="text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
 
               {/* Lab Notes */}
               <div>
@@ -959,7 +1152,12 @@ export default function DoctorPrescriptions() {
                 onClick={handleUploadLabResults}
                 className="w-full"
                 size="lg"
-                disabled={!selectedPatient || !selectedAppointment || !labData.testName || labResults.length === 0}
+                disabled={
+                  !selectedPatient || 
+                  !selectedAppointment || 
+                  !labData.testName || 
+                  (uploadedFiles.length === 0 && labResults.length === 0)
+                }
               >
                 <Upload className="h-4 w-4 mr-2" />
                 Upload Lab Results

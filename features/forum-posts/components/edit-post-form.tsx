@@ -15,7 +15,7 @@ import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { RichTextEditor } from "@/components/ui/rich-text-editor"
 import { createPostSchema, type CreatePostFormData } from "../schemas/post-schemas"
-import { updatePostAction } from "../actions/post-actions"
+import { createPostAction } from "../actions/post-actions"//use updatePostAction
 import type { HealthPost, PostCategory } from "../types/post"
 
 interface EditPostFormProps {

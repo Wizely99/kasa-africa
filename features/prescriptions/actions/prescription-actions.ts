@@ -7,6 +7,7 @@ import type {
   CreatePrescriptionRequest,
   CreateLabResultRequest,
   CreateDiagnosisRequest,
+  LabAttachment,
 } from "../types/prescription"
 
 // Mock data
@@ -75,6 +76,16 @@ const mockLabResults: LabResult[] = [
     testDate: "2024-01-14",
     reportDate: "2024-01-15",
     labName: "City Medical Lab",
+    attachments: [
+      {
+        id: "att-1",
+        fileName: "CBC_Report_Jan2024.pdf",
+        fileType: "application/pdf",
+        fileSize: 245760,
+        fileUrl: "/uploads/lab-reports/CBC_Report_Jan2024.pdf",
+        uploadedAt: "2024-01-15T10:00:00Z",
+      },
+    ],
   },
 ]
 
@@ -95,6 +106,21 @@ const mockDiagnoses: Diagnosis[] = [
     createdAt: "2024-01-15T10:00:00Z",
   },
 ]
+
+// Mock file upload function
+async function uploadFile(file: File): Promise<LabAttachment> {
+  // Simulate file upload delay
+  await new Promise((resolve) => setTimeout(resolve, 1000))
+  
+  return {
+    id: `att-${Date.now()}`,
+    fileName: file.name,
+    fileType: file.type,
+    fileSize: file.size,
+    fileUrl: `/uploads/lab-reports/${file.name}`,
+    uploadedAt: new Date().toISOString(),
+  }
+}
 
 export async function createPrescriptionAction(data: CreatePrescriptionRequest) {
   await new Promise((resolve) => setTimeout(resolve, 1000))
@@ -130,6 +156,14 @@ export async function createPrescriptionAction(data: CreatePrescriptionRequest) 
 export async function createLabResultAction(data: CreateLabResultRequest) {
   await new Promise((resolve) => setTimeout(resolve, 800))
 
+  // Handle file uploads if provided
+  let attachments: LabAttachment[] = []
+  if (data.attachments && data.attachments.length > 0) {
+    attachments = await Promise.all(
+      data.attachments.map(file => uploadFile(file))
+    )
+  }
+
   const overallStatus = data.results.some((r) => r.status === "Critical")
     ? "Critical"
     : data.results.some((r) => r.status === "High" || r.status === "Low")
@@ -149,6 +183,7 @@ export async function createLabResultAction(data: CreateLabResultRequest) {
     testDate: data.testDate,
     reportDate: new Date().toISOString().split("T")[0],
     labName: data.labName,
+    attachments,
   }
 
   mockLabResults.push(newLabResult)

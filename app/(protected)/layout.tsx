@@ -1,23 +1,23 @@
-import type React from "react";
-import type { Metadata } from "next";
-import { ThemeProvider } from "@/components/theme-provider";
-// import { ErrorBoundary } from "@/components/error-boundary"
+import type React from "react"
+import type { Metadata } from "next"
+import { ThemeProvider } from "next-themes"
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard",
-  description: "Admin dashboard for the healthcare management system.",
-};
+  title: "KasaAfrica - Protected Area",
+  description: "Secure healthcare management portal",
+}
 
-export default function AdminLayout({
+export default function ProtectedLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  return (
-    // <ErrorBoundary>
-    <ThemeProvider defaultTheme="system" storageKey="healthcare-admin-theme">
-      {children}
-    </ThemeProvider>
-    // </ErrorBoundary>
-  );
+  return         <ThemeProvider
+          attribute="class"
+          defaultTheme="light"
+          enableSystem
+          disableTransitionOnChange={false}
+          themes={["light", "dark", "system"]}
+          storageKey="kasaafrica-theme"
+        >{children}</ThemeProvider>
 }

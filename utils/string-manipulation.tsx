@@ -46,4 +46,3 @@ export function toSafeString(value: string | number | string[] | null | undefine
 
   return String(value);
 }
-

@@ -32,5 +32,3 @@ function getLevenshteinDistance(a: string, b: string): number {
   }
 
   export {getLevenshteinSimilarity}
-  
-  

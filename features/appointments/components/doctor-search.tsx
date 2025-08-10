@@ -11,12 +11,14 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import type { Doctor } from "../types/appointment"
-import { getAllDoctorsAction } from "../actions/appointment-actions"
+// import { getAllDoctorsAction } from "../actions/appointment-actions"
 
 interface DoctorSearchProps {
   onSelectDoctor: (doctor: Doctor) => void
 }
-
+async function getAllDoctorsAction(){
+  return [];
+}
 export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
   const [doctors, setDoctors] = useState<Doctor[]>([])
   const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([])

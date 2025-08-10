@@ -1,4 +1,4 @@
-  export interface SortInfo {
+export interface SortInfo {
     unsorted: boolean;
     sorted: boolean;
     empty: boolean;
@@ -26,4 +26,3 @@
     numberOfElements: number;
     empty: boolean;
   }
-  

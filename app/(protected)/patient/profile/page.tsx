@@ -1,5 +1,5 @@
-import PatientProfile from "@/features/settings/pages/patient-profile";
+import { PatientProfilePage } from "@/features/patients/pages/patient-profile-page"
 
-export default function PatientProfilePage() {
-  return <PatientProfile />;
+export default function PatientProfile() {
+  return <PatientProfilePage />
 }

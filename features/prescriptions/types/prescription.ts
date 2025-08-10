@@ -38,6 +38,7 @@ export interface LabResult {
   testDate: string
   reportDate: string
   labName: string
+  attachments?: LabAttachment[]
 }
 
 export interface LabTestResult {
@@ -46,6 +47,15 @@ export interface LabTestResult {
   unit: string
   referenceRange: string
   status: "Normal" | "High" | "Low" | "Critical"
+}
+
+export interface LabAttachment {
+  id: string
+  fileName: string
+  fileType: string
+  fileSize: number
+  fileUrl: string
+  uploadedAt: string
 }
 
 export interface Diagnosis {
@@ -84,6 +94,7 @@ export interface CreateLabResultRequest {
   notes: string
   testDate: string
   labName: string
+  attachments?: File[]
 }
 
 export interface CreateDiagnosisRequest {

@@ -1,10 +1,11 @@
 "use client"
-import { Home, Calendar, Pill, FileText, ShoppingCart, BookOpen, MessageSquare, Users } from "lucide-react"
-import { NavigationGroup, SidebarLayout, UserInfo } from "./sidebar-layout"
+import { Home, Calendar, Pill, FileText, ShoppingCart, BookOpen, MessageSquare, Users, User } from "lucide-react"
+import type React from "react"
 
+import { type NavigationGroup, SidebarLayout, type UserInfo } from "./sidebar-layout"
 
 // Patient Layout
-export function PatientLayoutClient({ children }: { children: React.ReactNode }) {
+export default function PatientLayoutClient({ children }: { children: React.ReactNode }) {
   const patientNavigation: NavigationGroup[] = [
     {
       title: "Overview",
@@ -82,8 +83,13 @@ export function PatientLayoutClient({ children }: { children: React.ReactNode })
       ],
     },
     {
-      title: "Family",
+      title: "Account",
       items: [
+        {
+          title: "Profile",
+          url: "/patient/profile",
+          icon: User,
+        },
         {
           title: "Family Members",
           url: "/patient/family",
@@ -98,7 +104,7 @@ export function PatientLayoutClient({ children }: { children: React.ReactNode })
     email: "john.doe@example.com",
     role: "Patient",
     initials: "JD",
-    avatarUrl: "/placeholder.svg?height=32&width=32&text=JD"
+    avatarUrl: "/placeholder.svg?height=32&width=32&text=JD",
   }
 
   const handleLogout = () => {
