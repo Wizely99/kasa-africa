@@ -1,5 +1,4 @@
 "use client"
-import { Spinner } from "@/components/ui/spinner"
 import { Card, CardContent } from "@/components/ui/card"
 import { cn } from "@/lib/utils"
 
@@ -19,10 +18,11 @@ export function LoadingPage({
   spinnerSize = "lg",
   spinnerVariant = "primary",
   className,
-}: LoadingPageProps) {
+}: Readonly<LoadingPageProps>) {
   const content = (
     <div className="flex flex-col items-center justify-center space-y-4">
-      <Spinner size={spinnerSize} variant={spinnerVariant} />
+        Add spinner here
+      {/* <Spinner size={spinnerSize} variant={spinnerVariant} /> */}
       {title && <h2 className="text-lg font-semibold text-foreground">{title}</h2>}
       {description && <p className="text-sm text-muted-foreground text-center max-w-md">{description}</p>}
     </div>
@@ -31,7 +31,7 @@ export function LoadingPage({
   if (variant === "minimal") {
     return (
       <div className={cn("flex items-center justify-center p-4", className)}>
-        <Spinner size={spinnerSize} variant={spinnerVariant} />
+        {/* <Spinner size={spinnerSize} variant={spinnerVariant} /> */}\add spinner here
       </div>
     )
   }

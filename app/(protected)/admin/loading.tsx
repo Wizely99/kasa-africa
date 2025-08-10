@@ -1,4 +1,4 @@
-import { LoadingPage } from "@/components/ui/loading-page"
+import { LoadingPage } from "@/components/loading-page"
 import { Settings, BarChart3, Users, Shield } from "lucide-react"
 
 export default function AdminLoading() {

@@ -1,4 +1,4 @@
-import { LoadingPage } from "@/components/ui/loading-page"
+import { LoadingPage } from "@/components/loading-page"
 import { Stethoscope, Heart, Calendar } from "lucide-react"
 
 export default function PatientLoading() {

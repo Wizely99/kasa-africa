@@ -5,8 +5,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { LoadingSkeleton } from "@/components/ui/loading-skeleton"
-import { LoadingOverlay } from "@/components/ui/loading-overlay"
+// import { LoadingSkeleton } from "@/components/ui/loading-skeleton"
+// import { LoadingOverlay } from "@/components/ui/loading-overlay"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import {
   AlertDialog,
@@ -274,7 +274,7 @@ export default function MyAppointments() {
   const allCount = appointments.length
 
   const renderAppointmentCard = (appointment: Appointment) => (
-    <LoadingOverlay key={appointment.id} isLoading={actionLoading === appointment.id} message="Processing...">
+    // <LoadingOverlay key={appointment.id} isLoading={actionLoading === appointment.id} message="Processing...">
       <Card className="hover:shadow-md transition-shadow">
         <CardContent className="p-6">
           <div className="flex items-start justify-between mb-4">
@@ -368,7 +368,7 @@ export default function MyAppointments() {
           </div>
         </CardContent>
       </Card>
-    </LoadingOverlay>
+    // </LoadingOverlay>
   )
 
   const renderEmptyState = (type: string) => (
@@ -400,7 +400,7 @@ export default function MyAppointments() {
             <p className="text-muted-foreground">Manage your healthcare appointments</p>
           </div>
         </div>
-        <LoadingSkeleton variant="appointment" count={3} />
+        {/* <LoadingSkeleton variant="appointment" count={3} /> */}
       </div>
     )
   }

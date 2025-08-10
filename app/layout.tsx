@@ -1,5 +1,5 @@
 import type React from "react"
-import { Toaster } from "@/components/ui/toaster"
+import { Toaster } from "@/components/ui/sonner"
 import QueryProvider from "@/providers/query-provider"
 import type { Metadata } from "next"
 import { Poppins } from "next/font/google"
