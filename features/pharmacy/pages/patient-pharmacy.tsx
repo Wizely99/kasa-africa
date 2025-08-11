@@ -1,16 +1,34 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Search, ShoppingCart, Plus, Minus, Trash2, Star } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Badge } from "@/components/ui/badge"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { useState } from "react";
+import { Search, ShoppingCart, Plus, Minus, Trash2, Star } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 
 // Mock pharmacy products data
 const mockProducts = [
@@ -110,7 +128,7 @@ const mockProducts = [
     rating: 4.8,
     reviews: 45,
   },
-]
+];
 
 const categories = [
   "All Categories",
@@ -120,76 +138,90 @@ const categories = [
   "Supplements",
   "Cardiovascular",
   "Diabetes Care",
-]
+];
 
 interface CartItem {
-  productId: string
-  product: any
-  quantity: number
+  productId: string;
+  product: any;
+  quantity: number;
 }
 
 export default function PatientPharmacy() {
-  const [searchQuery, setSearchQuery] = useState("")
-  const [selectedCategory, setSelectedCategory] = useState("All Categories")
-  const [cartItems, setCartItems] = useState<CartItem[]>([])
-  const [showCheckout, setShowCheckout] = useState(false)
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [showCheckout, setShowCheckout] = useState(false);
 
   const [orderData, setOrderData] = useState({
     deliveryAddress: "",
     notes: "",
-  })
+  });
 
   const filteredProducts = mockProducts.filter((product) => {
     const matchesSearch =
       product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      product.description.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = selectedCategory === "All Categories" || product.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
+      product.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "All Categories" ||
+      product.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   const addToCart = (product: any, quantity = 1) => {
     setCartItems((prev) => {
-      const existingItem = prev.find((item) => item.productId === product.id)
+      const existingItem = prev.find((item) => item.productId === product.id);
       if (existingItem) {
         return prev.map((item) =>
-          item.productId === product.id ? { ...item, quantity: item.quantity + quantity } : item,
-        )
+          item.productId === product.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
       }
-      return [...prev, { productId: product.id, product, quantity }]
-    })
-  }
+      return [...prev, { productId: product.id, product, quantity }];
+    });
+  };
 
   const updateQuantity = (productId: string, quantity: number) => {
     if (quantity <= 0) {
-      removeFromCart(productId)
-      return
+      removeFromCart(productId);
+      return;
     }
-    setCartItems((prev) => prev.map((item) => (item.productId === productId ? { ...item, quantity } : item)))
-  }
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.productId === productId ? { ...item, quantity } : item
+      )
+    );
+  };
 
   const removeFromCart = (productId: string) => {
-    setCartItems((prev) => prev.filter((item) => item.productId !== productId))
-  }
+    setCartItems((prev) => prev.filter((item) => item.productId !== productId));
+  };
 
   const getTotalAmount = () => {
-    return cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
-  }
+    return cartItems.reduce(
+      (sum, item) => sum + item.product.price * item.quantity,
+      0
+    );
+  };
 
   const handlePlaceOrder = () => {
-    console.log("Placing order:", { items: cartItems, ...orderData })
-    alert("Order placed successfully! You will receive a confirmation email shortly.")
-    setCartItems([])
-    setShowCheckout(false)
-    setOrderData({ deliveryAddress: "", notes: "" })
-  }
+    console.log("Placing order:", { items: cartItems, ...orderData });
+    alert(
+      "Order placed successfully! You will receive a confirmation email shortly."
+    );
+    setCartItems([]);
+    setShowCheckout(false);
+    setOrderData({ deliveryAddress: "", notes: "" });
+  };
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Pharmacy</h1>
-        <p className="text-muted-foreground">Order medicines and healthcare products</p>
+        <p className="text-muted-foreground">
+          Order medicines and healthcare products
+        </p>
       </div>
-
       <Tabs defaultValue="products" className="space-y-4">
         <div className="flex items-center justify-between">
           <TabsList>
@@ -217,7 +249,10 @@ export default function PatientPharmacy() {
                 className="pl-10"
               />
             </div>
-            <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+            <Select
+              value={selectedCategory}
+              onValueChange={setSelectedCategory}
+            >
               <SelectTrigger className="w-[200px]">
                 <SelectValue />
               </SelectTrigger>
@@ -241,9 +276,16 @@ export default function PatientPharmacy() {
                     alt={product.name}
                     className="object-cover w-full h-full"
                   />
-                  {product.discount && <Badge className="absolute top-2 left-2 bg-red-500">-{product.discount}%</Badge>}
+                  {product.discount && (
+                    <Badge className="absolute top-2 left-2 bg-red-500">
+                      -{product.discount}%
+                    </Badge>
+                  )}
                   {product.requiresPrescription && (
-                    <Badge variant="outline" className="absolute top-2 right-2 bg-white">
+                    <Badge
+                      variant="outline"
+                      className="absolute top-2 right-2 bg-white"
+                    >
                       Rx Required
                     </Badge>
                   )}
@@ -262,27 +304,43 @@ export default function PatientPharmacy() {
 
                   <div className="flex items-center gap-1">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="text-sm font-medium">{product.rating}</span>
-                    <span className="text-sm text-muted-foreground">({product.reviews} reviews)</span>
+                    <span className="text-sm font-medium">
+                      {product.rating}
+                    </span>
+                    <span className="text-sm text-muted-foreground">
+                      ({product.reviews} reviews)
+                    </span>
                   </div>
                 </CardHeader>
 
                 <CardContent className="space-y-4">
-                  <p className="text-sm text-muted-foreground">{product.description}</p>
+                  <p className="text-sm text-muted-foreground">
+                    {product.description}
+                  </p>
 
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
-                      <span className="text-lg font-bold">${product.price}</span>
+                      <span className="text-lg font-bold">
+                        ${product.price}
+                      </span>
                       {product.originalPrice && (
-                        <span className="text-sm text-muted-foreground line-through">${product.originalPrice}</span>
+                        <span className="text-sm text-muted-foreground line-through">
+                          ${product.originalPrice}
+                        </span>
                       )}
                     </div>
                     <Badge variant={product.inStock ? "default" : "secondary"}>
-                      {product.inStock ? `${product.stockQuantity} in stock` : "Out of stock"}
+                      {product.inStock
+                        ? `${product.stockQuantity} in stock`
+                        : "Out of stock"}
                     </Badge>
                   </div>
 
-                  <Button className="w-full" disabled={!product.inStock} onClick={() => addToCart(product)}>
+                  <Button
+                    className="w-full"
+                    disabled={!product.inStock}
+                    onClick={() => addToCart(product)}
+                  >
                     <Plus className="h-4 w-4 mr-2" />
                     Add to Cart
                   </Button>
@@ -298,7 +356,12 @@ export default function PatientPharmacy() {
               <CardContent className="p-8 text-center">
                 <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <p className="text-muted-foreground">Your cart is empty</p>
-                <Button className="mt-4" onClick={() => document.querySelector('[value="products"]')?.click()}>
+                <Button
+                  className="mt-4"
+                  onClick={() =>
+                    document.querySelector('[value="products"]')?.onClick()
+                  }
+                >
                   Browse Products
                 </Button>
               </CardContent>
@@ -307,11 +370,16 @@ export default function PatientPharmacy() {
             <Card>
               <CardHeader>
                 <CardTitle>Shopping Cart ({cartItems.length} items)</CardTitle>
-                <CardDescription>Review your items before checkout</CardDescription>
+                <CardDescription>
+                  Review your items before checkout
+                </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 ">
                 {cartItems.map((item) => (
-                  <div key={item.productId} className="flex items-center gap-4 p-4 border rounded-lg">
+                  <div
+                    key={item.productId}
+                    className="flex items-center gap-4 p-4 border rounded-lg"
+                  >
                     <img
                       src={item.product.image || "/placeholder.svg"}
                       alt={item.product.name}
@@ -331,7 +399,9 @@ export default function PatientPharmacy() {
                         variant="outline"
                         size="icon"
                         className="h-8 w-8 bg-transparent"
-                        onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                        onClick={() =>
+                          updateQuantity(item.productId, item.quantity - 1)
+                        }
                       >
                         <Minus className="h-4 w-4" />
                       </Button>
@@ -340,14 +410,18 @@ export default function PatientPharmacy() {
                         variant="outline"
                         size="icon"
                         className="h-8 w-8 bg-transparent"
-                        onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                        onClick={() =>
+                          updateQuantity(item.productId, item.quantity + 1)
+                        }
                       >
                         <Plus className="h-4 w-4" />
                       </Button>
                     </div>
 
                     <div className="text-right min-w-[80px]">
-                      <p className="font-medium">${(item.product.price * item.quantity).toFixed(2)}</p>
+                      <p className="font-medium">
+                        ${(item.product.price * item.quantity).toFixed(2)}
+                      </p>
                     </div>
 
                     <Button
@@ -363,10 +437,16 @@ export default function PatientPharmacy() {
 
                 <div className="border-t pt-4">
                   <div className="flex justify-between items-center mb-4">
-                    <span className="text-lg font-semibold">Total: ${getTotalAmount().toFixed(2)}</span>
+                    <span className="text-lg font-semibold">
+                      Total: ${getTotalAmount().toFixed(2)}
+                    </span>
                   </div>
 
-                  <Button onClick={() => setShowCheckout(true)} className="w-full" size="lg">
+                  <Button
+                    onClick={() => setShowCheckout(true)}
+                    className="w-full"
+                    size="lg"
+                  >
                     Proceed to Checkout
                   </Button>
                 </div>
@@ -375,7 +455,6 @@ export default function PatientPharmacy() {
           )}
         </TabsContent>
       </Tabs>
-
       {/* Checkout Dialog */}
       <Dialog open={showCheckout} onOpenChange={setShowCheckout}>
         <DialogContent className="max-w-2xl">
@@ -389,11 +468,16 @@ export default function PatientPharmacy() {
             <div className="space-y-4">
               <h3 className="font-semibold">Order Summary</h3>
               {cartItems.map((item) => (
-                <div key={item.productId} className="flex justify-between text-sm">
+                <div
+                  key={item.productId}
+                  className="flex justify-between text-sm"
+                >
                   <span>
                     {item.product.name} x {item.quantity}
                   </span>
-                  <span>${(item.product.price * item.quantity).toFixed(2)}</span>
+                  <span>
+                    ${(item.product.price * item.quantity).toFixed(2)}
+                  </span>
                 </div>
               ))}
               <div className="border-t pt-2 flex justify-between font-semibold">
@@ -411,7 +495,12 @@ export default function PatientPharmacy() {
                   id="address"
                   placeholder="Enter your complete delivery address..."
                   value={orderData.deliveryAddress}
-                  onChange={(e) => setOrderData((prev) => ({ ...prev, deliveryAddress: e.target.value }))}
+                  onChange={(e) =>
+                    setOrderData((prev) => ({
+                      ...prev,
+                      deliveryAddress: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div>
@@ -420,7 +509,9 @@ export default function PatientPharmacy() {
                   id="notes"
                   placeholder="Any special delivery instructions..."
                   value={orderData.notes}
-                  onChange={(e) => setOrderData((prev) => ({ ...prev, notes: e.target.value }))}
+                  onChange={(e) =>
+                    setOrderData((prev) => ({ ...prev, notes: e.target.value }))
+                  }
                 />
               </div>
             </div>
@@ -429,7 +520,8 @@ export default function PatientPharmacy() {
             {cartItems.some((item) => item.product.requiresPrescription) && (
               <div className="p-4 bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-800 rounded-lg">
                 <p className="text-sm text-yellow-800 dark:text-yellow-200">
-                  ⚠️ Some items require a prescription. Please have your prescription ready for verification.
+                  ⚠️ Some items require a prescription. Please have your
+                  prescription ready for verification.
                 </p>
               </div>
             )}
@@ -438,7 +530,10 @@ export default function PatientPharmacy() {
               <Button variant="outline" onClick={() => setShowCheckout(false)}>
                 Cancel
               </Button>
-              <Button onClick={handlePlaceOrder} disabled={!orderData.deliveryAddress}>
+              <Button
+                onClick={handlePlaceOrder}
+                disabled={!orderData.deliveryAddress}
+              >
                 Place Order
               </Button>
             </div>
@@ -447,5 +542,5 @@ export default function PatientPharmacy() {
       </Dialog>
       y
     </div>
-  )
+  );
 }

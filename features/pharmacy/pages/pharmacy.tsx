@@ -46,7 +46,8 @@ export default function Pharmacy() {
   const [sortBy, setSortBy] = useState("featured");
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [showCheckout, setShowCheckout] = useState(false);
-  const [selectedProduct, setSelectedProduct] = useState<PharmacyProduct | null>(null);
+  const [selectedProduct, setSelectedProduct] =
+    useState<PharmacyProduct | null>(null);
   const [showProductDialog, setShowProductDialog] = useState(false);
   const [orderData, setOrderData] = useState<OrderData>({
     deliveryAddress: "",
@@ -226,7 +227,6 @@ export default function Pharmacy() {
 
           {/* Products Grid */}
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}
@@ -269,8 +269,8 @@ export default function Pharmacy() {
               </CardContent>
             </Card>
           ) : (
-            <div className="grid gap-6 lg:grid-cols-3">
-              <div className="lg:col-span-2">
+            <div className="grid gap-6 md:grid-cols-[2fr_1fr] w-full">
+              <div className="">
                 <Card>
                   <CardHeader>
                     <CardTitle>

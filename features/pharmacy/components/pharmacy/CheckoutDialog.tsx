@@ -59,7 +59,14 @@ export function CheckoutDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent
+        className="sm:max-w-2xl  overflow-y-auto"
+        style={{
+          height: "85vh",
+          scrollbarWidth: "none", // Firefox
+          msOverflowStyle: "none",
+        }}
+      >
         <DialogHeader>
           <DialogTitle>Checkout</DialogTitle>
           <DialogDescription>Complete your order details</DialogDescription>
