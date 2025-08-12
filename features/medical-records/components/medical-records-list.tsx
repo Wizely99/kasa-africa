@@ -168,7 +168,7 @@ export function MedicalRecordsList({
       title: "OCR Complete",
       value: stats.ocrCompleted,
       icon: <Zap className="h-5 w-5 text-blue-500" />,
-      color: "bg-blue-500", // purple - unique and nice contrast
+      color: "bg-green-500", // green - unique and nice contrast
     },
     {
       title: "OCR Pending",
