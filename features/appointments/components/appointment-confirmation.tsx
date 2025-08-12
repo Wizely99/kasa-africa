@@ -1,33 +1,53 @@
-"use client"
+"use client";
 
-import { CheckCircle, Calendar, Clock, User, MapPin, Phone, Mail, Download, Share } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import type { Doctor, Appointment } from "../types/appointment"
-import { format } from "date-fns"
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { format } from "date-fns";
+import {
+  Calendar,
+  CheckCircle,
+  Clock,
+  Download,
+  Mail,
+  MapPin,
+  Phone,
+  Share,
+  User,
+} from "lucide-react";
+import type { Appointment, Doctor } from "../types/appointment";
 
 interface AppointmentConfirmationProps {
-  appointment: Appointment
-  doctor: Doctor
-  onBookAnother: () => void
+  appointment: Appointment;
+  doctor: Doctor;
+  onBookAnother: () => void;
 }
 
-export function AppointmentConfirmation({ appointment, doctor, onBookAnother }: AppointmentConfirmationProps) {
-  const appointmentDate = new Date(`${appointment.date}T${appointment.time}`)
+export function AppointmentConfirmation({
+  appointment,
+  doctor,
+  onBookAnother,
+}: AppointmentConfirmationProps) {
+  const appointmentDate = new Date(`${appointment.date}T${appointment.time}`);
 
   const handleDownloadConfirmation = () => {
     // In a real app, this would generate and download a PDF
-    console.log("Downloading appointment confirmation...")
-  }
+    console.log("Downloading appointment confirmation...");
+  };
 
   const handleShareAppointment = () => {
     // In a real app, this would open share options
-    console.log("Sharing appointment details...")
-  }
+    console.log("Sharing appointment details...");
+  };
 
   return (
     <div className="max-w-2xl mx-auto space-y-6">
@@ -37,9 +57,12 @@ export function AppointmentConfirmation({ appointment, doctor, onBookAnother }: 
           <div className="w-16 h-16 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-4">
             <CheckCircle className="w-8 h-8 text-green-600 dark:text-green-400" />
           </div>
-          <h2 className="text-2xl font-bold text-green-800 dark:text-green-200 mb-2">Appointment Confirmed!</h2>
+          <h2 className="text-2xl font-bold text-green-800 dark:text-green-200 mb-2">
+            Appointment Confirmed!
+          </h2>
           <p className="text-green-700 dark:text-green-300">
-            Your appointment has been successfully booked. You will receive a confirmation email shortly.
+            Your appointment has been successfully booked. You will receive a
+            confirmation email shortly.
           </p>
         </CardContent>
       </Card>
@@ -57,7 +80,10 @@ export function AppointmentConfirmation({ appointment, doctor, onBookAnother }: 
           {/* Doctor Information */}
           <div className="flex items-center gap-4">
             <Avatar className="h-16 w-16">
-              <AvatarImage src={doctor.avatar || "/placeholder.svg"} alt={doctor.name} />
+              <AvatarImage
+                src={doctor.avatar || "/placeholder.svg"}
+                alt={doctor.name}
+              />
               <AvatarFallback>
                 {doctor.name
                   .split(" ")
@@ -67,7 +93,9 @@ export function AppointmentConfirmation({ appointment, doctor, onBookAnother }: 
             </Avatar>
             <div className="flex-1">
               <h3 className="text-lg font-semibold">{doctor.name}</h3>
-              <p className="text-primary font-medium">{doctor.specialization}</p>
+              <p className="text-primary font-medium">
+                {doctor.specialization}
+              </p>
               <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
                 <div className="flex items-center gap-1">
                   <Phone className="h-3 w-3" />
@@ -92,8 +120,12 @@ export function AppointmentConfirmation({ appointment, doctor, onBookAnother }: 
                 Date & Time
               </div>
               <div className="pl-6">
-                <p className="font-semibold">{format(appointmentDate, "EEEE, MMMM d, yyyy")}</p>
-                <p className="text-muted-foreground">{format(appointmentDate, "h:mm a")}</p>
+                <p className="font-semibold">
+                  {format(appointmentDate, "EEEE, MMMM d, yyyy")}
+                </p>
+                <p className="text-muted-foreground">
+                  {format(appointmentDate, "h:mm a")}
+                </p>
               </div>
             </div>
 
@@ -116,8 +148,12 @@ export function AppointmentConfirmation({ appointment, doctor, onBookAnother }: 
               Location
             </div>
             <div className="pl-6">
-              <p className="font-semibold">{doctor.location || "Medical Center"}</p>
-              <p className="text-muted-foreground">123 Healthcare Ave, Medical District</p>
+              <p className="font-semibold">
+                {doctor.location || "Medical Center"}
+              </p>
+              <p className="text-muted-foreground">
+                123 Healthcare Ave, Medical District
+              </p>
             </div>
           </div>
 
@@ -167,18 +203,29 @@ export function AppointmentConfirmation({ appointment, doctor, onBookAnother }: 
             <li>• Please arrive 10 minutes before your scheduled time</li>
             <li>• Bring a valid photo ID and insurance card</li>
             <li>• You can reschedule or cancel up to 24 hours in advance</li>
-            <li>• A confirmation email has been sent to your registered email address</li>
+            <li>
+              • A confirmation email has been sent to your registered email
+              address
+            </li>
           </ul>
         </AlertDescription>
       </Alert>
 
       {/* Action Buttons */}
       <div className="flex flex-col sm:flex-row gap-4">
-        <Button variant="outline" onClick={handleDownloadConfirmation} className="flex-1 bg-transparent">
+        <Button
+          variant="outline"
+          onClick={handleDownloadConfirmation}
+          className="flex-1 bg-transparent"
+        >
           <Download className="h-4 w-4 mr-2" />
           Download Confirmation
         </Button>
-        <Button variant="outline" onClick={handleShareAppointment} className="flex-1 bg-transparent">
+        <Button
+          variant="outline"
+          onClick={handleShareAppointment}
+          className="flex-1 bg-transparent"
+        >
           <Share className="h-4 w-4 mr-2" />
           Share Details
         </Button>
@@ -194,40 +241,43 @@ export function AppointmentConfirmation({ appointment, doctor, onBookAnother }: 
         </CardHeader>
         <CardContent className="space-y-3 text-sm">
           <div className="flex items-start gap-3">
-            <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+            <div className="size-6  bg-primary/10 rounded-full flex items-center justify-center shrink-0 mt-0.5">
               <span className="text-xs font-medium text-primary">1</span>
             </div>
             <div>
               <p className="font-medium">Check your email</p>
               <p className="text-muted-foreground">
-                We've sent a detailed confirmation with all appointment information.
+                We've sent a detailed confirmation with all appointment
+                information.
               </p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+            <div className="size-6  bg-primary/10 rounded-full flex items-center justify-center shrink-0 mt-0.5">
               <span className="text-xs font-medium text-primary">2</span>
             </div>
             <div>
               <p className="font-medium">Prepare for your visit</p>
               <p className="text-muted-foreground">
-                Gather any relevant medical records, insurance information, and list of current medications.
+                Gather any relevant medical records, insurance information, and
+                list of current medications.
               </p>
             </div>
           </div>
           <div className="flex items-start gap-3">
-            <div className="w-6 h-6 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+            <div className="size-6  bg-primary/10 rounded-full flex items-center justify-center shrink-0 mt-0.5">
               <span className="text-xs font-medium text-primary">3</span>
             </div>
             <div>
               <p className="font-medium">Arrive on time</p>
               <p className="text-muted-foreground">
-                Please arrive 10 minutes early to complete any necessary paperwork.
+                Please arrive 10 minutes early to complete any necessary
+                paperwork.
               </p>
             </div>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }

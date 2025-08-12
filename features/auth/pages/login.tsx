@@ -1,37 +1,48 @@
-'use client'
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { motion } from 'framer-motion';
-import { LogIn, Shield, Sparkles } from 'lucide-react';
-import { signIn, useSession } from 'next-auth/react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { HashLoader } from 'react-spinners';
+"use client";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { motion } from "framer-motion";
+import { LogIn, Shield, Sparkles } from "lucide-react";
+import { signIn, useSession } from "next-auth/react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { HashLoader } from "react-spinners";
 
 export default function LoginPage() {
-  const { data: session , status } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
-  
+
   useEffect(() => {
     const isRefreshTokenError = session?.error === "RefreshTokenError";
-    
+
     if (status === "authenticated" && !isRefreshTokenError) {
       router.push("/");
     }
   }, [router, session, session?.error, status]);
 
-  if (status === 'loading') {
+  if (status === "loading") {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      <div className="flex items-center justify-center min-h-screen bg-linear-to-br from-blue-50 to-indigo-100">
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5 }}
           className="relative"
         >
-          <div className="absolute inset-0 bg-primary/20 backdrop-blur-sm rounded-full animate-pulse" />
-          <HashLoader color="hsl(var(--primary))" size={100} speedMultiplier={0.9} />
+          <div className="absolute inset-0 bg-primary/20 backdrop-blur-xs rounded-full animate-pulse" />
+          <HashLoader
+            color="hsl(var(--primary))"
+            size={100}
+            speedMultiplier={0.9}
+          />
         </motion.div>
       </div>
     );
@@ -49,8 +60,8 @@ export default function LoginPage() {
               style={{
                 width: Math.random() * 200 + 30,
                 height: Math.random() * 200 + 30,
-                left: Math.random() * 100 + '%',
-                top: Math.random() * 100 + '%',
+                left: Math.random() * 100 + "%",
+                top: Math.random() * 100 + "%",
               }}
               animate={{
                 x: [0, Math.random() * 50 - 25],
@@ -60,7 +71,7 @@ export default function LoginPage() {
               transition={{
                 duration: Math.random() * 8 + 8,
                 repeat: Infinity,
-                repeatType: 'reverse',
+                repeatType: "reverse",
               }}
             />
           ))}
@@ -76,10 +87,10 @@ export default function LoginPage() {
           className="w-full max-w-2xl"
         >
           {/* Clean card design */}
-          <Card className="bg-white/80 backdrop-blur-sm border border-primary/20 shadow-2xl relative overflow-hidden">
+          <Card className="bg-white/80 backdrop-blur-xs border border-primary/20 shadow-2xl relative overflow-hidden">
             {/* Subtle gradient overlay */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-blue-500/5" />
-            
+            <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-transparent to-blue-500/5" />
+
             <CardHeader className="relative space-y-6 pt-16 pb-8 text-center">
               {/* Logo section */}
               <motion.div
@@ -90,7 +101,7 @@ export default function LoginPage() {
               >
                 <div className="relative">
                   <div className="absolute inset-0 bg-primary/20 rounded-2xl blur-2xl opacity-50 scale-110" />
-                  <div className="relative w-72 h-48 bg-white/50 backdrop-blur-sm rounded-2xl p-6 border border-primary/30 shadow-lg">
+                  <div className="relative w-72 h-48 bg-white/50 backdrop-blur-xs rounded-2xl p-6 border border-primary/30 shadow-lg">
                     <Image
                       src="/logo.jpg"
                       alt="Kasa Africa Logo"
@@ -109,15 +120,15 @@ export default function LoginPage() {
                 transition={{ delay: 0.4, duration: 0.6 }}
                 className="space-y-4"
               >
-                <CardTitle className="text-5xl font-bold bg-gradient-to-r from-primary via-blue-600 to-indigo-700 bg-clip-text text-transparent">
+                <CardTitle className="text-5xl font-bold bg-linear-to-r from-primary via-blue-600 to-indigo-700 bg-clip-text text-transparent">
                   Welcome to Kasa Africa
                 </CardTitle>
                 <div className="flex items-center justify-center gap-2 text-slate-600">
-                  <Sparkles className="w-5 h-5 text-primary" />
+                  <Sparkles className="size-5  text-primary" />
                   <CardDescription className="text-xl text-slate-700">
                     Connect with healthcare specialists
                   </CardDescription>
-                  <Sparkles className="w-5 h-5 text-primary" />
+                  <Sparkles className="size-5  text-primary" />
                 </div>
               </motion.div>
             </CardHeader>
@@ -132,17 +143,17 @@ export default function LoginPage() {
                 whileTap={{ scale: 0.98 }}
                 className="relative group"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-primary to-blue-600 rounded-xl blur opacity-25 group-hover:opacity-40 transition-opacity" />
+                <div className="absolute inset-0 bg-linear-to-r from-primary to-blue-600 rounded-xl blur-sm opacity-25 group-hover:opacity-40 transition-opacity" />
                 <Button
-                  className="relative w-full py-8 text-xl font-semibold bg-gradient-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 border-0 rounded-xl shadow-lg text-white transition-all duration-300"
-                  onClick={() => signIn('keycloak',{ callbackUrl: '/admin' })}
+                  className="relative w-full py-8 text-xl font-semibold bg-linear-to-r from-primary to-blue-600 hover:from-primary/90 hover:to-blue-700 border-0 rounded-xl shadow-lg text-white transition-all duration-300"
+                  onClick={() => signIn("keycloak", { callbackUrl: "/admin" })}
                 >
                   <motion.div
                     className="flex items-center gap-3"
                     whileHover={{ x: 5 }}
                     transition={{ type: "spring", stiffness: 400 }}
                   >
-                    <LogIn className="w-6 h-6" />
+                    <LogIn className="size-6 " />
                     Sign in to your health portal
                   </motion.div>
                 </Button>
@@ -155,8 +166,10 @@ export default function LoginPage() {
                 transition={{ delay: 0.8, duration: 0.6 }}
                 className="flex items-center justify-center gap-2 text-slate-600"
               >
-                <Shield className="w-4 h-4 text-primary" />
-                <span className="text-sm">HIPAA-compliant healthcare platform</span>
+                <Shield className="size-4  text-primary" />
+                <span className="text-sm">
+                  HIPAA-compliant healthcare platform
+                </span>
               </motion.div>
             </CardContent>
 
@@ -176,11 +189,11 @@ export default function LoginPage() {
 
                 {/* Terms */}
                 <p className="text-sm text-slate-600 text-center leading-relaxed">
-                  By continuing, you agree to our{' '}
+                  By continuing, you agree to our{" "}
                   <span className="text-primary hover:text-primary/80 cursor-pointer transition-colors font-medium">
                     Terms of Service
-                  </span>{' '}
-                  and{' '}
+                  </span>{" "}
+                  and{" "}
                   <span className="text-primary hover:text-primary/80 cursor-pointer transition-colors font-medium">
                     Privacy Policy
                   </span>
@@ -191,7 +204,7 @@ export default function LoginPage() {
                   {[
                     { icon: "👩‍⚕️", text: "Expert Specialists" },
                     { icon: "📱", text: "Virtual Consultations" },
-                    { icon: "🩺", text: "Quality Healthcare" }
+                    { icon: "🩺", text: "Quality Healthcare" },
                   ].map((feature, index) => (
                     <motion.div
                       key={index}
@@ -201,7 +214,9 @@ export default function LoginPage() {
                       className="text-center p-4 rounded-lg bg-primary/5 border border-primary/10"
                     >
                       <div className="text-2xl mb-2">{feature.icon}</div>
-                      <div className="text-xs text-slate-600 font-medium">{feature.text}</div>
+                      <div className="text-xs text-slate-600 font-medium">
+                        {feature.text}
+                      </div>
                     </motion.div>
                   ))}
                 </div>

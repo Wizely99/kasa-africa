@@ -1,35 +1,51 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Upload, X, Tag, Save, Send } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Badge } from "@/components/ui/badge"
-import { Alert, AlertDescription } from "@/components/ui/alert"
-import { RichTextEditor } from "@/components/ui/rich-text-editor"
-import { createPostSchema, type CreatePostFormData } from "../schemas/post-schemas"
-import { createPostAction } from "../actions/post-actions"
-import type { PostCategory } from "../types/post"
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { RichTextEditor } from "@/components/ui/rich-text-editor";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Save, Send, Tag, Upload, X } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { createPostAction } from "../actions/post-actions";
+import {
+  createPostSchema,
+  type CreatePostFormData,
+} from "../schemas/post-schemas";
+import type { PostCategory } from "../types/post";
 
 interface CreatePostFormProps {
-  categories: PostCategory[]
-  onSuccess: () => void
+  categories: PostCategory[];
+  onSuccess: () => void;
 }
 
 export function CreatePostForm({ categories, onSuccess }: CreatePostFormProps) {
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState("")
-  const [selectedImage, setSelectedImage] = useState<File | null>(null)
-  const [imagePreview, setImagePreview] = useState<string>("")
-  const [tagInput, setTagInput] = useState("")
-  const [tags, setTags] = useState<string[]>([])
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  const [selectedImage, setSelectedImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>("");
+  const [tagInput, setTagInput] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
 
   const form = useForm<CreatePostFormData>({
     resolver: zodResolver(createPostSchema),
@@ -38,69 +54,69 @@ export function CreatePostForm({ categories, onSuccess }: CreatePostFormProps) {
       tags: [],
       content: "",
     },
-  })
+  });
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
+    const file = event.target.files?.[0];
     if (file) {
-      setSelectedImage(file)
-      const reader = new FileReader()
+      setSelectedImage(file);
+      const reader = new FileReader();
       reader.onloadend = () => {
-        setImagePreview(reader.result as string)
-      }
-      reader.readAsDataURL(file)
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
     }
-  }
+  };
 
   const removeImage = () => {
-    setSelectedImage(null)
-    setImagePreview("")
-  }
+    setSelectedImage(null);
+    setImagePreview("");
+  };
 
   const addTag = () => {
     if (tagInput.trim() && !tags.includes(tagInput.trim()) && tags.length < 5) {
-      const newTags = [...tags, tagInput.trim()]
-      setTags(newTags)
-      form.setValue("tags", newTags)
-      setTagInput("")
+      const newTags = [...tags, tagInput.trim()];
+      setTags(newTags);
+      form.setValue("tags", newTags);
+      setTagInput("");
     }
-  }
+  };
 
   const removeTag = (tagToRemove: string) => {
-    const newTags = tags.filter((tag) => tag !== tagToRemove)
-    setTags(newTags)
-    form.setValue("tags", newTags)
-  }
+    const newTags = tags.filter((tag) => tag !== tagToRemove);
+    setTags(newTags);
+    form.setValue("tags", newTags);
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      e.preventDefault()
-      addTag()
+      e.preventDefault();
+      addTag();
     }
-  }
+  };
 
   const onSubmit = async (data: CreatePostFormData) => {
-    setSubmitting(true)
-    setError("")
+    setSubmitting(true);
+    setError("");
 
     try {
       const result = await createPostAction({
         ...data,
         featuredImage: selectedImage || undefined,
-      })
+      });
 
       if (result.success) {
-        onSuccess()
+        onSuccess();
       } else {
-        setError("Failed to create post")
+        setError("Failed to create post");
       }
     } catch (error) {
-      console.error("Failed to create post:", error)
-      setError("Failed to create post. Please try again.")
+      console.error("Failed to create post:", error);
+      setError("Failed to create post. Please try again.");
     } finally {
-      setSubmitting(false)
+      setSubmitting(false);
     }
-  }
+  };
 
   return (
     <Form {...form}>
@@ -148,7 +164,9 @@ export function CreatePostForm({ categories, onSuccess }: CreatePostFormProps) {
                       onChange={handleImageChange}
                     />
                   </label>
-                  <p className="text-sm text-muted-foreground mt-1">PNG, JPG, GIF up to 10MB</p>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    PNG, JPG, GIF up to 10MB
+                  </p>
                 </div>
               </div>
             </div>
@@ -162,7 +180,11 @@ export function CreatePostForm({ categories, onSuccess }: CreatePostFormProps) {
             <FormItem>
               <FormLabel>Title</FormLabel>
               <FormControl>
-                <Input placeholder="Enter an engaging title for your health post..." className="text-lg" {...field} />
+                <Input
+                  placeholder="Enter an engaging title for your health post..."
+                  className="text-lg"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -194,7 +216,10 @@ export function CreatePostForm({ categories, onSuccess }: CreatePostFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Category</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a category" />
@@ -204,7 +229,10 @@ export function CreatePostForm({ categories, onSuccess }: CreatePostFormProps) {
                     {categories.map((category) => (
                       <SelectItem key={category.id} value={category.name}>
                         <div className="flex items-center gap-2">
-                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: category.color }} />
+                          <div
+                            className="size-3  rounded-full"
+                            style={{ backgroundColor: category.color }}
+                          />
                           {category.name}
                         </div>
                       </SelectItem>
@@ -222,7 +250,10 @@ export function CreatePostForm({ categories, onSuccess }: CreatePostFormProps) {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Status</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
                   <FormControl>
                     <SelectTrigger>
                       <SelectValue />
@@ -250,7 +281,12 @@ export function CreatePostForm({ categories, onSuccess }: CreatePostFormProps) {
               onKeyPress={handleKeyPress}
               className="flex-1"
             />
-            <Button type="button" variant="outline" onClick={addTag} disabled={!tagInput.trim() || tags.length >= 5}>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={addTag}
+              disabled={!tagInput.trim() || tags.length >= 5}
+            >
               <Tag className="h-4 w-4 mr-2" />
               Add
             </Button>
@@ -258,9 +294,17 @@ export function CreatePostForm({ categories, onSuccess }: CreatePostFormProps) {
           {tags.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {tags.map((tag) => (
-                <Badge key={tag} variant="secondary" className="flex items-center gap-1">
+                <Badge
+                  key={tag}
+                  variant="secondary"
+                  className="flex items-center gap-1"
+                >
                   {tag}
-                  <button type="button" onClick={() => removeTag(tag)} className="ml-1 hover:text-destructive">
+                  <button
+                    type="button"
+                    onClick={() => removeTag(tag)}
+                    className="ml-1 hover:text-destructive"
+                  >
                     <X className="h-3 w-3" />
                   </button>
                 </Badge>
@@ -331,5 +375,5 @@ export function CreatePostForm({ categories, onSuccess }: CreatePostFormProps) {
         </div>
       </form>
     </Form>
-  )
+  );
 }

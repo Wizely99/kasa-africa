@@ -110,7 +110,7 @@ export function OCRTextViewer({ record, onUpdate }: OCRTextViewerProps) {
   }
 
   return (
-    <Card className="border border-gray-200 shadow-sm rounded-xl overflow-hidden">
+    <Card className="border border-gray-200 shadow-xs rounded-xl overflow-hidden">
       {/* Header */}
       <CardHeader className="pb-2 border-b border-gray-100 bg-gray-50">
         <div className="flex items-center justify-between">

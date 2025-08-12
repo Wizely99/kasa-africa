@@ -12,7 +12,7 @@ export function Schedules() {
       mode="single"
       selected={date}
       onSelect={setDate}
-      className="rounded-md border shadow-sm"
+      className="rounded-md border shadow-xs"
       captionLayout="dropdown"
     />
   )

@@ -238,7 +238,7 @@ export default function PractitionerPricingForm() {
           }}
         >
           <DialogTrigger asChild>
-            <Button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700">
+            <Button className="bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700">
               <Plus className="h-4 w-4 mr-2" />
               Add Pricing
             </Button>
@@ -402,7 +402,7 @@ export default function PractitionerPricingForm() {
               <Button
                 onClick={handleCreate}
                 disabled={!formData.expertiseId || formData.consultationFee <= 0}
-                className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+                className="bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
               >
                 Create Pricing
               </Button>
@@ -424,7 +424,7 @@ export default function PractitionerPricingForm() {
             </p>
             <Button
               onClick={() => setIsCreateDialogOpen(true)}
-              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
+              className="bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
             >
               <Plus className="h-4 w-4 mr-2" />
               Add Your First Pricing
@@ -703,7 +703,7 @@ export default function PractitionerPricingForm() {
             <Button
               onClick={handleEdit}
               disabled={!formData.expertiseId || formData.consultationFee <= 0}
-              className="bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
+              className="bg-linear-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700"
             >
               Update Pricing
             </Button>

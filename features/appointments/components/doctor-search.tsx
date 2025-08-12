@@ -1,32 +1,52 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Search, Star, Clock, DollarSign, MapPin, Award, Users } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Separator } from "@/components/ui/separator"
-import { Skeleton } from "@/components/ui/skeleton"
-import type { Doctor } from "../types/appointment"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Skeleton } from "@/components/ui/skeleton";
+import {
+  Award,
+  Clock,
+  DollarSign,
+  MapPin,
+  Search,
+  Star,
+  Users,
+} from "lucide-react";
+import { useEffect, useState } from "react";
+import type { Doctor } from "../types/appointment";
 // import { getAllDoctorsAction } from "../actions/appointment-actions"
 
 interface DoctorSearchProps {
-  onSelectDoctor: (doctor: Doctor) => void
+  onSelectDoctor: (doctor: Doctor) => void;
 }
-async function getAllDoctorsAction(){
+async function getAllDoctorsAction() {
   return [];
 }
 export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
-  const [doctors, setDoctors] = useState<Doctor[]>([])
-  const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([])
-  const [loading, setLoading] = useState(true)
-  const [query, setQuery] = useState("")
-  const [specialization, setSpecialization] = useState("all")
-  const [sortBy, setSortBy] = useState("rating")
-  const [availabilityFilter, setAvailabilityFilter] = useState("all")
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [filteredDoctors, setFilteredDoctors] = useState<Doctor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [query, setQuery] = useState("");
+  const [specialization, setSpecialization] = useState("all");
+  const [sortBy, setSortBy] = useState("rating");
+  const [availabilityFilter, setAvailabilityFilter] = useState("all");
 
   const specializations = [
     { value: "all", label: "All Specializations" },
@@ -38,30 +58,30 @@ export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
     { value: "psychiatry", label: "Psychiatry" },
     { value: "oncology", label: "Oncology" },
     { value: "gynecology", label: "Gynecology" },
-  ]
+  ];
 
   // Load all doctors on component mount
   useEffect(() => {
     const loadDoctors = async () => {
-      setLoading(true)
+      setLoading(true);
       try {
-        const result = await getAllDoctorsAction()
+        const result = await getAllDoctorsAction();
         if (result.success) {
-          setDoctors(result.data)
-          setFilteredDoctors(result.data)
+          setDoctors(result.data);
+          setFilteredDoctors(result.data);
         }
       } catch (error) {
-        console.error("Failed to load doctors:", error)
+        console.error("Failed to load doctors:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    loadDoctors()
-  }, [])
+    };
+    loadDoctors();
+  }, []);
 
   // Filter and sort doctors
   useEffect(() => {
-    let filtered = [...doctors]
+    let filtered = [...doctors];
 
     // Filter by search query
     if (query) {
@@ -69,40 +89,43 @@ export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
         (doctor) =>
           doctor.name.toLowerCase().includes(query.toLowerCase()) ||
           doctor.specialization.toLowerCase().includes(query.toLowerCase()) ||
-          doctor.bio?.toLowerCase().includes(query.toLowerCase()),
-      )
+          doctor.bio?.toLowerCase().includes(query.toLowerCase())
+      );
     }
 
     // Filter by specialization
     if (specialization !== "all") {
-      filtered = filtered.filter((doctor) => doctor.specialization.toLowerCase() === specialization.toLowerCase())
+      filtered = filtered.filter(
+        (doctor) =>
+          doctor.specialization.toLowerCase() === specialization.toLowerCase()
+      );
     }
 
     // Filter by availability
     if (availabilityFilter === "available") {
-      filtered = filtered.filter((doctor) => doctor.isAvailable)
+      filtered = filtered.filter((doctor) => doctor.isAvailable);
     } else if (availabilityFilter === "busy") {
-      filtered = filtered.filter((doctor) => !doctor.isAvailable)
+      filtered = filtered.filter((doctor) => !doctor.isAvailable);
     }
 
     // Sort doctors
     filtered.sort((a, b) => {
       switch (sortBy) {
         case "rating":
-          return b.rating - a.rating
+          return b.rating - a.rating;
         case "experience":
-          return b.experience - a.experience
+          return b.experience - a.experience;
         case "fee":
-          return a.consultationFee - b.consultationFee
+          return a.consultationFee - b.consultationFee;
         case "name":
-          return a.name.localeCompare(b.name)
+          return a.name.localeCompare(b.name);
         default:
-          return 0
+          return 0;
       }
-    })
+    });
 
-    setFilteredDoctors(filtered)
-  }, [doctors, query, specialization, sortBy, availabilityFilter])
+    setFilteredDoctors(filtered);
+  }, [doctors, query, specialization, sortBy, availabilityFilter]);
 
   if (loading) {
     return (
@@ -138,7 +161,7 @@ export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
           ))}
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -150,7 +173,10 @@ export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
             <Users className="h-5 w-5" />
             Find Your Doctor
           </CardTitle>
-          <CardDescription>Browse our network of {doctors.length} qualified healthcare professionals</CardDescription>
+          <CardDescription>
+            Browse our network of {doctors.length} qualified healthcare
+            professionals
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="flex flex-col md:flex-row gap-4">
@@ -188,7 +214,10 @@ export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
                 <SelectItem value="name">Name A-Z</SelectItem>
               </SelectContent>
             </Select>
-            <Select value={availabilityFilter} onValueChange={setAvailabilityFilter}>
+            <Select
+              value={availabilityFilter}
+              onValueChange={setAvailabilityFilter}
+            >
               <SelectTrigger className="w-full md:w-[130px]">
                 <SelectValue />
               </SelectTrigger>
@@ -206,10 +235,16 @@ export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
               Showing {filteredDoctors.length} of {doctors.length} doctors
             </span>
             <div className="flex items-center gap-4">
-              <span>{filteredDoctors.filter((d) => d.isAvailable).length} available now</span>
+              <span>
+                {filteredDoctors.filter((d) => d.isAvailable).length} available
+                now
+              </span>
               <span>
                 Avg. rating:{" "}
-                {(filteredDoctors.reduce((acc, d) => acc + d.rating, 0) / filteredDoctors.length || 0).toFixed(1)}
+                {(
+                  filteredDoctors.reduce((acc, d) => acc + d.rating, 0) /
+                    filteredDoctors.length || 0
+                ).toFixed(1)}
               </span>
             </div>
           </div>
@@ -230,7 +265,10 @@ export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
                   <div className="flex items-start gap-4">
                     <div className="relative">
                       <Avatar className="h-16 w-16 ring-2 ring-background">
-                        <AvatarImage src={doctor.avatar || "/placeholder.svg"} alt={doctor.name} />
+                        <AvatarImage
+                          src={doctor.avatar || "/placeholder.svg"}
+                          alt={doctor.name}
+                        />
                         <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                           {doctor.name
                             .split(" ")
@@ -239,34 +277,48 @@ export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
                         </AvatarFallback>
                       </Avatar>
                       <div
-                        className={`absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-2 border-background ${
+                        className={`absolute -bottom-1 -right-1 size-5  rounded-full border-2 border-background ${
                           doctor.isAvailable ? "bg-green-500" : "bg-red-500"
                         }`}
                       />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-lg leading-tight">{doctor.name}</h3>
-                      <p className="text-primary font-medium">{doctor.specialization}</p>
+                      <h3 className="font-semibold text-lg leading-tight">
+                        {doctor.name}
+                      </h3>
+                      <p className="text-primary font-medium">
+                        {doctor.specialization}
+                      </p>
                       <div className="flex items-center gap-1 mt-1">
                         <MapPin className="h-3 w-3 text-muted-foreground" />
-                        <span className="text-xs text-muted-foreground">{doctor.location}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {doctor.location}
+                        </span>
                       </div>
                     </div>
                   </div>
 
                   {/* Doctor Bio */}
-                  {doctor.bio && <p className="text-sm text-muted-foreground line-clamp-2">{doctor.bio}</p>}
+                  {doctor.bio && (
+                    <p className="text-sm text-muted-foreground line-clamp-2">
+                      {doctor.bio}
+                    </p>
+                  )}
 
                   {/* Stats Row */}
                   <div className="flex items-center justify-between text-sm">
                     <div className="flex items-center gap-1">
                       <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                       <span className="font-medium">{doctor.rating}</span>
-                      <span className="text-muted-foreground">({doctor.reviewCount} reviews)</span>
+                      <span className="text-muted-foreground">
+                        ({doctor.reviewCount} reviews)
+                      </span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Award className="h-4 w-4 text-muted-foreground" />
-                      <span className="text-muted-foreground">{doctor.experience}y exp</span>
+                      <span className="text-muted-foreground">
+                        {doctor.experience}y exp
+                      </span>
                     </div>
                   </div>
 
@@ -274,7 +326,11 @@ export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
                   {doctor.languages && doctor.languages.length > 0 && (
                     <div className="flex flex-wrap gap-1">
                       {doctor.languages.slice(0, 3).map((lang) => (
-                        <Badge key={lang} variant="secondary" className="text-xs">
+                        <Badge
+                          key={lang}
+                          variant="secondary"
+                          className="text-xs"
+                        >
                           {lang}
                         </Badge>
                       ))}
@@ -292,12 +348,20 @@ export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1">
                       <DollarSign className="h-4 w-4 text-muted-foreground" />
-                      <span className="font-semibold">${doctor.consultationFee}</span>
-                      <span className="text-sm text-muted-foreground">consultation</span>
+                      <span className="font-semibold">
+                        ${doctor.consultationFee}
+                      </span>
+                      <span className="text-sm text-muted-foreground">
+                        consultation
+                      </span>
                     </div>
                     <Badge
                       variant={doctor.isAvailable ? "default" : "secondary"}
-                      className={doctor.isAvailable ? "bg-green-100 text-green-800 hover:bg-green-100" : ""}
+                      className={
+                        doctor.isAvailable
+                          ? "bg-green-100 text-green-800 hover:bg-green-100"
+                          : ""
+                      }
                     >
                       {doctor.isAvailable ? "Available Today" : "Busy"}
                     </Badge>
@@ -333,14 +397,15 @@ export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
             </div>
             <h3 className="text-lg font-semibold mb-2">No doctors found</h3>
             <p className="text-muted-foreground mb-4">
-              Try adjusting your search criteria or browse all available doctors.
+              Try adjusting your search criteria or browse all available
+              doctors.
             </p>
             <Button
               variant="outline"
               onClick={() => {
-                setQuery("")
-                setSpecialization("all")
-                setAvailabilityFilter("all")
+                setQuery("");
+                setSpecialization("all");
+                setAvailabilityFilter("all");
               }}
             >
               Clear Filters
@@ -349,5 +414,5 @@ export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
         </Card>
       )}
     </div>
-  )
+  );
 }

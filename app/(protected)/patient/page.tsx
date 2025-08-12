@@ -245,7 +245,7 @@ export default function PatientDashboard() {
                       </div>
                     </div>
                     <Button
-                      variant={registeredEvents.includes(event.id) ? "default" : "outline"}
+                      variant={registeredEvents.includes(event.id) ? "default" : "outline-solid"}
                       onClick={() => handleEventRegistration(event.id)}
                     >
                       {registeredEvents.includes(event.id) ? "Registered" : "Register"}
@@ -271,7 +271,7 @@ export default function PatientDashboard() {
               <Card key={post.id}>
                 <CardContent className="p-6">
                   <div className="flex gap-6">
-                    <div className="flex-shrink-0">
+                    <div className="shrink-0">
                       <img
                         src={post.image || "/placeholder.svg"}
                         alt={post.title}

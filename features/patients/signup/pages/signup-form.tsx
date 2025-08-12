@@ -1,17 +1,32 @@
-"use client"
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Textarea } from '@/components/ui/textarea';
-import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, ArrowRight, User, Heart, Shield, Check, Plus, X, AlertTriangle } from 'lucide-react';
+"use client";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Progress } from "@/components/ui/progress";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  Heart,
+  Plus,
+  Shield,
+  User,
+  X,
+} from "lucide-react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
 
 // Types
 interface UserProfile {
@@ -36,7 +51,15 @@ interface PatientDto {
   userProfileId: string;
   dateOfBirth?: string;
   gender?: string;
-  bloodType?: 'A_POSITIVE' | 'A_NEGATIVE' | 'B_POSITIVE' | 'B_NEGATIVE' | 'AB_POSITIVE' | 'AB_NEGATIVE' | 'O_POSITIVE' | 'O_NEGATIVE';
+  bloodType?:
+    | "A_POSITIVE"
+    | "A_NEGATIVE"
+    | "B_POSITIVE"
+    | "B_NEGATIVE"
+    | "AB_POSITIVE"
+    | "AB_NEGATIVE"
+    | "O_POSITIVE"
+    | "O_NEGATIVE";
   emergencyContact?: string;
   emergencyPhone?: string;
   insuranceProvider?: string;
@@ -48,18 +71,32 @@ interface PatientDto {
 
 // Validation schemas
 const personalInfoSchema = z.object({
-  username: z.string().min(3, 'Username must be at least 3 characters'),
-  firstName: z.string().min(2, 'First name must be at least 2 characters'),
+  username: z.string().min(3, "Username must be at least 3 characters"),
+  firstName: z.string().min(2, "First name must be at least 2 characters"),
   middleName: z.string().optional(),
-  lastName: z.string().min(2, 'Last name must be at least 2 characters'),
-  email: z.string().email('Invalid email address'),
-  phoneNumber: z.string().regex(/^\+?[\d\s-()]+$/, 'Invalid phone number').optional(),
-  dateOfBirth: z.string().min(1, 'Date of birth is required'),
-  gender: z.enum(['MALE', 'FEMALE', 'OTHER']).optional(),
+  lastName: z.string().min(2, "Last name must be at least 2 characters"),
+  email: z.string().email("Invalid email address"),
+  phoneNumber: z
+    .string()
+    .regex(/^\+?[\d\s-()]+$/, "Invalid phone number")
+    .optional(),
+  dateOfBirth: z.string().min(1, "Date of birth is required"),
+  gender: z.enum(["MALE", "FEMALE", "OTHER"]).optional(),
 });
 
 const medicalInfoSchema = z.object({
-  bloodType: z.enum(['A_POSITIVE', 'A_NEGATIVE', 'B_POSITIVE', 'B_NEGATIVE', 'AB_POSITIVE', 'AB_NEGATIVE', 'O_POSITIVE', 'O_NEGATIVE']).optional(),
+  bloodType: z
+    .enum([
+      "A_POSITIVE",
+      "A_NEGATIVE",
+      "B_POSITIVE",
+      "B_NEGATIVE",
+      "AB_POSITIVE",
+      "AB_NEGATIVE",
+      "O_POSITIVE",
+      "O_NEGATIVE",
+    ])
+    .optional(),
   emergencyContact: z.string().optional(),
   emergencyPhone: z.string().optional(),
   allergies: z.array(z.string()).default([]),
@@ -78,39 +115,39 @@ type InsuranceInfo = z.infer<typeof insuranceInfoSchema>;
 
 // Insurance providers list
 const insuranceProviders = [
-  'Blue Cross Blue Shield',
-  'Aetna',
-  'Anthem',
-  'Cigna',
-  'Humana',
-  'Kaiser Permanente',
-  'UnitedHealth',
-  'Molina Healthcare',
-  'Centene',
-  'Independence Blue Cross',
-  'Other'
+  "Blue Cross Blue Shield",
+  "Aetna",
+  "Anthem",
+  "Cigna",
+  "Humana",
+  "Kaiser Permanente",
+  "UnitedHealth",
+  "Molina Healthcare",
+  "Centene",
+  "Independence Blue Cross",
+  "Other",
 ];
 
 // List Input Component
-const ListInput = ({ 
-  label, 
-  placeholder, 
-  items, 
-  setItems, 
-  emptyText 
-}: { 
-  label: string
-  placeholder: string
-  items: string[]
-  setItems: (items: string[]) => void
-  emptyText: string
+const ListInput = ({
+  label,
+  placeholder,
+  items,
+  setItems,
+  emptyText,
+}: {
+  label: string;
+  placeholder: string;
+  items: string[];
+  setItems: (items: string[]) => void;
+  emptyText: string;
 }) => {
-  const [newItem, setNewItem] = useState('');
+  const [newItem, setNewItem] = useState("");
 
   const addItem = () => {
     if (newItem.trim() && !items.includes(newItem.trim())) {
       setItems([...items, newItem.trim()]);
-      setNewItem('');
+      setNewItem("");
     }
   };
 
@@ -119,7 +156,7 @@ const ListInput = ({
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       addItem();
     }
@@ -143,10 +180,10 @@ const ListInput = ({
           className="px-3"
           disabled={!newItem.trim()}
         >
-          <Plus className="w-4 h-4" />
+          <Plus className="size-4 " />
         </Button>
       </div>
-      
+
       {items.length > 0 ? (
         <div className="flex flex-wrap gap-2">
           {items.map((item, index) => (
@@ -161,7 +198,7 @@ const ListInput = ({
                 onClick={() => removeItem(index)}
                 className="ml-1 hover:text-red-500 transition-colors"
               >
-                <X className="w-3 h-3" />
+                <X className="size-3 " />
               </button>
             </Badge>
           ))}
@@ -174,25 +211,39 @@ const ListInput = ({
 };
 
 const steps = [
-  { title: 'Personal Information', icon: User, description: 'Basic details about you' },
-  { title: 'Medical Information', icon: Heart, description: 'Health and emergency contacts' },
-  { title: 'Insurance Details', icon: Shield, description: 'Insurance information (optional)' },
+  {
+    title: "Personal Information",
+    icon: User,
+    description: "Basic details about you",
+  },
+  {
+    title: "Medical Information",
+    icon: Heart,
+    description: "Health and emergency contacts",
+  },
+  {
+    title: "Insurance Details",
+    icon: Shield,
+    description: "Insurance information (optional)",
+  },
 ];
 
 const bloodTypes = [
-  { value: 'A_POSITIVE', label: 'A+' },
-  { value: 'A_NEGATIVE', label: 'A-' },
-  { value: 'B_POSITIVE', label: 'B+' },
-  { value: 'B_NEGATIVE', label: 'B-' },
-  { value: 'AB_POSITIVE', label: 'AB+' },
-  { value: 'AB_NEGATIVE', label: 'AB-' },
-  { value: 'O_POSITIVE', label: 'O+' },
-  { value: 'O_NEGATIVE', label: 'O-' },
+  { value: "A_POSITIVE", label: "A+" },
+  { value: "A_NEGATIVE", label: "A-" },
+  { value: "B_POSITIVE", label: "B+" },
+  { value: "B_NEGATIVE", label: "B-" },
+  { value: "AB_POSITIVE", label: "AB+" },
+  { value: "AB_NEGATIVE", label: "AB-" },
+  { value: "O_POSITIVE", label: "O+" },
+  { value: "O_NEGATIVE", label: "O-" },
 ];
 
 export default function PatientSignupPage() {
   const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState<Partial<PersonalInfo & MedicalInfo & InsuranceInfo>>({});
+  const [formData, setFormData] = useState<
+    Partial<PersonalInfo & MedicalInfo & InsuranceInfo>
+  >({});
   const [allergies, setAllergies] = useState<string[]>([]);
   const [medications, setMedications] = useState<string[]>([]);
   const [medicalHistory, setMedicalHistory] = useState<string[]>([]);
@@ -216,11 +267,11 @@ export default function PatientSignupPage() {
 
   const nextStep = async () => {
     let isValid = false;
-    
+
     if (currentStep === 0) {
       isValid = await personalForm.trigger();
       if (isValid) {
-        setFormData(prev => ({ ...prev, ...personalForm.getValues() }));
+        setFormData((prev) => ({ ...prev, ...personalForm.getValues() }));
       }
     } else if (currentStep === 1) {
       isValid = await medicalForm.trigger();
@@ -229,14 +280,14 @@ export default function PatientSignupPage() {
           ...medicalForm.getValues(),
           allergies,
           medications,
-          medicalHistory
+          medicalHistory,
         };
-        setFormData(prev => ({ ...prev, ...medicalData }));
+        setFormData((prev) => ({ ...prev, ...medicalData }));
       }
     } else if (currentStep === 2) {
       isValid = await insuranceForm.trigger();
       if (isValid) {
-        setFormData(prev => ({ ...prev, ...insuranceForm.getValues() }));
+        setFormData((prev) => ({ ...prev, ...insuranceForm.getValues() }));
       }
     }
 
@@ -248,8 +299,8 @@ export default function PatientSignupPage() {
   // const handleSubmit = async () => {
   //   const isValid = await insuranceForm.trigger();
   //   if (isValid) {
-  //     const finalData = { 
-  //       ...formData, 
+  //     const finalData = {
+  //       ...formData,
   //       ...insuranceForm.getValues(),
   //       allergies,
   //       medications,
@@ -265,96 +316,110 @@ export default function PatientSignupPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="firstName">First Name *</Label>
-          <Input 
-            id="firstName" 
+          <Input
+            id="firstName"
             placeholder="John"
-            {...personalForm.register('firstName')}
+            {...personalForm.register("firstName")}
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />
           {personalForm.formState.errors.firstName && (
-            <p className="text-sm text-red-500">{personalForm.formState.errors.firstName.message}</p>
+            <p className="text-sm text-red-500">
+              {personalForm.formState.errors.firstName.message}
+            </p>
           )}
         </div>
-        
+
         <div className="space-y-2">
           <Label htmlFor="lastName">Last Name *</Label>
-          <Input 
-            id="lastName" 
+          <Input
+            id="lastName"
             placeholder="Doe"
-            {...personalForm.register('lastName')}
+            {...personalForm.register("lastName")}
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />
           {personalForm.formState.errors.lastName && (
-            <p className="text-sm text-red-500">{personalForm.formState.errors.lastName.message}</p>
+            <p className="text-sm text-red-500">
+              {personalForm.formState.errors.lastName.message}
+            </p>
           )}
         </div>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="middleName">Middle Name</Label>
-        <Input 
-          id="middleName" 
+        <Input
+          id="middleName"
           placeholder="Optional"
-          {...personalForm.register('middleName')}
+          {...personalForm.register("middleName")}
           className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="username">Username *</Label>
-        <Input 
-          id="username" 
+        <Input
+          id="username"
           placeholder="johndoe123"
-          {...personalForm.register('username')}
+          {...personalForm.register("username")}
           className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
         />
         {personalForm.formState.errors.username && (
-          <p className="text-sm text-red-500">{personalForm.formState.errors.username.message}</p>
+          <p className="text-sm text-red-500">
+            {personalForm.formState.errors.username.message}
+          </p>
         )}
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="email">Email Address *</Label>
-        <Input 
-          id="email" 
+        <Input
+          id="email"
           type="email"
           placeholder="john@example.com"
-          {...personalForm.register('email')}
+          {...personalForm.register("email")}
           className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
         />
         {personalForm.formState.errors.email && (
-          <p className="text-sm text-red-500">{personalForm.formState.errors.email.message}</p>
+          <p className="text-sm text-red-500">
+            {personalForm.formState.errors.email.message}
+          </p>
         )}
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label htmlFor="phoneNumber">Phone Number</Label>
-          <Input 
-            id="phoneNumber" 
+          <Input
+            id="phoneNumber"
             placeholder="+1 (555) 123-4567"
-            {...personalForm.register('phoneNumber')}
+            {...personalForm.register("phoneNumber")}
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
         <div className="space-y-2">
           <Label htmlFor="dateOfBirth">Date of Birth *</Label>
-          <Input 
-            id="dateOfBirth" 
+          <Input
+            id="dateOfBirth"
             type="date"
-            {...personalForm.register('dateOfBirth')}
+            {...personalForm.register("dateOfBirth")}
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />
           {personalForm.formState.errors.dateOfBirth && (
-            <p className="text-sm text-red-500">{personalForm.formState.errors.dateOfBirth.message}</p>
+            <p className="text-sm text-red-500">
+              {personalForm.formState.errors.dateOfBirth.message}
+            </p>
           )}
         </div>
       </div>
 
       <div className="space-y-2">
         <Label>Gender</Label>
-        <Select onValueChange={(value) => personalForm.setValue('gender', value as any)}>
+        <Select
+          onValueChange={(value) =>
+            personalForm.setValue("gender", value as any)
+          }
+        >
           <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500">
             <SelectValue placeholder="Select gender" />
           </SelectTrigger>
@@ -373,7 +438,11 @@ export default function PatientSignupPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-2">
           <Label>Blood Type</Label>
-          <Select onValueChange={(value) => medicalForm.setValue('bloodType', value as any)}>
+          <Select
+            onValueChange={(value) =>
+              medicalForm.setValue("bloodType", value as any)
+            }
+          >
             <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500">
               <SelectValue placeholder="Select blood type" />
             </SelectTrigger>
@@ -388,32 +457,35 @@ export default function PatientSignupPage() {
         </div>
       </div>
 
-      <div className="bg-gradient-to-r from-amber-50 to-orange-50 p-5 rounded-lg border-l-4 border-amber-400">
+      <div className="bg-linear-to-r from-amber-50 to-orange-50 p-5 rounded-lg border-l-4 border-amber-400">
         <div className="flex items-start space-x-3">
-          <AlertTriangle className="w-6 h-6 text-amber-600 mt-0.5 flex-shrink-0" />
+          <AlertTriangle className="size-6  text-amber-600 mt-0.5 shrink-0" />
           <div className="flex-1">
-            <h4 className="font-semibold text-amber-800 mb-2">Emergency Contact Information</h4>
+            <h4 className="font-semibold text-amber-800 mb-2">
+              Emergency Contact Information
+            </h4>
             <p className="text-sm text-amber-700 mb-4">
-              While optional, having emergency contact information could be life-saving in critical situations. 
-              We strongly recommend providing this information for your safety.
+              While optional, having emergency contact information could be
+              life-saving in critical situations. We strongly recommend
+              providing this information for your safety.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label htmlFor="emergencyContact">Contact Name</Label>
-                <Input 
-                  id="emergencyContact" 
+                <Input
+                  id="emergencyContact"
                   placeholder="Emergency contact name"
-                  {...medicalForm.register('emergencyContact')}
+                  {...medicalForm.register("emergencyContact")}
                   className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
-              
+
               <div className="space-y-2">
                 <Label htmlFor="emergencyPhone">Contact Phone</Label>
-                <Input 
-                  id="emergencyPhone" 
+                <Input
+                  id="emergencyPhone"
                   placeholder="+1 (555) 987-6543"
-                  {...medicalForm.register('emergencyPhone')}
+                  {...medicalForm.register("emergencyPhone")}
                   className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
                 />
               </div>
@@ -451,13 +523,21 @@ export default function PatientSignupPage() {
   const renderInsuranceInfo = () => (
     <div className="space-y-6">
       <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-        <h4 className="font-semibold text-blue-800 mb-2">Insurance Information</h4>
-        <p className="text-sm text-blue-600">This information is optional but helps us process your claims faster.</p>
+        <h4 className="font-semibold text-blue-800 mb-2">
+          Insurance Information
+        </h4>
+        <p className="text-sm text-blue-600">
+          This information is optional but helps us process your claims faster.
+        </p>
       </div>
 
       <div className="space-y-2">
         <Label htmlFor="insuranceProvider">Insurance Provider</Label>
-        <Select onValueChange={(value) => insuranceForm.setValue('insuranceProvider', value)}>
+        <Select
+          onValueChange={(value) =>
+            insuranceForm.setValue("insuranceProvider", value)
+          }
+        >
           <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-blue-500">
             <SelectValue placeholder="Select your insurance provider" />
           </SelectTrigger>
@@ -473,21 +553,22 @@ export default function PatientSignupPage() {
 
       <div className="space-y-2">
         <Label htmlFor="insuranceNumber">Insurance Policy Number</Label>
-        <Input 
-          id="insuranceNumber" 
+        <Input
+          id="insuranceNumber"
           placeholder="Your policy or member ID number"
-          {...insuranceForm.register('insuranceNumber')}
+          {...insuranceForm.register("insuranceNumber")}
           className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
       <div className="bg-green-50 p-4 rounded-lg border border-green-200">
         <div className="flex items-center space-x-2 mb-2">
-          <Check className="w-5 h-5 text-green-600" />
+          <Check className="size-5  text-green-600" />
           <h4 className="font-semibold text-green-800">Almost Done!</h4>
         </div>
         <p className="text-sm text-green-700">
-          Review your information and click "Create Account" to complete your registration.
+          Review your information and click "Create Account" to complete your
+          registration.
         </p>
       </div>
     </div>
@@ -502,24 +583,28 @@ export default function PatientSignupPage() {
   const handleSubmit = async () => {
     const isValid = await insuranceForm.trigger();
     if (isValid) {
-      const finalData = { 
-        ...formData, 
+      const finalData = {
+        ...formData,
         ...insuranceForm.getValues(),
         allergies,
         medications,
-        medicalHistory
+        medicalHistory,
       };
-      console.log('Final form data:', finalData);
+      console.log("Final form data:", finalData);
       // Handle form submission
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 py-8 px-4">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 py-8 px-4">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Create Your Patient Account</h1>
-          <p className="text-gray-600">Join our healthcare platform in just a few simple steps</p>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+            Create Your Patient Account
+          </h1>
+          <p className="text-gray-600">
+            Join our healthcare platform in just a few simple steps
+          </p>
         </div>
 
         {/* Progress indicator */}
@@ -529,21 +614,35 @@ export default function PatientSignupPage() {
               const Icon = step.icon;
               const isActive = index === currentStep;
               const isCompleted = index < currentStep;
-              
+
               return (
                 <div key={index} className="flex flex-col items-center flex-1">
-                  <div className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 transition-all duration-300 ${
-                    isCompleted ? 'bg-green-500 text-white' : 
-                    isActive ? 'bg-blue-500 text-white' : 
-                    'bg-gray-200 text-gray-500'
-                  }`}>
-                    {isCompleted ? <Check className="w-5 h-5" /> : <Icon className="w-5 h-5" />}
+                  <div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center mb-2 transition-all duration-300 ${
+                      isCompleted
+                        ? "bg-green-500 text-white"
+                        : isActive
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-500"
+                    }`}
+                  >
+                    {isCompleted ? (
+                      <Check className="size-5 " />
+                    ) : (
+                      <Icon className="size-5 " />
+                    )}
                   </div>
                   <div className="text-center">
-                    <p className={`text-sm font-medium ${isActive ? 'text-blue-600' : 'text-gray-500'}`}>
+                    <p
+                      className={`text-sm font-medium ${
+                        isActive ? "text-blue-600" : "text-gray-500"
+                      }`}
+                    >
                       {step.title}
                     </p>
-                    <p className="text-xs text-gray-400 hidden sm:block">{step.description}</p>
+                    <p className="text-xs text-gray-400 hidden sm:block">
+                      {step.description}
+                    </p>
                   </div>
                 </div>
               );
@@ -552,47 +651,47 @@ export default function PatientSignupPage() {
           <Progress value={progress} className="h-2" />
         </div>
 
-        <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-sm">
+        <Card className="shadow-xl border-0 bg-white/80 backdrop-blur-xs">
           <CardHeader className="pb-4">
             <CardTitle className="flex items-center space-x-2">
               {(() => {
                 const Icon = steps[currentStep].icon;
-                return <Icon className="w-5 h-5 text-blue-600" />;
+                return <Icon className="size-5  text-blue-600" />;
               })()}
               <span>{steps[currentStep].title}</span>
             </CardTitle>
           </CardHeader>
-          
+
           <CardContent className="pt-0">
             {currentStep === 0 && renderPersonalInfo()}
             {currentStep === 1 && renderMedicalInfo()}
             {currentStep === 2 && renderInsuranceInfo()}
 
             <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
-              <Button 
-                variant="outline" 
+              <Button
+                variant="outline"
                 onClick={prevStep}
                 disabled={currentStep === 0}
                 className="flex items-center space-x-2 bg-white border-gray-300 text-gray-700 hover:bg-gray-50 disabled:opacity-50"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="size-4 " />
                 <span>Previous</span>
               </Button>
-              
+
               {currentStep < steps.length - 1 ? (
-                <Button 
+                <Button
                   onClick={nextStep}
                   className="flex items-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white shadow-md relative z-10"
                 >
                   <span>Next</span>
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="size-4 " />
                 </Button>
               ) : (
-                <Button 
+                <Button
                   onClick={handleSubmit}
                   className="flex items-center space-x-2 bg-green-600 hover:bg-green-700 text-white shadow-md relative z-10"
                 >
-                  <Check className="w-4 h-4" />
+                  <Check className="size-4 " />
                   <span>Create Account</span>
                 </Button>
               )}
@@ -602,8 +701,11 @@ export default function PatientSignupPage() {
 
         <div className="text-center mt-6">
           <p className="text-sm text-gray-500">
-            Already have an account?{' '}
-            <a href="/login" className="text-blue-600 hover:underline font-medium">
+            Already have an account?{" "}
+            <a
+              href="/login"
+              className="text-blue-600 hover:underline font-medium"
+            >
               Sign in here
             </a>
           </p>

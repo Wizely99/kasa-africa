@@ -9,14 +9,14 @@ export function MetricCard({ title, value, icon, color }: MetricCardProps) {
   return (
     <div
       className=" dark:bg-gray-800 rounded-xl border
-      border-gray-200 dark:border-gray-700 shadow-sm p-2 flex 
+      border-gray-200 dark:border-gray-700 shadow-xs p-2 flex 
       items-center gap-4 transition-colors duration-300 "
     >
       {/* Icon Section */}
       <div
         className={`${color}  
   rounded-xl 
-  shadow-sm p-2 flex items-center gap-4 transition-colors duration-300
+  shadow-xs p-2 flex items-center gap-4 transition-colors duration-300
   text-white`}
       >
         {icon}

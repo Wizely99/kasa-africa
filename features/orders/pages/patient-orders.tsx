@@ -228,11 +228,11 @@ export default function MyOrdersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-6">
+    <div className="min-h-screen bg-linear-to-br from-blue-50 via-white to-purple-50 p-6">
       <div className="max-w-7xl mx-auto space-y-8">
         {/* Header */}
         <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold bg-linear-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
             My Orders
           </h1>
           <p className="text-gray-600">
@@ -242,7 +242,7 @@ export default function MyOrdersPage() {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-linear-to-br from-blue-50 to-blue-100 border-blue-200 shadow-xs hover:shadow-md transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium text-blue-700">
@@ -261,7 +261,7 @@ export default function MyOrdersPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-amber-50 to-amber-100 border-amber-200 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-linear-to-br from-amber-50 to-amber-100 border-amber-200 shadow-xs hover:shadow-md transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium text-amber-700">
@@ -280,7 +280,7 @@ export default function MyOrdersPage() {
             </CardContent>
           </Card>
 
-          <Card className="bg-gradient-to-br from-emerald-50 to-emerald-100 border-emerald-200 shadow-sm hover:shadow-md transition-shadow">
+          <Card className="bg-linear-to-br from-emerald-50 to-emerald-100 border-emerald-200 shadow-xs hover:shadow-md transition-shadow">
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-medium text-emerald-700">
@@ -301,7 +301,7 @@ export default function MyOrdersPage() {
         </div>
 
         {/* Recent Orders */}
-        <Card className="bg-white/70 backdrop-blur-sm border-gray-200 shadow-lg">
+        <Card className="bg-white/70 backdrop-blur-xs border-gray-200 shadow-lg">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Clock className="h-5 w-5 text-blue-600" />
@@ -360,7 +360,7 @@ export default function MyOrdersPage() {
         </Card>
 
         {/* All Orders */}
-        <Card className="bg-white/70 backdrop-blur-sm border-gray-200 shadow-lg">
+        <Card className="bg-white/70 backdrop-blur-xs border-gray-200 shadow-lg">
           <CardHeader>
             <CardTitle>All Orders</CardTitle>
             <div className="flex gap-4 mt-4">
@@ -401,7 +401,7 @@ export default function MyOrdersPage() {
                   >
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                       <div className="flex items-start gap-4">
-                        <div className="p-3 bg-gradient-to-br from-blue-50 to-purple-50 rounded-lg">
+                        <div className="p-3 bg-linear-to-br from-blue-50 to-purple-50 rounded-lg">
                           <Package className="h-6 w-6 text-blue-600" />
                         </div>
                         <div className="space-y-1">

@@ -3,7 +3,7 @@ import { Stethoscope, Users, ClipboardList, Activity } from "lucide-react"
 
 export default function DoctorLoading() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-green-900">
+    <div className="min-h-screen bg-linear-to-br from-green-50 via-white to-blue-50 dark:from-gray-900 dark:via-gray-800 dark:to-green-900">
       <div className="flex flex-col items-center justify-center min-h-screen p-8">
         <div className="flex items-center space-x-4 mb-8">
           <div className="relative">

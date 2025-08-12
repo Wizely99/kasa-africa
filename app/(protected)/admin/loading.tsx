@@ -3,7 +3,7 @@ import { Settings, BarChart3, Users, Shield } from "lucide-react"
 
 export default function AdminLoading() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900">
+    <div className="min-h-screen bg-linear-to-br from-purple-50 via-white to-pink-50 dark:from-gray-900 dark:via-gray-800 dark:to-purple-900">
       <div className="flex flex-col items-center justify-center min-h-screen p-8">
         <div className="flex items-center space-x-4 mb-8">
           <div className="relative">

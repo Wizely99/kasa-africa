@@ -52,7 +52,7 @@ export function SearchAndFilterCard({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-                className="flex-grow"
+                className="grow"
               />
               <Button onClick={handleSearch} size="sm">
                 <Search className="h-4 w-4" />
