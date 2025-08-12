@@ -1,6 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import {
+  useState,
+  useEffect,
+  JSXElementConstructor,
+  Key,
+  ReactElement,
+  ReactNode,
+  ReactPortal,
+} from "react";
 import {
   Search,
   Package,
@@ -352,33 +360,99 @@ export default function Orders() {
                                   Order Items
                                 </h4>
                                 <div className="space-y-3">
-                                  {selectedOrder.items.map((item) => (
-                                    <div
-                                      key={item.id}
-                                      className="flex items-center gap-3 p-3 border rounded-lg"
-                                    >
-                                      <img
-                                        src={
-                                          item.productImage ||
-                                          "/placeholder.svg?height=50&width=50"
-                                        }
-                                        alt={item.productName}
-                                        className="h-12 w-12 rounded-md object-cover"
-                                      />
-                                      <div className="flex-1">
+                                  {selectedOrder.items.map(
+                                    (item: {
+                                      id: Key | null | undefined;
+                                      productImage: any;
+                                      productName:
+                                        | string
+                                        | number
+                                        | bigint
+                                        | boolean
+                                        | ReactElement<
+                                            unknown,
+                                            string | JSXElementConstructor<any>
+                                          >
+                                        | Iterable<ReactNode>
+                                        | Promise<
+                                            | string
+                                            | number
+                                            | bigint
+                                            | boolean
+                                            | ReactPortal
+                                            | ReactElement<
+                                                unknown,
+                                                | string
+                                                | JSXElementConstructor<any>
+                                              >
+                                            | Iterable<ReactNode>
+                                            | null
+                                            | undefined
+                                          >
+                                        | null
+                                        | undefined;
+                                      quantity:
+                                        | string
+                                        | number
+                                        | bigint
+                                        | boolean
+                                        | ReactElement<
+                                            unknown,
+                                            string | JSXElementConstructor<any>
+                                          >
+                                        | Iterable<ReactNode>
+                                        | ReactPortal
+                                        | Promise<
+                                            | string
+                                            | number
+                                            | bigint
+                                            | boolean
+                                            | ReactPortal
+                                            | ReactElement<
+                                                unknown,
+                                                | string
+                                                | JSXElementConstructor<any>
+                                              >
+                                            | Iterable<ReactNode>
+                                            | null
+                                            | undefined
+                                          >
+                                        | null
+                                        | undefined;
+                                      unitPrice: number;
+                                      totalPrice: number;
+                                    }) => (
+                                      <div
+                                        key={item.id}
+                                        className="flex items-center gap-3 p-3 border rounded-lg"
+                                      >
+                                        <img
+                                          src={
+                                            item.productImage ||
+                                            "/placeholder.svg?height=50&width=50"
+                                          }
+                                          alt={
+                                            typeof item.productName === "string"
+                                              ? item.productName
+                                              : ""
+                                          }
+                                          className="h-12 w-12 rounded-md object-cover"
+                                        />
+                                        <div className="flex-1">
+                                          <div className="font-medium">
+                                            {item.productName}
+                                          </div>
+                                          <div className="text-sm text-muted-foreground">
+                                            Quantity: {item.quantity} × $
+                                            {item.unitPrice.toFixed(2)}
+                                          </div>
+                                        </div>
                                         <div className="font-medium">
-                                          {item.productName}
-                                        </div>
-                                        <div className="text-sm text-muted-foreground">
-                                          Quantity: {item.quantity} × $
-                                          {item.unitPrice.toFixed(2)}
+                                          ${item.totalPrice.toFixed(2)}
                                         </div>
                                       </div>
-                                      <div className="font-medium">
-                                        ${item.totalPrice.toFixed(2)}
-                                      </div>
-                                    </div>
-                                  ))}
+                                    )
+                                  )}
                                 </div>
                               </div>
 
