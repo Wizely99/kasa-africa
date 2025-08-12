@@ -1,75 +1,117 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { toast } from "sonner"
-import { Search, Filter, FileText, Share2, Lock, Zap } from "lucide-react"
-import type { MedicalRecord, MedicalRecordFilters } from "../types/medical-record"
-import { getMedicalRecordsAction } from "../actions/medical-record-actions"
-import { MedicalRecordCard } from "./medical-record-card"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { toast } from "sonner";
+import { Search, Filter, FileText, Share2, Lock, Zap } from "lucide-react";
+import type {
+  MedicalRecord,
+  MedicalRecordFilters,
+} from "../types/medical-record";
+import { getMedicalRecordsAction } from "../actions/medical-record-actions";
+import { MedicalRecordCard } from "./medical-record-card";
+import { MetricCard } from "./record-metric-card";
+import { MetricsGrid } from "./record-metric-grid";
+import { SearchAndFilterCard } from "./medical-record-filter";
 
 interface MedicalRecordsListProps {
-  patientId?: string
-  doctorId?: string
-  showPatientControls?: boolean
+  patientId?: string;
+  doctorId?: string;
+  showPatientControls?: boolean;
 }
 
-export function MedicalRecordsList({ patientId, doctorId, showPatientControls = false }: MedicalRecordsListProps) {
-  const [records, setRecords] = useState<MedicalRecord[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [searchQuery, setSearchQuery] = useState("")
+const recordTypeOptions = [
+  { value: "all", label: "All Types" },
+  { value: "LAB_RESULT", label: "Lab Result" },
+  { value: "PRESCRIPTION", label: "Prescription" },
+  { value: "DIAGNOSIS", label: "Diagnosis" },
+  { value: "IMAGING", label: "Imaging" },
+  { value: "VACCINATION", label: "Vaccination" },
+  { value: "SURGERY", label: "Surgery" },
+  { value: "CONSULTATION_NOTE", label: "Consultation Note" },
+  { value: "DISCHARGE_SUMMARY", label: "Discharge Summary" },
+  { value: "REFERRAL", label: "Referral" },
+  { value: "ALLERGY_RECORD", label: "Allergy Record" },
+];
+const ocrStatusOptions = [
+  { value: "all", label: "All OCR Status" },
+  { value: "COMPLETED", label: "Completed" },
+  { value: "PROCESSING", label: "Processing" },
+  { value: "PENDING", label: "Pending" },
+  { value: "FAILED", label: "Failed" },
+  { value: "NOT_APPLICABLE", label: "Not Applicable" },
+];
+
+export function MedicalRecordsList({
+  patientId,
+  doctorId,
+  showPatientControls = false,
+}: MedicalRecordsListProps) {
+  const [records, setRecords] = useState<MedicalRecord[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<MedicalRecordFilters>({
     patientId,
     doctorId,
-  })
+  });
 
   useEffect(() => {
-    loadRecords()
-  }, [filters])
+    loadRecords();
+  }, [filters]);
 
   const loadRecords = async () => {
-    setIsLoading(true)
+    setIsLoading(true);
     try {
-      const result = await getMedicalRecordsAction(filters)
+      const result = await getMedicalRecordsAction(filters);
       if (result.success) {
-        setRecords(result.data)
+        setRecords(result.data);
       } else {
-        toast.error("Failed to load medical records")
+        toast.error("Failed to load medical records");
       }
     } catch (error) {
-      toast.error("An error occurred while loading records")
+      toast.error("An error occurred while loading records");
     } finally {
-      setIsLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   const handleSearch = () => {
-    setFilters((prev) => ({ ...prev, searchQuery }))
-  }
+    setFilters((prev) => ({ ...prev, searchQuery }));
+  };
 
-  const handleFilterChange = (key: keyof MedicalRecordFilters, value: any) => {
-    setFilters((prev) => ({ ...prev, [key]: value }))
-  }
+  const handleFilterChange = (key: string, value?: string) => {
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
 
   const clearFilters = () => {
-    setSearchQuery("")
-    setFilters({ patientId, doctorId })
-  }
+    setSearchQuery("");
+    setFilters({ patientId, doctorId });
+  };
 
   const getStats = () => {
-    const total = records.length
-    const shared = records.filter((r) => r.isShared).length
-    const privateRecords = records.filter((r) => !r.isShared).length
-    const ocrCompleted = records.filter((r) => r.ocrStatus === "COMPLETED").length
-    const ocrPending = records.filter((r) => r.ocrStatus === "PENDING" || r.ocrStatus === "PROCESSING").length
+    const total = records.length;
+    const shared = records.filter((r) => r.isShared).length;
+    const privateRecords = records.filter((r) => !r.isShared).length;
+    const ocrCompleted = records.filter(
+      (r) => r.ocrStatus === "COMPLETED"
+    ).length;
+    const ocrPending = records.filter(
+      (r) => r.ocrStatus === "PENDING" || r.ocrStatus === "PROCESSING"
+    ).length;
 
-    return { total, shared, privateRecords, ocrCompleted, ocrPending }
-  }
+    return { total, shared, privateRecords, ocrCompleted, ocrPending };
+  };
 
-  const stats = getStats()
+  const stats = getStats();
 
   if (isLoading) {
     return (
@@ -100,142 +142,65 @@ export function MedicalRecordsList({ patientId, doctorId, showPatientControls = 
           ))}
         </div>
       </div>
-    )
+    );
   }
 
+  const MetricStats = [
+    {
+      title: "Total Records",
+      value: stats.total,
+      icon: <FileText className="h-5 w-5" />,
+      color: "bg-yellow-500", // yellow
+    },
+    {
+      title: "Shared Records",
+      value: stats.shared,
+      icon: <Share2 className="h-5 w-5" />,
+      color: "bg-green-500", // green
+    },
+    {
+      title: "Private Records",
+      value: stats.privateRecords,
+      icon: <Lock className="h-5 w-5" />,
+      color: "bg-red-500", // red - unique from yellow and green
+    },
+    {
+      title: "OCR Complete",
+      value: stats.ocrCompleted,
+      icon: <Zap className="h-5 w-5 text-blue-500" />,
+      color: "bg-blue-500", // purple - unique and nice contrast
+    },
+    {
+      title: "OCR Pending",
+      value: stats.ocrPending,
+      icon: <Zap className="h-5 w-5" />,
+      color: "bg-yellow-500", // blue - also distinct
+    },
+  ];
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 ">
       {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <FileText className="h-5 w-5 text-blue-500" />
-              <div>
-                <p className="text-sm text-gray-600">Total Records</p>
-                <p className="text-2xl font-bold">{stats.total}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+      <MetricsGrid metrics={MetricStats} />
 
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Share2 className="h-5 w-5 text-green-500" />
-              <div>
-                <p className="text-sm text-gray-600">Shared</p>
-                <p className="text-2xl font-bold">{stats.shared}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Lock className="h-5 w-5 text-gray-500" />
-              <div>
-                <p className="text-sm text-gray-600">Private</p>
-                <p className="text-2xl font-bold">{stats.privateRecords}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Zap className="h-5 w-5 text-purple-500" />
-              <div>
-                <p className="text-sm text-gray-600">OCR Complete</p>
-                <p className="text-2xl font-bold">{stats.ocrCompleted}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-4">
-            <div className="flex items-center gap-2">
-              <Zap className="h-5 w-5 text-yellow-500" />
-              <div>
-                <p className="text-sm text-gray-600">OCR Pending</p>
-                <p className="text-2xl font-bold">{stats.ocrPending}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Search and Filters */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Filter className="h-5 w-5" />
-            Search & Filter
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="flex gap-2">
-              <Input
-                placeholder="Search records..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && handleSearch()}
-              />
-              <Button onClick={handleSearch} size="sm">
-                <Search className="h-4 w-4" />
-              </Button>
-            </div>
-
-            <Select onValueChange={(value) => handleFilterChange("recordType", value === "all" ? undefined : value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="Record Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Types</SelectItem>
-                <SelectItem value="LAB_RESULT">Lab Result</SelectItem>
-                <SelectItem value="PRESCRIPTION">Prescription</SelectItem>
-                <SelectItem value="DIAGNOSIS">Diagnosis</SelectItem>
-                <SelectItem value="IMAGING">Imaging</SelectItem>
-                <SelectItem value="VACCINATION">Vaccination</SelectItem>
-                <SelectItem value="SURGERY">Surgery</SelectItem>
-                <SelectItem value="CONSULTATION_NOTE">Consultation Note</SelectItem>
-                <SelectItem value="DISCHARGE_SUMMARY">Discharge Summary</SelectItem>
-                <SelectItem value="REFERRAL">Referral</SelectItem>
-                <SelectItem value="ALLERGY_RECORD">Allergy Record</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select onValueChange={(value) => handleFilterChange("ocrStatus", value === "all" ? undefined : value)}>
-              <SelectTrigger>
-                <SelectValue placeholder="OCR Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All OCR Status</SelectItem>
-                <SelectItem value="COMPLETED">Completed</SelectItem>
-                <SelectItem value="PROCESSING">Processing</SelectItem>
-                <SelectItem value="PENDING">Pending</SelectItem>
-                <SelectItem value="FAILED">Failed</SelectItem>
-                <SelectItem value="NOT_APPLICABLE">Not Applicable</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Button variant="outline" onClick={clearFilters}>
-              Clear Filters
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
+      <SearchAndFilterCard
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        handleSearch={handleSearch}
+        handleFilterChange={handleFilterChange}
+        clearFilters={clearFilters}
+        recordTypeOptions={recordTypeOptions}
+        ocrStatusOptions={ocrStatusOptions}
+      />
 
       {/* Records Grid */}
       {records.length === 0 ? (
         <Card>
           <CardContent className="p-8 text-center">
-            <FileText className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No medical records found</h3>
+            <FileText className="h-12 w-12 mx-auto text-gray-400  mb-4" />
+            <h3 className="text-lg font-medium text-gray-900 mb-2">
+              No medical records found
+            </h3>
             <p className="text-gray-500">
               {filters.searchQuery || filters.recordType || filters.ocrStatus
                 ? "Try adjusting your search criteria or filters"
@@ -244,7 +209,7 @@ export function MedicalRecordsList({ patientId, doctorId, showPatientControls = 
           </CardContent>
         </Card>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 ">
           {records.map((record) => (
             <MedicalRecordCard
               key={record.id}
@@ -256,5 +221,5 @@ export function MedicalRecordsList({ patientId, doctorId, showPatientControls = 
         </div>
       )}
     </div>
-  )
+  );
 }

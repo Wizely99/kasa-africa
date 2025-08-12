@@ -1,29 +1,39 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Plus } from "lucide-react"
-import { MedicalRecordForm } from "../components/medical-record-form"
-import { MedicalRecordsList } from "../components/medical-records-list"
-import { OCRNotifications } from "../components/ocr-notifications"
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Plus } from "lucide-react";
+import { MedicalRecordForm } from "../components/medical-record-form";
+import { MedicalRecordsList } from "../components/medical-records-list";
+import { OCRNotifications } from "../components/ocr-notifications";
 
 interface MedicalRecordsPageProps {
-  patientId?: string
-  doctorId?: string
-  showPatientControls?: boolean
+  patientId?: string;
+  doctorId?: string;
+  showPatientControls?: boolean;
 }
 
-export function MedicalRecordsPage({ patientId, doctorId, showPatientControls = false }: MedicalRecordsPageProps) {
-  const [isFormOpen, setIsFormOpen] = useState(false)
+export function MedicalRecordsPage({
+  patientId,
+  doctorId,
+  showPatientControls = false,
+}: MedicalRecordsPageProps) {
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const handleFormSuccess = () => {
-    setIsFormOpen(false)
+    setIsFormOpen(false);
     // The list will automatically refresh due to the onUpdate callback
-  }
+  };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 py-2">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold">Medical Records</h1>
@@ -45,16 +55,24 @@ export function MedicalRecordsPage({ patientId, doctorId, showPatientControls = 
             <DialogHeader>
               <DialogTitle>Add New Medical Record</DialogTitle>
             </DialogHeader>
-            <MedicalRecordForm patientId={patientId} doctorId={doctorId} onSuccess={handleFormSuccess} />
+            <MedicalRecordForm
+              patientId={patientId}
+              doctorId={doctorId}
+              onSuccess={handleFormSuccess}
+            />
           </DialogContent>
         </Dialog>
       </div>
 
       {/* Show OCR notifications for patients */}
       {showPatientControls && patientId && (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="lg:col-span-2">
-            <MedicalRecordsList patientId={patientId} doctorId={doctorId} showPatientControls={showPatientControls} />
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="">
+            <MedicalRecordsList
+              patientId={patientId}
+              doctorId={doctorId}
+              showPatientControls={showPatientControls}
+            />
           </div>
           <div>
             <OCRNotifications patientId={patientId} />
@@ -64,8 +82,12 @@ export function MedicalRecordsPage({ patientId, doctorId, showPatientControls = 
 
       {/* Show full width for doctors/admins */}
       {!showPatientControls && (
-        <MedicalRecordsList patientId={patientId} doctorId={doctorId} showPatientControls={showPatientControls} />
+        <MedicalRecordsList
+          patientId={patientId}
+          doctorId={doctorId}
+          showPatientControls={showPatientControls}
+        />
       )}
     </div>
-  )
+  );
 }
