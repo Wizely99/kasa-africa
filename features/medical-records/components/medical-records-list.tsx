@@ -1,25 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { toast } from "sonner";
-import { Search, Filter, FileText, Share2, Lock, Zap } from "lucide-react";
+import { FileText, Share2, Lock, Zap } from "lucide-react";
 import type {
   MedicalRecord,
   MedicalRecordFilters,
 } from "../types/medical-record";
 import { getMedicalRecordsAction } from "../actions/medical-record-actions";
 import { MedicalRecordCard } from "./medical-record-card";
-import { MetricCard } from "./record-metric-card";
 import { MetricsGrid } from "./record-metric-grid";
 import { SearchAndFilterCard } from "./medical-record-filter";
 
@@ -150,31 +140,31 @@ export function MedicalRecordsList({
       title: "Total Records",
       value: stats.total,
       icon: <FileText className="h-5 w-5" />,
-      color: "bg-yellow-500", // yellow
+      color: "bg-blue-500", // calm and professional
     },
     {
       title: "Shared Records",
       value: stats.shared,
       icon: <Share2 className="h-5 w-5" />,
-      color: "bg-green-500", // green
+      color: "bg-green-500", // success/positive
     },
     {
       title: "Private Records",
       value: stats.privateRecords,
       icon: <Lock className="h-5 w-5" />,
-      color: "bg-red-500", // red - unique from yellow and green
+      color: "bg-red-500", // warning/restricted
     },
     {
       title: "OCR Complete",
       value: stats.ocrCompleted,
-      icon: <Zap className="h-5 w-5 text-blue-500" />,
-      color: "bg-green-500", // green - unique and nice contrast
+      icon: <Zap className="h-5 w-5" />,
+      color: "bg-purple-500", // distinct & high contrast
     },
     {
       title: "OCR Pending",
       value: stats.ocrPending,
       icon: <Zap className="h-5 w-5" />,
-      color: "bg-yellow-500", // blue - also distinct
+      color: "bg-amber-500", // waiting/in-progress
     },
   ];
 

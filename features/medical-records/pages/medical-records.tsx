@@ -66,7 +66,7 @@ export function MedicalRecordsPage({
 
       {/* Show OCR notifications for patients */}
       {showPatientControls && patientId && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className=" gap-6 space-y-3">
           <div className="">
             <MedicalRecordsList
               patientId={patientId}
