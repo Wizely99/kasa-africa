@@ -60,7 +60,7 @@ export function SearchAndFilterCard({
             </div>
 
             {/* Record Type Filter */}
-            <div className="grid grid-cols-3 gap-2">
+            <div className="flex justify-between gap-2">
               <Select
                 onValueChange={(value) =>
                   handleFilterChange(
@@ -69,7 +69,7 @@ export function SearchAndFilterCard({
                   )
                 }
               >
-                <SelectTrigger className="w-full sm:w-48">
+                <SelectTrigger className=" sm:w-48">
                   <SelectValue placeholder="Record Type" />
                 </SelectTrigger>
                 <SelectContent>
@@ -89,7 +89,7 @@ export function SearchAndFilterCard({
                   )
                 }
               >
-                <SelectTrigger className="w-full sm:w-48">
+                <SelectTrigger className=" sm:w-48">
                   <SelectValue placeholder="OCR Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -103,7 +103,7 @@ export function SearchAndFilterCard({
 
               <Button
                 variant="outline"
-                className="w-full sm:w-auto"
+                className="sm:w-auto"
                 onClick={clearFilters}
               >
                 Clear Filters
