@@ -7,7 +7,6 @@ export { default as PractitionerPricingForm } from "./components/practitioner-pr
 export type * from "./types/appointment"
 
 // Export schemas
-export * from "./schemas/appointment-schemas"
 
 // Export actions
 export * from "./actions/appointment-actions"

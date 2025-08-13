@@ -37,7 +37,7 @@ export function AppointmentConfirmation({
   doctor,
   onBookAnother,
 }: AppointmentConfirmationProps) {
-  const appointmentDate = new Date(`${appointment.date}T${appointment.time}`);
+  const appointmentDate = new Date(`${appointment?.date}T${appointment?.time}`);
 
   const handleDownloadConfirmation = () => {
     // In a real app, this would generate and download a PDF

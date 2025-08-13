@@ -40,15 +40,15 @@ export default function ScheduleCalendar({ doctorId }: ScheduleCalendarProps) {
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
 
   const { data: slotsData, isLoading } = useDoctorAllSlots(doctorId);
-  const slots = slotsData?.success ? slotsData.data.data : [];
+  const slots = slotsData?.success ? slotsData.data?.data : [];
 
   // Get slots for selected date
-  const selectedDateSlots = slots.filter((slot) =>
+  const selectedDateSlots = slots?.filter((slot) =>
     isSameDay(new Date(slot.slotDate), selectedDate)
   );
 
   // Get dates that have slots
-  const datesWithSlots = slots.map((slot) => new Date(slot.slotDate));
+  const datesWithSlots = slots.map((slot) => new Date(slot?.slotDate));
 
   // Calculate statistics
   const totalSlots = slots.length;

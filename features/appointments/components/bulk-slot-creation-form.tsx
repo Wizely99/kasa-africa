@@ -41,7 +41,7 @@ import {
   X,
 } from "lucide-react";
 import React from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
 import {
   bulkSlotCreationSchema,
   type BulkSlotCreationInput,
@@ -155,16 +155,20 @@ function calculateSlotCount(formData: BulkSlotCreationInput): number {
   return dates.length * formData.timeSlots.length;
 }
 
+import type { UseFormReturn } from "react-hook-form";
+
 export default function BulkSlotCreationForm({
   doctorId,
   onSuccess,
 }: BulkSlotCreationFormProps) {
   const createBulkSlots = useCreateBulkSlots();
 
-  const form = useForm<BulkSlotCreationInput>({
+  const form: UseFormReturn<BulkSlotCreationInput> = useForm<BulkSlotCreationInput>({
     resolver: zodResolver(bulkSlotCreationSchema),
     defaultValues: {
-      doctorId,
+      doctorId: doctorId,
+      facilityId: "",
+
       startDate: new Date(),
       endDate: addDays(new Date(), 28),
       workingDays: [1, 2, 3, 4, 5], // Monday to Friday
@@ -205,7 +209,7 @@ export default function BulkSlotCreationForm({
     }
   }, [watchedValues]);
 
-  const onSubmit = async (data: BulkSlotCreationInput) => {
+  const onSubmit: SubmitHandler<BulkSlotCreationInput> = async (data) => {
     try {
       const workingDates = generateWorkingDates(data);
       const slots: CreateSlotRequest[] = [];
@@ -219,6 +223,7 @@ export default function BulkSlotCreationForm({
             endTime: timeStringToTimeSlot(timeSlot.endTime),
             isAvailable: true,
             slotType: timeSlot.slotType,
+            facilityId: "",
           });
         }
       }

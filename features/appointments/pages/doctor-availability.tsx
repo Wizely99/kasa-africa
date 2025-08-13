@@ -2,26 +2,8 @@
 
 import React from "react"
 import { useState } from "react"
-import { Plus, Clock, Calendar, Trash2, Edit } from 'lucide-react'
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Clock } from 'lucide-react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Calendar as CalendarComponent } from "@/components/ui/calendar"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 interface TimeSlot {
   id: string
@@ -146,111 +128,12 @@ export default function DoctorAvailability() {
     setCurrentUnavailablePeriod(null)
   }
 
-  const handleAddSlot = () => {
-    if (!slotStartTime || !slotEndTime || !slotDuration || !selectedDayForSlot) return
 
-    const newSlot: TimeSlot = {
-      id: String(Date.now()),
-      startTime: slotStartTime,
-      endTime: slotEndTime,
-      duration: Number(slotDuration),
-      isAvailable: true,
-    }
 
-    setWeeklySchedule((prevSchedule) =>
-      prevSchedule.map((day) => (day.day === selectedDayForSlot ? { ...day, slots: [...day.slots, newSlot] } : day)),
-    )
-    setIsAddSlotOpen(false)
-    resetSlotForm()
-  }
 
-  const handleEditSlot = () => {
-    if (!currentSlot || !slotStartTime || !slotEndTime || !slotDuration) return
 
-    setWeeklySchedule((prevSchedule) =>
-      prevSchedule.map((day) => ({
-        ...day,
-        slots: day.slots.map((slot) =>
-          slot.id === currentSlot.id
-            ? {
-                ...slot,
-                startTime: slotStartTime,
-                endTime: slotEndTime,
-                duration: Number(slotDuration),
-              }
-            : slot,
-        ),
-      })),
-    )
-    setIsEditSlotOpen(false)
-    resetSlotForm()
-  }
 
-  const handleDeleteTimeSlot = (dayIndex: number, slotId: string) => {
-    const updatedSchedule = [...weeklySchedule]
-    updatedSchedule[dayIndex].slots = updatedSchedule[dayIndex].slots.filter((slot) => slot.id !== slotId)
-    setWeeklySchedule(updatedSchedule)
-  }
 
-  const handleAddUnavailablePeriod = () => {
-    if (!unavailableStartDate || !unavailableEndDate || !unavailableType || !unavailableReason) return
-
-    const newPeriod: UnavailablePeriod = {
-      id: String(Date.now()),
-      startDate: unavailableStartDate,
-      endDate: unavailableEndDate,
-      type: unavailableType,
-      reason: unavailableReason,
-    }
-
-    setUnavailablePeriods((prev) => [...prev, newPeriod])
-    setIsAddUnavailableOpen(false)
-    resetUnavailablePeriodForm()
-  }
-
-  const handleEditUnavailablePeriod = () => {
-    if (
-      !currentUnavailablePeriod ||
-      !unavailableStartDate ||
-      !unavailableEndDate ||
-      !unavailableType ||
-      !unavailableReason
-    )
-      return
-
-    setUnavailablePeriods((prev) =>
-      prev.map((period) =>
-        period.id === currentUnavailablePeriod.id
-          ? {
-              ...period,
-              startDate: unavailableStartDate,
-              endDate: unavailableEndDate,
-              type: unavailableType,
-              reason: unavailableReason,
-            }
-          : period,
-      ),
-    )
-    setIsEditUnavailableOpen(false)
-    resetUnavailablePeriodForm()
-  }
-
-  const handleDeleteUnavailablePeriod = (periodId: string) => {
-    setUnavailablePeriods((prev) => prev.filter((period) => period.id !== periodId))
-  }
-
-  const getTypeColor = (type: string) => {
-    switch (type) {
-      case "vacation":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
-      case "holiday":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-      case "sick":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300"
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
-    }
-  }
 
   return (
     <div className="space-y-6">

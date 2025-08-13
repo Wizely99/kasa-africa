@@ -17,8 +17,10 @@ import {
 } from "@/components/ui/select";
 import { Clock, DollarSign, MapPin, Search, Star } from "lucide-react";
 import { useState } from "react";
-import { BookingForm } from "../components/booking-form";
 import SearchInput from "@/components/common/SearchInput";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import BookingButton from "../components/booking-form";
 
 // Mock doctors data
 const mockDoctors = [
@@ -234,7 +236,8 @@ export default function PatientBookAppointment() {
                   {doctor.isAvailable ? "Available" : "Busy"}
                 </Badge>
 
-                  <BookingForm doctor={doctor} />
+                {/* <BookingForm doctor={doctor} /> */}
+                <BookingButton />
               </div>
             </CardContent>
           </Card>
