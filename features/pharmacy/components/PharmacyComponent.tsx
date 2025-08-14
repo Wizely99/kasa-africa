@@ -20,6 +20,7 @@ import { ProductDetailsDialog } from "../components/pharmacy/ProductDetailsDialo
 import { OrderSummary } from "../components/pharmacy/OrderSummary";
 import { CheckoutDialog } from "../components/pharmacy/CheckoutDialog";
 import { ProductCard } from "../components/pharmacy/ProductCard";
+import { OrderConfirmationDialog } from "./pharmacy/ConfirmOrderPaymentDialog";
 
 export default function PharmacyComponent() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -106,11 +107,10 @@ export default function PharmacyComponent() {
     return cartItems.reduce((sum, item) => sum + item.quantity, 0);
   };
 
+  const [showConfirmation, setShowConfirmation] = useState(false);
   const handlePlaceOrder = () => {
     console.log("Placing order:", { items: cartItems, ...orderData });
-    alert(
-      "Order placed successfully! You will receive a confirmation email shortly."
-    );
+    setShowConfirmation(true);
     setCartItems([]);
     setShowCheckout(false);
     setOrderData({
@@ -262,6 +262,16 @@ export default function PharmacyComponent() {
         onOrderDataChange={setOrderData}
         onPlaceOrder={handlePlaceOrder}
         onBackToCart={() => setShowCheckout(false)}
+      />
+      <OrderConfirmationDialog
+        open={showConfirmation}
+        onOpenChange={(open) => {
+          setShowConfirmation(open);
+          if (!open) {
+            setTimeout(() => setActiveTab("products"), 300);
+            setActiveTab("products"); // Redirect to products tab when closed
+          }
+        }}
       />
     </div>
   );

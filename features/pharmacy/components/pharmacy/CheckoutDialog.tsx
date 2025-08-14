@@ -52,7 +52,6 @@ export function CheckoutDialog({
     (sum, item) => sum + item.product.price * item.quantity,
     0
   );
-  const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
   const hasPrescriptionItems = items.some(
     (item) => item.product.requiresPrescription
   );
