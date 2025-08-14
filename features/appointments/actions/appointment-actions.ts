@@ -94,7 +94,7 @@ const mockDoctors: Doctor[] = [
 // Mock appointments data
 const mockAppointments: Appointment[] = [
   {
-    id: "appt-1",
+    id: "appointment-1",
     patientId: "patient-1",
     doctorId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     facilityId: "facility-1",
@@ -108,9 +108,12 @@ const mockAppointments: Appointment[] = [
     confirmationCode: "CONF123456",
     createdAt: "2025-01-01T00:00:00Z",
     updatedAt: "2025-01-01T00:00:00Z",
+    date: "2025-01-15",
+    time: "09:00",
+    fee: 150,
   },
   {
-    id: "appt-2",
+    id: "appointment-2",
     patientId: "patient-1",
     doctorId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
     facilityId: "facility-1",
@@ -126,6 +129,9 @@ const mockAppointments: Appointment[] = [
     actualEndTime: "2025-01-10T14:35:00Z",
     createdAt: "2024-12-28T00:00:00Z",
     updatedAt: "2025-01-10T14:35:00Z",
+    date: "2025-01-10",
+    time: "14:00",
+    fee: 150,
   },
 ]
 

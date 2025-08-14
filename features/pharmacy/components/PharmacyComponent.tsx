@@ -13,25 +13,13 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CartItem, OrderData, PharmacyProduct } from "../types";
-import { mockProducts } from "../data";
+import { mockProducts, categories } from "../data";
 import { SearchFilters } from "../components/pharmacy/PharmacySearchFilters";
 import { CartItemsList } from "../components/pharmacy/CartItemsList";
 import { ProductDetailsDialog } from "../components/pharmacy/ProductDetailsDialog";
 import { OrderSummary } from "../components/pharmacy/OrderSummary";
 import { CheckoutDialog } from "../components/pharmacy/CheckoutDialog";
 import { ProductCard } from "../components/pharmacy/ProductCard";
-
-const categories = [
-  "All Categories",
-  "Pain Relief",
-  "Antibiotics",
-  "Vitamins",
-  "Supplements",
-  "Cardiovascular",
-  "Diabetes Care",
-  "Respiratory",
-  "Digestive Health",
-];
 
 export default function PharmacyComponent() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -54,7 +42,7 @@ export default function PharmacyComponent() {
       const matchesSearch =
         product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         product.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        product.tags.some((tag) =>
+        product.tags?.some((tag) =>
           tag.toLowerCase().includes(searchQuery.toLowerCase())
         );
       const matchesCategory =
@@ -137,9 +125,15 @@ export default function PharmacyComponent() {
     setSelectedProduct(product);
     setShowProductDialog(true);
   };
+
+  const [activeTab, setActiveTab] = useState<"products" | "cart">("products");
   return (
     <div className="space-y-6">
-      <Tabs defaultValue="products" className="space-y-4">
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) => setActiveTab(value as "products" | "cart")}
+        className="space-y-4"
+      >
         <div className="flex items-center justify-between gap-2">
           <TabsList>
             <TabsTrigger value="products">Browse Products</TabsTrigger>
@@ -205,15 +199,7 @@ export default function PharmacyComponent() {
               <CardContent className="p-8 text-center">
                 <ShoppingCart className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
                 <p className="text-muted-foreground mb-4">Your cart is empty</p>
-                <Button
-                  onClick={() =>
-                    (
-                      document.querySelector(
-                        '[value="products"]'
-                      ) as HTMLElement | null
-                    )?.click()
-                  }
-                >
+                <Button onClick={() => setActiveTab("products")}>
                   Browse Products
                 </Button>
               </CardContent>

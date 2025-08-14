@@ -19,18 +19,20 @@ import { Clock, DollarSign, MapPin, Star } from "lucide-react";
 import { useState } from "react";
 import SearchInput from "@/components/common/SearchInput";
 import BookingButton from "../components/booking-button";
+import Image from "next/image";
+import DoctorAvatar from "../components/DoctorAvatar";
 
 // Mock doctors data
 const mockDoctors = [
   {
     id: "1",
-    name: "Dr. Emily Carter",
+    name: "Dr. Jonathan Nkwisawe",
     specialization: "Dermatology",
     experience: 8,
     rating: 4.8,
     consultationFee: 150,
     location: "Downtown Medical Center",
-    avatar: "/placeholder.svg?height=100&width=100&text=EC",
+    avatar: "/pictures/doctors/male-1.jpg",
     isAvailable: true,
     nextAvailable: "Today 2:30 PM",
     about:
@@ -40,13 +42,13 @@ const mockDoctors = [
   },
   {
     id: "2",
-    name: "Dr. Michael Chen",
+    name: "Dr. Michael Smith",
     specialization: "Cardiology",
     experience: 12,
     rating: 4.9,
     consultationFee: 200,
     location: "Heart Care Clinic",
-    avatar: "/placeholder.svg?height=100&width=100&text=MC",
+    avatar: "/pictures/doctors/male-2.jpg",
     isAvailable: true,
     nextAvailable: "Tomorrow 10:00 AM",
     about:
@@ -56,13 +58,13 @@ const mockDoctors = [
   },
   {
     id: "3",
-    name: "Dr. Sarah Johnson",
+    name: "Dr. John Mwakipasile",
     specialization: "Pediatrics",
     experience: 10,
     rating: 4.7,
     consultationFee: 120,
     location: "Children's Health Center",
-    avatar: "/placeholder.svg?height=100&width=100&text=SJ",
+    avatar: "/pictures/doctors/male-7.jpeg",
     isAvailable: false,
     nextAvailable: "Jan 20, 9:00 AM",
     about:
@@ -78,7 +80,7 @@ const mockDoctors = [
     rating: 4.6,
     consultationFee: 180,
     location: "Bone & Joint Institute",
-    avatar: "/placeholder.svg?height=100&width=100&text=JW",
+    avatar: "/pictures/doctors/male-4.jpg",
     isAvailable: true,
     nextAvailable: "Today 4:00 PM",
     about:
@@ -86,31 +88,32 @@ const mockDoctors = [
     education: "MD from Mayo Clinic",
     languages: ["English"],
   },
+
   {
     id: "5",
-    name: "Dr. Lisa Rodriguez",
-    specialization: "Neurology",
-    experience: 9,
-    rating: 4.8,
-    consultationFee: 220,
-    location: "Neuro Care Center",
-    avatar: "/placeholder.svg?height=100&width=100&text=LR",
-    isAvailable: true,
-    nextAvailable: "Tomorrow 2:00 PM",
-    about:
-      "Neurologist with expertise in brain disorders, epilepsy, and migraine treatment.",
-    education: "MD from UCLA Medical School",
-    languages: ["English", "Spanish"],
-  },
-  {
-    id: "6",
-    name: "Dr. Robert Kim",
+    name: "Dr. Anna Mfugole",
     specialization: "General Medicine",
     experience: 6,
     rating: 4.5,
     consultationFee: 100,
     location: "Family Health Clinic",
-    avatar: "/placeholder.svg?height=100&width=100&text=RK",
+    avatar: "/pictures/doctors/female-1.jpg",
+    isAvailable: true,
+    nextAvailable: "Today 11:30 AM",
+    about:
+      "General practitioner providing comprehensive primary care for all ages.",
+    education: "MD from University of Washington",
+    languages: ["English", "Korean"],
+  },
+  {
+    id: "6",
+    name: "Dr. Lisa Rodriguez",
+    specialization: "General Medicine",
+    experience: 6,
+    rating: 4.5,
+    consultationFee: 100,
+    location: "Family Health Clinic",
+    avatar: "/pictures/doctors/female-2.jpg",
     isAvailable: true,
     nextAvailable: "Today 11:30 AM",
     about:
@@ -188,11 +191,8 @@ export default function PatientBookAppointment() {
           <Card key={doctor.id} className="overflow-hidden">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-4">
-                <img
-                  src={doctor.avatar || "/placeholder.svg"}
-                  alt={doctor.name}
-                  className="w-16 h-16 rounded-full object-cover"
-                />
+                <DoctorAvatar doctor={doctor} />
+
                 <div className="flex-1">
                   <CardTitle className="text-lg">{doctor.name}</CardTitle>
                   <CardDescription>{doctor.specialization}</CardDescription>
