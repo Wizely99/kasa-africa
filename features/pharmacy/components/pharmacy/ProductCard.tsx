@@ -26,7 +26,7 @@ export function ProductCard({
           alt={product.name}
           className="object-cover w-full h-full"
         />
-
+    
         {product.discount && (
           <Badge
             variant={product.discount ? "discount" : "default"}

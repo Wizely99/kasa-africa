@@ -63,7 +63,7 @@ export function PaymentMethods({
     <div className="space-y-4">
       <div className="rounded-md border p-4">
         <div className="flex items-center gap-2">
-          <ShieldCheck className="h-5 w-5 text-emerald-600" />
+          <ShieldCheck className="h-5 w-5 text-blue-600" />
           <div className="font-medium">Payment Details</div>
         </div>
         <div className="mt-2 text-sm text-muted-foreground">
@@ -161,7 +161,7 @@ export function PaymentMethods({
             disabled={paying || paymentConfirmed}
             className={cn(
               "gap-2",
-              paymentConfirmed && "bg-emerald-600 hover:bg-emerald-600"
+              paymentConfirmed && "bg-blue-600 hover:bg-blue-600"
             )}
           >
             {paying ? (
@@ -206,7 +206,7 @@ export function PaymentMethods({
             disabled={paying || paymentConfirmed}
             className={cn(
               "gap-2",
-              paymentConfirmed && "bg-emerald-600 hover:bg-emerald-600"
+              paymentConfirmed && "bg-blue-600 hover:bg-blue-600"
             )}
           >
             {paying ? (
@@ -231,7 +231,7 @@ export function PaymentMethods({
             disabled={paying || paymentConfirmed}
             className={cn(
               "gap-2",
-              paymentConfirmed && "bg-emerald-600 hover:bg-emerald-600"
+              paymentConfirmed && "bg-blue-600 hover:bg-blue-600"
             )}
           >
             {paying ? (

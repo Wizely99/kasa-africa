@@ -15,12 +15,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Clock, DollarSign, MapPin, Search, Star } from "lucide-react";
+import { Clock, DollarSign, MapPin, Star } from "lucide-react";
 import { useState } from "react";
 import SearchInput from "@/components/common/SearchInput";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import BookingButton from "../components/booking-form";
+import BookingButton from "../components/booking-button";
 
 // Mock doctors data
 const mockDoctors = [

@@ -133,6 +133,7 @@ export default function BookingPage() {
   const [submitting, setSubmitting] = useState<boolean>(false);
   const [createdAppointment, setCreatedAppointment] =
     useState<AppointmentResponse | null>(null);
+  const [bookingConfirmed, setBookingConfirmed] = useState<boolean>(false);
 
   const selectedSlot = useMemo(
     () => slots.find((s) => s.id === selectedSlotId) ?? null,
@@ -142,6 +143,7 @@ export default function BookingPage() {
     () => (selectedDate ? format(selectedDate, "yyyy-MM-dd") : ""),
     [selectedDate]
   );
+  const [seconds, setSeconds] = useState(5);
 
   // Fetch slots
   useEffect(() => {
@@ -312,6 +314,7 @@ export default function BookingPage() {
       if (!res.ok) throw new Error("Failed to create appointment");
       const created: AppointmentResponse = await res.json();
       setCreatedAppointment(created);
+      setBookingConfirmed(true);
       toast.success("Booking confirmed", {
         description: "Your appointment has been scheduled.",
       });
@@ -323,6 +326,23 @@ export default function BookingPage() {
       setSubmitting(false);
     }
   };
+
+  useEffect(() => {
+    if (bookingConfirmed && createdAppointment) {
+      const countdown = setInterval(() => {
+        setSeconds((prev) => prev - 1);
+      }, 1000);
+
+      const redirect = setTimeout(() => {
+        window.location.href = `/patient/appointments`;
+      }, 4000);
+
+      return () => {
+        clearInterval(countdown);
+        clearTimeout(redirect);
+      };
+    }
+  }, [bookingConfirmed, createdAppointment]);
 
   return (
     <main className="container mx-auto max-w-5xl px-4 py-8">
@@ -589,7 +609,7 @@ export default function BookingPage() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="flex items-start gap-3">
-                      <CalendarDays className="mt-0.5 h-4 w-4 text-emerald-600" />
+                      <CalendarDays className="mt-0.5 h-4 w-4 text-blue-600" />
                       <div>
                         <div className="text-sm font-medium">Date</div>
                         <div className="text-sm text-muted-foreground">
@@ -600,7 +620,7 @@ export default function BookingPage() {
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <Clock className="mt-0.5 h-4 w-4 text-emerald-600" />
+                      <Clock className="mt-0.5 h-4 w-4 text-blue-600" />
                       <div>
                         <div className="text-sm font-medium">Time</div>
                         <div className="text-sm text-muted-foreground">
@@ -613,7 +633,7 @@ export default function BookingPage() {
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <Stethoscope className="mt-0.5 h-4 w-4 text-emerald-600" />
+                      <Stethoscope className="mt-0.5 h-4 w-4 text-blue-600" />
                       <div>
                         <div className="text-sm font-medium">Doctor</div>
                         <div className="text-sm text-muted-foreground">
@@ -622,7 +642,7 @@ export default function BookingPage() {
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <Building2 className="mt-0.5 h-4 w-4 text-emerald-600" />
+                      <Building2 className="mt-0.5 h-4 w-4 text-blue-600" />
                       <div>
                         <div className="text-sm font-medium">Facility</div>
                         <div className="text-sm text-muted-foreground">
@@ -631,7 +651,7 @@ export default function BookingPage() {
                       </div>
                     </div>
                     <div className="flex items-start gap-3">
-                      <User className="mt-0.5 h-4 w-4 text-emerald-600" />
+                      <User className="mt-0.5 h-4 w-4 text-blue-600" />
                       <div>
                         <div className="text-sm font-medium">Patient</div>
                         <div className="text-sm text-muted-foreground">
@@ -687,8 +707,12 @@ export default function BookingPage() {
                     <div className="font-medium">Appointment Confirmed</div>
                   </div>
                   <div className="mt-2 text-sm">
-                    Appointment ID:{" "}
+                    Appointment ID:
                     <span className="font-mono">{createdAppointment.id}</span>
+                  </div>
+                  <div className="mt-2 text-sm ">
+                    You will be redirected to your appointment page in{" "}
+                    <span className="font-bold">{seconds}</span> seconds...
                   </div>
                 </div>
               ) : (

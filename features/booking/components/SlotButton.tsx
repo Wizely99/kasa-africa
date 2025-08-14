@@ -23,8 +23,8 @@ export function SlotButton({
       className={cn(
         "h-10",
         selected
-          ? "bg-emerald-600 hover:bg-emerald-600 text-white"
-          : "hover:border-emerald-500 hover:text-emerald-700",
+          ? "bg-blue-600 hover:bg-blue-600 text-white"
+          : "hover:border-blue-500 hover:text-blue-700",
         disabled && "opacity-50 pointer-events-none"
       )}
       onClick={onClick}

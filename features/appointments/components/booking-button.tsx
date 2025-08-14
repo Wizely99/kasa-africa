@@ -12,7 +12,7 @@ export default function BookingButton() {
   return (
     <button
       onClick={handleClick}
-      className="px-4 py-2 bg-blue-500 text-white rounded"
+      className="px-2 py-1 bg-blue-600 text-white rounded-md cursor-pointer"
     >
       Book Appointment
     </button>

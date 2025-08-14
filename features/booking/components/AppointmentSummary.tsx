@@ -36,7 +36,7 @@ export function AppointmentSummary({
       <div className="text-sm text-muted-foreground">Summary</div>
       <div className="grid gap-3 text-sm">
         <div className="flex items-center gap-3">
-          <CalendarDays className="h-4 w-4 text-emerald-600" />
+          <CalendarDays className="h-4 w-4 text-blue-600" />
           <div>
             <div className="font-medium">Date</div>
             <div className="text-muted-foreground">
@@ -52,7 +52,7 @@ export function AppointmentSummary({
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Clock className="h-4 w-4 text-emerald-600" />
+          <Clock className="h-4 w-4 text-blue-600" />
           <div>
             <div className="font-medium">Time</div>
             <div className="text-muted-foreground">
@@ -65,7 +65,7 @@ export function AppointmentSummary({
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Stethoscope className="h-4 w-4 text-emerald-600" />
+          <Stethoscope className="h-4 w-4 text-blue-600" />
           <div>
             <div className="font-medium">Doctor</div>
             <div className="text-muted-foreground">
@@ -74,7 +74,7 @@ export function AppointmentSummary({
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <Building2 className="h-4 w-4 text-emerald-600" />
+          <Building2 className="h-4 w-4 text-blue-600" />
           <div>
             <div className="font-medium">Facility</div>
             <div className="text-muted-foreground">
@@ -83,7 +83,7 @@ export function AppointmentSummary({
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <User className="h-4 w-4 text-emerald-600" />
+          <User className="h-4 w-4 text-blue-600" />
           <div>
             <div className="font-medium">Patient</div>
             <div className="text-muted-foreground">
@@ -92,7 +92,7 @@ export function AppointmentSummary({
           </div>
         </div>
         <div className="flex items-center gap-3">
-          <CreditCard className="h-4 w-4 text-emerald-600" />
+          <CreditCard className="h-4 w-4 text-blue-600" />
           <div>
             <div className="font-medium">Payment</div>
             <div className="text-muted-foreground">
