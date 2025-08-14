@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { cn } from "@/lib/utils"
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   Users,
@@ -25,7 +25,7 @@ import {
   Clock,
   Building2,
   FolderOpen,
-} from "lucide-react"
+} from "lucide-react";
 
 const sidebarItems = [
   {
@@ -53,11 +53,11 @@ const sidebarItems = [
     href: "/admin/schedule",
     icon: CalendarDays,
   },
-  {
-    title: "Book Appointment",
-    href: "/admin/book-appointment",
-    icon: Calendar,
-  },
+  // {
+  //   title: "Book Appointment",
+  //   href: "/admin/book-appointment",
+  //   icon: Calendar,
+  // },
   {
     title: "Medical Records",
     href: "/admin/medical-records",
@@ -109,15 +109,15 @@ const sidebarItems = [
     href: "/admin/settings",
     icon: Settings,
   },
-]
+];
 
 interface AdminLayoutClientProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export function AdminLayoutClient({ children }: AdminLayoutClientProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(false)
-  const pathname = usePathname()
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const pathname = usePathname();
 
   const SidebarContent = () => (
     <div className="flex h-full flex-col">
@@ -144,7 +144,9 @@ export function AdminLayoutClient({ children }: AdminLayoutClientProps) {
                         href={child.href}
                         className={cn(
                           "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:text-primary",
-                          pathname === child.href ? "bg-muted text-primary" : "text-muted-foreground",
+                          pathname === child.href
+                            ? "bg-muted text-primary"
+                            : "text-muted-foreground"
                         )}
                         onClick={() => setSidebarOpen(false)}
                       >
@@ -154,7 +156,7 @@ export function AdminLayoutClient({ children }: AdminLayoutClientProps) {
                     ))}
                   </div>
                 </div>
-              )
+              );
             }
 
             return (
@@ -163,19 +165,21 @@ export function AdminLayoutClient({ children }: AdminLayoutClientProps) {
                 href={item.href}
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:text-primary",
-                  pathname === item.href ? "bg-muted text-primary" : "text-muted-foreground",
+                  pathname === item.href
+                    ? "bg-muted text-primary"
+                    : "text-muted-foreground"
                 )}
                 onClick={() => setSidebarOpen(false)}
               >
                 <item.icon className="h-4 w-4" />
                 {item.title}
               </Link>
-            )
+            );
           })}
         </div>
       </ScrollArea>
     </div>
-  )
+  );
 
   return (
     <div className="grid min-h-screen w-full md:grid-cols-[220px_1fr] lg:grid-cols-[280px_1fr]">
@@ -186,7 +190,11 @@ export function AdminLayoutClient({ children }: AdminLayoutClientProps) {
         <header className="flex h-14 items-center gap-4 border-b bg-muted/40 px-4 lg:h-[60px] lg:px-6">
           <Sheet open={sidebarOpen} onOpenChange={setSidebarOpen}>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="shrink-0 md:hidden bg-transparent">
+              <Button
+                variant="outline"
+                size="icon"
+                className="shrink-0 md:hidden bg-transparent"
+              >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
@@ -196,8 +204,10 @@ export function AdminLayoutClient({ children }: AdminLayoutClientProps) {
             </SheetContent>
           </Sheet>
         </header>
-        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">{children}</main>
+        <main className="flex flex-1 flex-col gap-4 p-4 lg:gap-6 lg:p-6">
+          {children}
+        </main>
       </div>
     </div>
-  )
+  );
 }

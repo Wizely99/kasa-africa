@@ -26,11 +26,11 @@ export function ProductCard({
           alt={product.name}
           className="object-cover w-full h-full"
         />
-    
+
         {product.discount && (
           <Badge
             variant={product.discount ? "discount" : "default"}
-            className="absolute top-2 left-2  hover:bg-red-600 z-10"
+            className="absolute top-2 left-2 z-10"
           >
             -{product.discount}%
           </Badge>
@@ -38,7 +38,7 @@ export function ProductCard({
         {product.featured && (
           <Badge
             variant={product.featured ? "featured" : "default"}
-            className="absolute top-2 right-2 bg-yellow-500 hover:bg-yellow-600 z-10"
+            className="absolute top-2 right-2 z-10"
           >
             Featured
           </Badge>
@@ -46,7 +46,7 @@ export function ProductCard({
         {product.requiresPrescription && (
           <Badge
             variant={product.requiresPrescription ? "rx" : "default"}
-            className="absolute bottom-0 left-2 bg-white z-10"
+            className="absolute bottom-0 left-2  z-10"
           >
             Rx Required
           </Badge>
@@ -56,7 +56,7 @@ export function ProductCard({
       <div className="p-4">
         <div className="flex items-start justify-between">
           <div className="flex-1">
-            <h3 className="text-lg font-semibold line-clamp-2">
+            <h3 className="text-lg font-semibold line-clamp-1">
               {product.name}
             </h3>
             <p className="text-sm text-muted-foreground">

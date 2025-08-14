@@ -48,11 +48,11 @@ export default function ScheduleCalendar({ doctorId }: ScheduleCalendarProps) {
   );
 
   // Get dates that have slots
-  const datesWithSlots = slots.map((slot) => new Date(slot?.slotDate));
+  const datesWithSlots = slots?.map((slot) => new Date(slot?.slotDate));
 
   // Calculate statistics
-  const totalSlots = slots.length;
-  const availableSlots = slots.filter((slot) => slot.isAvailable).length;
+  const totalSlots = slots?.length ?? 0;
+  const availableSlots = slots?.filter((slot) => slot.isAvailable).length ?? 0;
   const bookedSlots = totalSlots - availableSlots;
   const utilizationRate =
     totalSlots > 0 ? Math.round((bookedSlots / totalSlots) * 100) : 0;
@@ -224,12 +224,12 @@ export default function ScheduleCalendar({ doctorId }: ScheduleCalendarProps) {
               {format(selectedDate, "EEEE, MMMM d")}
             </CardTitle>
             <CardDescription>
-              {selectedDateSlots.length} slot
-              {selectedDateSlots.length !== 1 ? "s" : ""} scheduled
+              {selectedDateSlots?.length} slot
+              {selectedDateSlots?.length !== 1 ? "s" : ""} scheduled
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            {selectedDateSlots.length === 0 ? (
+            {selectedDateSlots?.length === 0 ? (
               <div className="text-center py-8 space-y-2">
                 <Clock className="h-8 w-8 mx-auto text-muted-foreground opacity-50" />
                 <p className="text-sm text-muted-foreground">
@@ -242,7 +242,7 @@ export default function ScheduleCalendar({ doctorId }: ScheduleCalendarProps) {
             ) : (
               <div className="space-y-3">
                 {selectedDateSlots
-                  .sort((a, b) => {
+                  ?.sort((a, b) => {
                     const timeA = a.startTime.hour * 60 + a.startTime.minute;
                     const timeB = b.startTime.hour * 60 + b.startTime.minute;
                     return timeA - timeB;

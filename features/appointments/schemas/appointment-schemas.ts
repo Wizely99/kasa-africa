@@ -26,6 +26,7 @@ export const slotTypeSchema = z.enum(["REGULAR", "CONSULTATION", "FOLLOW_UP", "E
 
 // Book appointment schema
 export const bookAppointmentSchema = z.object({
+  slotId: z.string().uuid("Invalid slot ID"),
   patientId: z.string().uuid("Invalid patient ID"),
   doctorId: z.string().uuid("Invalid doctor ID"),
   facilityId: z.string().uuid("Invalid facility ID"),

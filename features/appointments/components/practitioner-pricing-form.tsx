@@ -48,13 +48,21 @@ import {
   deletePricingAction,
 } from "../actions/pricing-actions"
 
-export default function PractitionerPricingForm() {
-  const [pricings, setPricings] = useState<PractitionerPricing[]>([])
-  const [expertise, setExpertise] = useState<Expertise[]>([])
-  const [loading, setLoading] = useState(true)
-  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [currentPricing, setCurrentPricing] = useState<PractitionerPricing | null>(null)
+
+interface PractitionerPricingFormProps {
+  practitionerId: string;
+}
+
+export default function PractitionerPricingForm({
+  practitionerId,
+}: PractitionerPricingFormProps) {
+  const [pricings, setPricings] = useState<PractitionerPricing[]>([]);
+  const [expertise, setExpertise] = useState<Expertise[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [currentPricing, setCurrentPricing] =
+    useState<PractitionerPricing | null>(null);
 
   const [formData, setFormData] = useState<CreatePricingRequest>({
     practitionerId: "current-doctor", // In real app, get from session
@@ -65,38 +73,40 @@ export default function PractitionerPricingForm() {
     isActive: true,
     currencyCode: "USD",
     effectiveFrom: new Date().toISOString().split("T")[0],
-    effectiveTo: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-  })
+    effectiveTo: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+      .toISOString()
+      .split("T")[0],
+  });
 
   useEffect(() => {
-    loadData()
-  }, [])
+    loadData();
+  }, []);
 
   const loadData = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       const [expertiseResult, pricingResult] = await Promise.all([
         getExpertiseListAction(),
         getPractitionerPricingAction("current-doctor"),
-      ])
+      ]);
 
       if (expertiseResult.success) {
-        setExpertise(expertiseResult.data)
+        setExpertise(expertiseResult.data);
       }
 
       if (pricingResult.success) {
-        setPricings(pricingResult.data)
+        setPricings(pricingResult.data);
       }
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to load data. Please try again.",
         variant: "destructive",
-      })
+      });
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const resetForm = () => {
     setFormData({
@@ -108,80 +118,86 @@ export default function PractitionerPricingForm() {
       isActive: true,
       currencyCode: "USD",
       effectiveFrom: new Date().toISOString().split("T")[0],
-      effectiveTo: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString().split("T")[0],
-    })
-    setCurrentPricing(null)
-  }
+      effectiveTo: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+        .toISOString()
+        .split("T")[0],
+    });
+    setCurrentPricing(null);
+  };
 
   const handleCreate = async () => {
     try {
-      const result = await createPricingAction(formData)
+      const result = await createPricingAction(formData);
       if (result.success) {
-        setPricings([...pricings, result.data])
-        setIsCreateDialogOpen(false)
-        resetForm()
+        setPricings([...pricings, result.data]);
+        setIsCreateDialogOpen(false);
+        resetForm();
         toast({
           title: "Success",
           description: result.message,
-        })
+        });
       }
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to create pricing configuration.",
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
 
   const handleEdit = async () => {
-    if (!currentPricing) return
+    if (!currentPricing) return;
 
     try {
       const updateData: UpdatePricingRequest = {
         id: currentPricing.id,
         ...formData,
-      }
-      const result = await updatePricingAction(updateData)
+      };
+      const result = await updatePricingAction(updateData);
       if (result.success) {
-        setPricings(pricings.map((p) => (p.id === currentPricing.id ? result.data : p)))
-        setIsEditDialogOpen(false)
-        resetForm()
+        setPricings(
+          pricings
+            .map((p) => (p.id === currentPricing.id ? result.data : p))
+            .filter((p): p is PractitionerPricing => p !== undefined)
+        );
+        setIsEditDialogOpen(false);
+        resetForm();
         toast({
           title: "Success",
           description: result.message,
-        })
+        });
       }
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to update pricing configuration.",
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
 
   const handleDelete = async (pricingId: string) => {
     try {
-      const result = await deletePricingAction(pricingId)
+      const result = await deletePricingAction(pricingId);
       if (result.success) {
-        setPricings(pricings.filter((p) => p.id !== pricingId))
+        setPricings(pricings.filter((p) => p.id !== pricingId));
         toast({
           title: "Success",
           description: result.message,
-        })
+        });
       }
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to delete pricing configuration.",
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
 
   const openEditDialog = (pricing: PractitionerPricing) => {
-    setCurrentPricing(pricing)
+    setCurrentPricing(pricing);
     setFormData({
       practitionerId: pricing.practitionerId,
       expertiseId: pricing.expertiseId,
@@ -192,24 +208,28 @@ export default function PractitionerPricingForm() {
       currencyCode: pricing.currencyCode,
       effectiveFrom: pricing.effectiveFrom,
       effectiveTo: pricing.effectiveTo,
-    })
-    setIsEditDialogOpen(true)
-  }
+    });
+    setIsEditDialogOpen(true);
+  };
 
   const getExpertiseName = (expertiseId: string) => {
-    const exp = expertise.find((e) => e.id === expertiseId)
-    return exp ? exp.name : "Unknown"
-  }
+    const exp = expertise.find((e) => e.id === expertiseId);
+    return exp ? exp.name : "Unknown";
+  };
 
   const getCurrencySymbol = (currencyCode: string) => {
-    const currency = CURRENCY_OPTIONS.find((c) => c.code === currencyCode)
-    return currency ? currency.symbol : currencyCode
-  }
+    const currency = CURRENCY_OPTIONS.find((c) => c.code === currencyCode);
+    return currency ? currency.symbol : currencyCode;
+  };
 
   const getAvailableExpertise = () => {
-    const usedExpertiseIds = pricings.map((p) => p.expertiseId)
-    return expertise.filter((e) => !usedExpertiseIds.includes(e.id) || (currentPricing && e.id === currentPricing.expertiseId))
-  }
+    const usedExpertiseIds = pricings.map((p) => p.expertiseId);
+    return expertise.filter(
+      (e) =>
+        !usedExpertiseIds.includes(e.id) ||
+        (currentPricing && e.id === currentPricing.expertiseId)
+    );
+  };
 
   if (loading) {
     return (
@@ -219,7 +239,7 @@ export default function PractitionerPricingForm() {
           <div className="h-32 bg-gray-200 rounded"></div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -228,13 +248,15 @@ export default function PractitionerPricingForm() {
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-2xl font-bold tracking-tight">Service Pricing</h2>
-          <p className="text-muted-foreground">Manage your consultation fees across different expertise areas</p>
+          <p className="text-muted-foreground">
+            Manage your consultation fees across different expertise areas
+          </p>
         </div>
         <Dialog
           open={isCreateDialogOpen}
           onOpenChange={(open) => {
-            setIsCreateDialogOpen(open)
-            if (!open) resetForm()
+            setIsCreateDialogOpen(open);
+            if (!open) resetForm();
           }}
         >
           <DialogTrigger asChild>
@@ -259,7 +281,9 @@ export default function PractitionerPricingForm() {
                 <Label htmlFor="expertise">Area of Expertise</Label>
                 <Select
                   value={formData.expertiseId}
-                  onValueChange={(value) => setFormData((prev) => ({ ...prev, expertiseId: value }))}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, expertiseId: value }))
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select your expertise area" />
@@ -269,7 +293,9 @@ export default function PractitionerPricingForm() {
                       <SelectItem key={exp.id} value={exp.id}>
                         <div className="flex flex-col">
                           <span className="font-medium">{exp.name}</span>
-                          <span className="text-xs text-muted-foreground">{exp.description}</span>
+                          <span className="text-xs text-muted-foreground">
+                            {exp.description}
+                          </span>
                         </div>
                       </SelectItem>
                     ))}
@@ -283,7 +309,9 @@ export default function PractitionerPricingForm() {
                   <Label htmlFor="currency">Currency</Label>
                   <Select
                     value={formData.currencyCode}
-                    onValueChange={(value) => setFormData((prev) => ({ ...prev, currencyCode: value }))}
+                    onValueChange={(value) =>
+                      setFormData((prev) => ({ ...prev, currencyCode: value }))
+                    }
                   >
                     <SelectTrigger>
                       <SelectValue />
@@ -294,7 +322,9 @@ export default function PractitionerPricingForm() {
                           <div className="flex items-center gap-2">
                             <span className="font-mono">{currency.symbol}</span>
                             <span>{currency.name}</span>
-                            <span className="text-muted-foreground">({currency.code})</span>
+                            <span className="text-muted-foreground">
+                              ({currency.code})
+                            </span>
                           </div>
                         </SelectItem>
                       ))}
@@ -314,7 +344,10 @@ export default function PractitionerPricingForm() {
                       step="0.01"
                       value={formData.consultationFee}
                       onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, consultationFee: parseFloat(e.target.value) || 0 }))
+                        setFormData((prev) => ({
+                          ...prev,
+                          consultationFee: parseFloat(e.target.value) || 0,
+                        }))
                       }
                       className="pl-8"
                       placeholder="0.00"
@@ -334,7 +367,10 @@ export default function PractitionerPricingForm() {
                       step="0.01"
                       value={formData.followUpFee}
                       onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, followUpFee: parseFloat(e.target.value) || 0 }))
+                        setFormData((prev) => ({
+                          ...prev,
+                          followUpFee: parseFloat(e.target.value) || 0,
+                        }))
                       }
                       className="pl-8"
                       placeholder="0.00"
@@ -354,7 +390,10 @@ export default function PractitionerPricingForm() {
                       step="0.01"
                       value={formData.emergencyFee}
                       onChange={(e) =>
-                        setFormData((prev) => ({ ...prev, emergencyFee: parseFloat(e.target.value) || 0 }))
+                        setFormData((prev) => ({
+                          ...prev,
+                          emergencyFee: parseFloat(e.target.value) || 0,
+                        }))
                       }
                       className="pl-8"
                       placeholder="0.00"
@@ -371,7 +410,12 @@ export default function PractitionerPricingForm() {
                     id="effectiveFrom"
                     type="date"
                     value={formData.effectiveFrom}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, effectiveFrom: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        effectiveFrom: e.target.value,
+                      }))
+                    }
                   />
                 </div>
                 <div className="space-y-2">
@@ -380,7 +424,12 @@ export default function PractitionerPricingForm() {
                     id="effectiveTo"
                     type="date"
                     value={formData.effectiveTo}
-                    onChange={(e) => setFormData((prev) => ({ ...prev, effectiveTo: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        effectiveTo: e.target.value,
+                      }))
+                    }
                   />
                 </div>
               </div>
@@ -390,18 +439,25 @@ export default function PractitionerPricingForm() {
                 <Switch
                   id="isActive"
                   checked={formData.isActive}
-                  onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, isActive: checked }))}
+                  onCheckedChange={(checked) =>
+                    setFormData((prev) => ({ ...prev, isActive: checked }))
+                  }
                 />
                 <Label htmlFor="isActive">Active pricing configuration</Label>
               </div>
             </div>
             <DialogFooter>
-              <Button variant="outline" onClick={() => setIsCreateDialogOpen(false)}>
+              <Button
+                variant="outline"
+                onClick={() => setIsCreateDialogOpen(false)}
+              >
                 Cancel
               </Button>
               <Button
                 onClick={handleCreate}
-                disabled={!formData.expertiseId || formData.consultationFee <= 0}
+                disabled={
+                  !formData.expertiseId || formData.consultationFee <= 0
+                }
                 className="bg-linear-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700"
               >
                 Create Pricing
@@ -418,9 +474,12 @@ export default function PractitionerPricingForm() {
             <div className="rounded-full bg-green-50 p-3 mb-4">
               <DollarSign className="h-8 w-8 text-green-600" />
             </div>
-            <h3 className="text-lg font-semibold mb-2">No pricing configured</h3>
+            <h3 className="text-lg font-semibold mb-2">
+              No pricing configured
+            </h3>
             <p className="text-muted-foreground text-center mb-4">
-              Set up your consultation fees for different areas of expertise to start accepting bookings.
+              Set up your consultation fees for different areas of expertise to
+              start accepting bookings.
             </p>
             <Button
               onClick={() => setIsCreateDialogOpen(true)}
@@ -460,25 +519,33 @@ export default function PractitionerPricingForm() {
                   <TableRow key={pricing.id}>
                     <TableCell>
                       <div>
-                        <div className="font-medium">{getExpertiseName(pricing.expertiseId)}</div>
+                        <div className="font-medium">
+                          {getExpertiseName(pricing.expertiseId)}
+                        </div>
                         <div className="text-sm text-muted-foreground">
-                          {expertise.find((e) => e.id === pricing.expertiseId)?.category}
+                          {
+                            expertise.find((e) => e.id === pricing.expertiseId)
+                              ?.category
+                          }
                         </div>
                       </div>
                     </TableCell>
                     <TableCell>
                       <span className="font-mono">
-                        {getCurrencySymbol(pricing.currencyCode)}{pricing.consultationFee}
+                        {getCurrencySymbol(pricing.currencyCode)}
+                        {pricing.consultationFee}
                       </span>
                     </TableCell>
                     <TableCell>
                       <span className="font-mono">
-                        {getCurrencySymbol(pricing.currencyCode)}{pricing.followUpFee}
+                        {getCurrencySymbol(pricing.currencyCode)}
+                        {pricing.followUpFee}
                       </span>
                     </TableCell>
                     <TableCell>
                       <span className="font-mono">
-                        {getCurrencySymbol(pricing.currencyCode)}{pricing.emergencyFee}
+                        {getCurrencySymbol(pricing.currencyCode)}
+                        {pricing.emergencyFee}
                       </span>
                     </TableCell>
                     <TableCell>
@@ -488,7 +555,9 @@ export default function PractitionerPricingForm() {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={pricing.isActive ? "default" : "secondary"}>
+                      <Badge
+                        variant={pricing.isActive ? "default" : "secondary"}
+                      >
                         {pricing.isActive ? "Active" : "Inactive"}
                       </Badge>
                     </TableCell>
@@ -503,16 +572,26 @@ export default function PractitionerPricingForm() {
                         </Button>
                         <AlertDialog>
                           <AlertDialogTrigger asChild>
-                            <Button variant="ghost" size="sm" className="text-destructive">
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              className="text-destructive"
+                            >
                               <Trash2 className="h-4 w-4" />
                             </Button>
                           </AlertDialogTrigger>
                           <AlertDialogContent>
                             <AlertDialogHeader>
-                              <AlertDialogTitle>Delete Pricing Configuration</AlertDialogTitle>
+                              <AlertDialogTitle>
+                                Delete Pricing Configuration
+                              </AlertDialogTitle>
                               <AlertDialogDescription>
-                                Are you sure you want to delete this pricing configuration for{" "}
-                                <strong>{getExpertiseName(pricing.expertiseId)}</strong>? This action cannot be undone.
+                                Are you sure you want to delete this pricing
+                                configuration for{" "}
+                                <strong>
+                                  {getExpertiseName(pricing.expertiseId)}
+                                </strong>
+                                ? This action cannot be undone.
                               </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
@@ -540,8 +619,8 @@ export default function PractitionerPricingForm() {
       <Dialog
         open={isEditDialogOpen}
         onOpenChange={(open) => {
-          setIsEditDialogOpen(open)
-          if (!open) resetForm()
+          setIsEditDialogOpen(open);
+          if (!open) resetForm();
         }}
       >
         <DialogContent className="max-w-2xl">
@@ -551,7 +630,10 @@ export default function PractitionerPricingForm() {
               Edit Service Pricing
             </DialogTitle>
             <DialogDescription>
-              Update your consultation fees for {currentPricing ? getExpertiseName(currentPricing.expertiseId) : ""}
+              Update your consultation fees for{" "}
+              {currentPricing
+                ? getExpertiseName(currentPricing.expertiseId)
+                : ""}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-6 py-4">
@@ -560,7 +642,9 @@ export default function PractitionerPricingForm() {
               <Label htmlFor="editExpertise">Area of Expertise</Label>
               <Select
                 value={formData.expertiseId}
-                onValueChange={(value) => setFormData((prev) => ({ ...prev, expertiseId: value }))}
+                onValueChange={(value) =>
+                  setFormData((prev) => ({ ...prev, expertiseId: value }))
+                }
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Select your expertise area" />
@@ -570,7 +654,9 @@ export default function PractitionerPricingForm() {
                     <SelectItem key={exp.id} value={exp.id}>
                       <div className="flex flex-col">
                         <span className="font-medium">{exp.name}</span>
-                        <span className="text-xs text-muted-foreground">{exp.description}</span>
+                        <span className="text-xs text-muted-foreground">
+                          {exp.description}
+                        </span>
                       </div>
                     </SelectItem>
                   ))}
@@ -584,7 +670,9 @@ export default function PractitionerPricingForm() {
                 <Label htmlFor="editCurrency">Currency</Label>
                 <Select
                   value={formData.currencyCode}
-                  onValueChange={(value) => setFormData((prev) => ({ ...prev, currencyCode: value }))}
+                  onValueChange={(value) =>
+                    setFormData((prev) => ({ ...prev, currencyCode: value }))
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -595,7 +683,9 @@ export default function PractitionerPricingForm() {
                         <div className="flex items-center gap-2">
                           <span className="font-mono">{currency.symbol}</span>
                           <span>{currency.name}</span>
-                          <span className="text-muted-foreground">({currency.code})</span>
+                          <span className="text-muted-foreground">
+                            ({currency.code})
+                          </span>
                         </div>
                       </SelectItem>
                     ))}
@@ -615,7 +705,10 @@ export default function PractitionerPricingForm() {
                     step="0.01"
                     value={formData.consultationFee}
                     onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, consultationFee: parseFloat(e.target.value) || 0 }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        consultationFee: parseFloat(e.target.value) || 0,
+                      }))
                     }
                     className="pl-8"
                     placeholder="0.00"
@@ -635,7 +728,10 @@ export default function PractitionerPricingForm() {
                     step="0.01"
                     value={formData.followUpFee}
                     onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, followUpFee: parseFloat(e.target.value) || 0 }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        followUpFee: parseFloat(e.target.value) || 0,
+                      }))
                     }
                     className="pl-8"
                     placeholder="0.00"
@@ -655,7 +751,10 @@ export default function PractitionerPricingForm() {
                     step="0.01"
                     value={formData.emergencyFee}
                     onChange={(e) =>
-                      setFormData((prev) => ({ ...prev, emergencyFee: parseFloat(e.target.value) || 0 }))
+                      setFormData((prev) => ({
+                        ...prev,
+                        emergencyFee: parseFloat(e.target.value) || 0,
+                      }))
                     }
                     className="pl-8"
                     placeholder="0.00"
@@ -672,7 +771,12 @@ export default function PractitionerPricingForm() {
                   id="editEffectiveFrom"
                   type="date"
                   value={formData.effectiveFrom}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, effectiveFrom: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      effectiveFrom: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -681,7 +785,12 @@ export default function PractitionerPricingForm() {
                   id="editEffectiveTo"
                   type="date"
                   value={formData.effectiveTo}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, effectiveTo: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      effectiveTo: e.target.value,
+                    }))
+                  }
                 />
               </div>
             </div>
@@ -691,13 +800,18 @@ export default function PractitionerPricingForm() {
               <Switch
                 id="editIsActive"
                 checked={formData.isActive}
-                onCheckedChange={(checked) => setFormData((prev) => ({ ...prev, isActive: checked }))}
+                onCheckedChange={(checked) =>
+                  setFormData((prev) => ({ ...prev, isActive: checked }))
+                }
               />
               <Label htmlFor="editIsActive">Active pricing configuration</Label>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsEditDialogOpen(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsEditDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button
@@ -711,5 +825,5 @@ export default function PractitionerPricingForm() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }

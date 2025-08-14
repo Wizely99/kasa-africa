@@ -135,13 +135,6 @@ export default function PatientBookAppointment() {
   const [selectedSpecialization, setSelectedSpecialization] = useState(
     "All Specializations"
   );
-  const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
-  const [appointmentData, setAppointmentData] = useState({
-    date: "",
-    time: "",
-    type: "",
-    notes: "",
-  });
 
   const filteredDoctors = mockDoctors.filter((doctor) => {
     const matchesSearch =

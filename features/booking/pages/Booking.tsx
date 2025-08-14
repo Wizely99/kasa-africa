@@ -357,97 +357,93 @@ export default function BookingPage() {
           <Stepper current={step} />
 
           {step === 1 && (
-            <section
-              aria-labelledby="step-1"
-              className="grid gap-6 lg:grid-cols-2"
-            >
-              <div className="space-y-4">
-                <div className="space-y-2">
-                  <Label htmlFor="doctor">Select Doctor</Label>
-                  <Select value={doctorId} onValueChange={setDoctorId}>
-                    <SelectTrigger id="doctor" className="w-full">
-                      <SelectValue placeholder="Choose a doctor" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="3fa85f64-5717-4562-b3fc-2c963f66afa6">
-                        Dr. Ada Lovelace
-                      </SelectItem>
-                      <SelectItem value="11111111-2222-3333-4444-555555555555">
-                        Dr. Kwame Nkrumah
-                      </SelectItem>
-                      <SelectItem value="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee">
-                        Dr. Wangari Maathai
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
+            <section aria-labelledby="step-1">
+              <div className="space-y-2">
+                <Label htmlFor="doctor">Select Doctor</Label>
+                <Select value={doctorId} onValueChange={setDoctorId}>
+                  <SelectTrigger id="doctor" className="w-full">
+                    <SelectValue placeholder="Choose a doctor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="3fa85f64-5717-4562-b3fc-2c963f66afa6">
+                      Dr. Ada Lovelace
+                    </SelectItem>
+                    <SelectItem value="11111111-2222-3333-4444-555555555555">
+                      Dr. Kwame Nkrumah
+                    </SelectItem>
+                    <SelectItem value="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee">
+                      Dr. Wangari Maathai
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-6 grid-cols-1 mt-3 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Select Date</Label>
-                  <div className="rounded-md border">
+                  <div className="rounded-md border p-3 mt-3">
                     <Calendar
                       mode="single"
                       selected={selectedDate}
                       onSelect={setSelectedDate}
-                      className="p-3"
+                      className="p-3 w-full"
                       disabled={(date) =>
                         date < new Date(new Date().setHours(0, 0, 0, 0))
                       }
                     />
                   </div>
-                  <p className="text-sm text-muted-foreground">
+                  {/* <p className="text-sm text-muted-foreground">
                     <CalendarDays className="mr-1 inline h-4 w-4" />
                     {selectedDate
                       ? `Selected: ${format(selectedDate, "yyyy,MM,dd")}`
                       : "No date selected"}
-                  </p>
-                </div>
-              </div>
-
-              <div className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-base font-semibold">
-                    Available time slots
-                  </h3>
-                  {loadingSlots ? (
-                    <Badge variant="outline" className="gap-1">
-                      <Loader2 className="h-3.5 w-3.5 animate-spin" /> Loading
-                    </Badge>
-                  ) : (
-                    <Badge variant="outline">
-                      {slots.filter((s) => s.isAvailable).length} available
-                    </Badge>
-                  )}
+                  </p> */}
                 </div>
 
-                <div className="min-h-[120px] rounded-md border p-3">
-                  {loadingSlots ? (
-                    <div className="flex h-[100px] items-center justify-center text-muted-foreground">
-                      Loading slots...
-                    </div>
-                  ) : slots.length === 0 ? (
-                    <div className="flex h-[100px] items-center justify-center text-muted-foreground">
-                      No slots available for this date.
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
-                      {slots.map((slot) => {
-                        const label = `${timeObjToHHmm(
-                          slot.startTime
-                        )} - ${timeObjToHHmm(slot.endTime)}`;
-                        const selected = selectedSlotId === slot.id;
-                        return (
-                          <SlotButton
-                            key={slot.id}
-                            label={label}
-                            selected={selected}
-                            disabled={!slot.isAvailable}
-                            onClick={() => setSelectedSlotId(slot.id)}
-                          />
-                        );
-                      })}
-                    </div>
-                  )}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-base font-semibold">
+                      Available time slots
+                    </h3>
+                    {loadingSlots ? (
+                      <Badge variant="outline" className="gap-1">
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" /> Loading
+                      </Badge>
+                    ) : (
+                      <Badge variant="outline">
+                        {slots.filter((s) => s.isAvailable).length} available
+                      </Badge>
+                    )}
+                  </div>
+
+                  <div className="min-h-[120px] rounded-md border p-3">
+                    {loadingSlots ? (
+                      <div className="flex h-[100px] items-center justify-center text-muted-foreground">
+                        Loading slots...
+                      </div>
+                    ) : slots.length === 0 ? (
+                      <div className="flex h-[100px] items-center justify-center text-muted-foreground">
+                        No slots available for this date.
+                      </div>
+                    ) : (
+                      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
+                        {slots.map((slot) => {
+                          const label = `${timeObjToHHmm(
+                            slot.startTime
+                          )} - ${timeObjToHHmm(slot.endTime)}`;
+                          const selected = selectedSlotId === slot.id;
+                          return (
+                            <SlotButton
+                              key={slot.id}
+                              label={label}
+                              selected={selected}
+                              disabled={!slot.isAvailable}
+                              onClick={() => setSelectedSlotId(slot.id)}
+                            />
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </section>

@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, Plus } from "lucide-react";
 import { PharmacyProduct } from "../../types";
+import Image from "next/image";
 
 interface ProductDetailsDialogProps {
   product: PharmacyProduct | null;
@@ -37,26 +38,34 @@ export function ProductDetailsDialog({
 
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-4">
-            <div className="aspect-square relative">
-              <img
+            <div className="h-80 w-100 relative">
+              <Image
+                height={400}
+                width={400}
                 src={product.image || "/placeholder.svg"}
                 alt={product.name}
                 className="object-cover w-full h-full rounded-lg"
               />
               {product.discount && (
-                <Badge className="absolute top-2 left-2 bg-red-500">
+                <Badge
+                  variant={product.discount ? "discount" : "default"}
+                  className="absolute top-2 left-2 z-10"
+                >
                   -{product.discount}%
                 </Badge>
               )}
               {product.featured && (
-                <Badge className="absolute top-2 right-2 bg-yellow-500">
+                <Badge
+                  variant={product.featured ? "featured" : "default"}
+                  className="absolute top-2 right-2 z-10"
+                >
                   Featured
                 </Badge>
               )}
               {product.requiresPrescription && (
                 <Badge
-                  variant="outline"
-                  className="absolute bottom-2 left-2 bg-white"
+                  variant={product.requiresPrescription ? "rx" : "default"}
+                  className="absolute bottom-0 left-2  z-10"
                 >
                   Rx Required
                 </Badge>

@@ -1,13 +1,17 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Card, CardContent } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-// import { LoadingSkeleton } from "@/components/ui/loading-skeleton"
-// import { LoadingOverlay } from "@/components/ui/loading-overlay"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useState, useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,7 +21,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
 import {
   Calendar,
   Clock,
@@ -30,70 +34,47 @@ import {
   XCircle,
   AlertCircle,
   Plus,
-} from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+} from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 // Types matching the API schema
 interface TimeSlot {
-  hour: number
-  minute: number
-  second: number
-  nano: number
+  hour: number;
+  minute: number;
+  second: number;
+  nano: number;
 }
 
 interface Appointment {
-  id: string
-  patientId: string
-  doctorId: string
-  facilityId: string
-  appointmentDate: string
-  startTime: TimeSlot
-  endTime: TimeSlot
-  appointmentType: "IN_PERSON" | "VIRTUAL" | "PHONE_CONSULTATION"
-  status: "SCHEDULED" | "CONFIRMED" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED" | "NO_SHOW"
-  chiefComplaint: string
-  notes: string
-  confirmationCode: string
-  actualStartTime?: string
-  actualEndTime?: string
-  cancellationReason?: string
-  createdAt: string
-  updatedAt: string
+  id: string;
+  patientId: string;
+  doctorId: string;
+  facilityId: string;
+  appointmentDate: string;
+  startTime: TimeSlot;
+  endTime: TimeSlot;
+  appointmentType: "IN_PERSON" | "VIRTUAL" | "PHONE_CONSULTATION";
+  status:
+    | "SCHEDULED"
+    | "CONFIRMED"
+    | "IN_PROGRESS"
+    | "COMPLETED"
+    | "CANCELLED"
+    | "NO_SHOW";
+  chiefComplaint: string;
+  notes: string;
+  confirmationCode: string;
+  actualStartTime?: string;
+  actualEndTime?: string;
+  cancellationReason?: string;
+  createdAt: string;
+  updatedAt: string;
   // Additional fields for display
-  doctorName?: string
-  doctorSpecialization?: string
-  doctorAvatar?: string
-  facilityName?: string
-  facilityAddress?: string
-}
-
-interface AppointmentResponse {
-  totalElements: number
-  totalPages: number
-  pageable: {
-    unpaged: boolean
-    pageNumber: number
-    paged: boolean
-    pageSize: number
-    offset: number
-    sort: {
-      sorted: boolean
-      empty: boolean
-      unsorted: boolean
-    }
-  }
-  numberOfElements: number
-  size: number
-  content: Appointment[]
-  number: number
-  sort: {
-    sorted: boolean
-    empty: boolean
-    unsorted: boolean
-  }
-  first: boolean
-  last: boolean
-  empty: boolean
+  doctorName?: string;
+  doctorSpecialization?: string;
+  doctorAvatar?: string;
+  facilityName?: string;
+  facilityAddress?: string;
 }
 
 // Mock data for demonstration
@@ -161,33 +142,35 @@ const mockAppointments: Appointment[] = [
     facilityName: "KasaAfrica Medical Center",
     facilityAddress: "123 Health Street, Lagos, Nigeria",
   },
-]
+];
 
 export default function MyAppointments() {
-  const [appointments, setAppointments] = useState<Appointment[]>([])
-  const [isLoading, setIsLoading] = useState(true)
-  const [actionLoading, setActionLoading] = useState<string | null>(null)
-  const [cancelDialogOpen, setCancelDialogOpen] = useState(false)
-  const [appointmentToCancel, setAppointmentToCancel] = useState<string | null>(null)
+  const [appointments, setAppointments] = useState<Appointment[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [appointmentToCancel, setAppointmentToCancel] = useState<string | null>(
+    null
+  );
 
   // Simulate API call
   useEffect(() => {
     const fetchAppointments = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      setAppointments(mockAppointments)
-      setIsLoading(false)
-    }
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setAppointments(mockAppointments);
+      setIsLoading(false);
+    };
 
-    fetchAppointments()
-  }, [])
+    fetchAppointments();
+  }, []);
 
   const formatTime = (timeSlot: TimeSlot) => {
-    const hour = timeSlot.hour.toString().padStart(2, "0")
-    const minute = timeSlot.minute.toString().padStart(2, "0")
-    return `${hour}:${minute}`
-  }
+    const hour = timeSlot.hour.toString().padStart(2, "0");
+    const minute = timeSlot.minute.toString().padStart(2, "0");
+    return `${hour}:${minute}`;
+  };
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -195,181 +178,234 @@ export default function MyAppointments() {
       year: "numeric",
       month: "long",
       day: "numeric",
-    })
-  }
+    });
+  };
 
   const getStatusBadge = (status: Appointment["status"]) => {
     const statusConfig = {
-      SCHEDULED: { variant: "secondary" as const, icon: Clock, color: "text-blue-600" },
-      CONFIRMED: { variant: "default" as const, icon: CheckCircle, color: "text-green-600" },
-      IN_PROGRESS: { variant: "default" as const, icon: AlertCircle, color: "text-orange-600" },
-      COMPLETED: { variant: "secondary" as const, icon: CheckCircle, color: "text-green-600" },
-      CANCELLED: { variant: "destructive" as const, icon: XCircle, color: "text-red-600" },
-      NO_SHOW: { variant: "destructive" as const, icon: XCircle, color: "text-red-600" },
-    }
+      SCHEDULED: {
+        variant: "secondary" as const,
+        icon: Clock,
+        color: "text-blue-600",
+      },
+      CONFIRMED: {
+        variant: "default" as const,
+        icon: CheckCircle,
+        color: "text-green-600",
+      },
+      IN_PROGRESS: {
+        variant: "default" as const,
+        icon: AlertCircle,
+        color: "text-orange-600",
+      },
+      COMPLETED: {
+        variant: "secondary" as const,
+        icon: CheckCircle,
+        color: "text-green-600",
+      },
+      CANCELLED: {
+        variant: "destructive" as const,
+        icon: XCircle,
+        color: "text-red-600",
+      },
+      NO_SHOW: {
+        variant: "destructive" as const,
+        icon: XCircle,
+        color: "text-red-600",
+      },
+    };
 
-    const config = statusConfig[status]
-    const Icon = config.icon
+    const config = statusConfig[status];
+    const Icon = config.icon;
 
     return (
       <Badge variant={config.variant} className="flex items-center gap-1">
         <Icon className="h-3 w-3" />
         {status.replace("_", " ")}
       </Badge>
-    )
-  }
+    );
+  };
 
   const getAppointmentTypeIcon = (type: Appointment["appointmentType"]) => {
     switch (type) {
       case "IN_PERSON":
-        return <MapPin className="h-4 w-4 text-blue-600" />
+        return <MapPin className="h-4 w-4 text-blue-600" />;
       case "VIRTUAL":
-        return <Video className="h-4 w-4 text-green-600" />
+        return <Video className="h-4 w-4 text-green-600" />;
       case "PHONE_CONSULTATION":
-        return <Phone className="h-4 w-4 text-purple-600" />
+        return <Phone className="h-4 w-4 text-purple-600" />;
       default:
-        return <Calendar className="h-4 w-4" />
+        return <Calendar className="h-4 w-4" />;
     }
-  }
+  };
 
   const handleAction = async (appointmentId: string, action: string) => {
-    setActionLoading(appointmentId)
+    setActionLoading(appointmentId);
     // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await new Promise((resolve) => setTimeout(resolve, 1500));
 
     if (action === "cancel") {
       setAppointments((prev) =>
         prev.map((apt) =>
           apt.id === appointmentId
-            ? { ...apt, status: "CANCELLED" as const, cancellationReason: "Cancelled by patient" }
-            : apt,
-        ),
-      )
+            ? {
+                ...apt,
+                status: "CANCELLED" as const,
+                cancellationReason: "Cancelled by patient",
+              }
+            : apt
+        )
+      );
     }
 
-    setActionLoading(null)
-    setCancelDialogOpen(false)
-    setAppointmentToCancel(null)
-  }
+    setActionLoading(null);
+    setCancelDialogOpen(false);
+    setAppointmentToCancel(null);
+  };
 
   const filterAppointments = (filter: "upcoming" | "past" | "all") => {
-    const now = new Date()
+    const now = new Date();
     return appointments.filter((apt) => {
-      const aptDate = new Date(apt.appointmentDate)
+      const aptDate = new Date(apt.appointmentDate);
 
       switch (filter) {
         case "upcoming":
-          return aptDate >= now && !["COMPLETED", "CANCELLED", "NO_SHOW"].includes(apt.status)
+          return (
+            aptDate >= now &&
+            !["COMPLETED", "CANCELLED", "NO_SHOW"].includes(apt.status)
+          );
         case "past":
-          return aptDate < now || ["COMPLETED", "CANCELLED", "NO_SHOW"].includes(apt.status)
+          return (
+            aptDate < now ||
+            ["COMPLETED", "CANCELLED", "NO_SHOW"].includes(apt.status)
+          );
         case "all":
         default:
-          return true
+          return true;
       }
-    })
-  }
+    });
+  };
 
-  const upcomingCount = filterAppointments("upcoming").length
-  const pastCount = filterAppointments("past").length
-  const allCount = appointments.length
+  const upcomingCount = filterAppointments("upcoming").length;
+  const pastCount = filterAppointments("past").length;
+  const allCount = appointments.length;
 
   const renderAppointmentCard = (appointment: Appointment) => (
     // <LoadingOverlay key={appointment.id} isLoading={actionLoading === appointment.id} message="Processing...">
-      <Card className="hover:shadow-md transition-shadow">
-        <CardContent className="p-6">
-          <div className="flex items-start justify-between mb-4">
-            <div className="flex items-center space-x-3">
-              <Avatar className="h-12 w-12">
-                <AvatarImage src={appointment.doctorAvatar || "/placeholder.svg"} alt={appointment.doctorName} />
-                <AvatarFallback>
-                  {appointment.doctorName
-                    ?.split(" ")
-                    .map((n) => n[0])
-                    .join("")}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="font-semibold text-lg">{appointment.doctorName}</h3>
-                <p className="text-sm text-muted-foreground">{appointment.doctorSpecialization}</p>
-              </div>
-            </div>
-            <div className="flex items-center space-x-2">
-              {getStatusBadge(appointment.status)}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm">
-                    <MoreVertical className="h-4 w-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuItem>
-                    <FileText className="h-4 w-4 mr-2" />
-                    View Details
-                  </DropdownMenuItem>
-                  {appointment.status === "SCHEDULED" && (
-                    <>
-                      <DropdownMenuItem>
-                        <Calendar className="h-4 w-4 mr-2" />
-                        Reschedule
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="text-red-600"
-                        onClick={() => {
-                          setAppointmentToCancel(appointment.id)
-                          setCancelDialogOpen(true)
-                        }}
-                      >
-                        <XCircle className="h-4 w-4 mr-2" />
-                        Cancel
-                      </DropdownMenuItem>
-                    </>
-                  )}
-                </DropdownMenuContent>
-              </DropdownMenu>
+    <Card className="hover:shadow-md transition-shadow">
+      <CardContent className="p-6">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center space-x-3">
+            <Avatar className="h-12 w-12">
+              <AvatarImage
+                src={appointment.doctorAvatar || "/placeholder.svg"}
+                alt={appointment.doctorName}
+              />
+              <AvatarFallback>
+                {appointment.doctorName
+                  ?.split(" ")
+                  .map((n) => n[0])
+                  .join("")}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <h3 className="font-semibold text-lg">
+                {appointment.doctorName}
+              </h3>
+              <p className="text-sm text-muted-foreground">
+                {appointment.doctorSpecialization}
+              </p>
             </div>
           </div>
-
-          <div className="space-y-3">
-            <div className="flex items-center space-x-2">
-              <Calendar className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">{formatDate(appointment.appointmentDate)}</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Clock className="h-4 w-4 text-muted-foreground" />
-              <span className="text-sm">
-                {formatTime(appointment.startTime)} - {formatTime(appointment.endTime)}
-              </span>
-            </div>
-            <div className="flex items-center space-x-2">
-              {getAppointmentTypeIcon(appointment.appointmentType)}
-              <span className="text-sm">
-                {appointment.appointmentType.replace("_", " ")}
-                {appointment.facilityName && ` at ${appointment.facilityName}`}
-              </span>
-            </div>
+          <div className="flex items-center space-x-2">
+            {getStatusBadge(appointment.status)}
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="sm">
+                  <MoreVertical className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem>
+                  <FileText className="h-4 w-4 mr-2" />
+                  View Details
+                </DropdownMenuItem>
+                {appointment.status === "SCHEDULED" && (
+                  <>
+                    <DropdownMenuItem>
+                      <Calendar className="h-4 w-4 mr-2" />
+                      Reschedule
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-red-600"
+                      onClick={() => {
+                        setAppointmentToCancel(appointment.id);
+                        setCancelDialogOpen(true);
+                      }}
+                    >
+                      <XCircle className="h-4 w-4 mr-2" />
+                      Cancel
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
+        </div>
 
-          <div className="mt-4 pt-4 border-t">
-            <div className="mb-2">
-              <span className="text-sm font-medium">Chief Complaint:</span>
-            </div>
-            <p className="text-sm text-muted-foreground">{appointment.chiefComplaint}</p>
-            {appointment.notes && <p className="text-sm text-muted-foreground mt-1">{appointment.notes}</p>}
+        <div className="space-y-3">
+          <div className="flex items-center space-x-2">
+            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm">
+              {formatDate(appointment.appointmentDate)}
+            </span>
           </div>
+          <div className="flex items-center space-x-2">
+            <Clock className="h-4 w-4 text-muted-foreground" />
+            <span className="text-sm">
+              {formatTime(appointment.startTime)} -{" "}
+              {formatTime(appointment.endTime)}
+            </span>
+          </div>
+          <div className="flex items-center space-x-2">
+            {getAppointmentTypeIcon(appointment.appointmentType)}
+            <span className="text-sm">
+              {appointment.appointmentType.replace("_", " ")}
+              {appointment.facilityName && ` at ${appointment.facilityName}`}
+            </span>
+          </div>
+        </div>
 
-          <div className="mt-4 pt-4 border-t flex items-center justify-between">
-            <div className="text-xs text-muted-foreground">Confirmation: {appointment.confirmationCode}</div>
-            {appointment.appointmentType === "VIRTUAL" && appointment.status === "CONFIRMED" && (
+        <div className="mt-4 pt-4 border-t">
+          <div className="mb-2">
+            <span className="text-sm font-medium">Chief Complaint:</span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            {appointment.chiefComplaint}
+          </p>
+          {appointment.notes && (
+            <p className="text-sm text-muted-foreground mt-1">
+              {appointment.notes}
+            </p>
+          )}
+        </div>
+
+        <div className="mt-4 pt-4 border-t flex items-center justify-between">
+          <div className="text-xs text-muted-foreground">
+            Confirmation: {appointment.confirmationCode}
+          </div>
+          {appointment.appointmentType === "VIRTUAL" &&
+            appointment.status === "CONFIRMED" && (
               <Button size="sm" variant="outline">
                 <Video className="h-4 w-4 mr-2" />
                 Join Meeting
               </Button>
             )}
-          </div>
-        </CardContent>
-      </Card>
+        </div>
+      </CardContent>
+    </Card>
     // </LoadingOverlay>
-  )
+  );
 
   const renderEmptyState = (type: string) => (
     <Card className="text-center py-12">
@@ -380,8 +416,8 @@ export default function MyAppointments() {
           {type === "upcoming"
             ? "You don't have any upcoming appointments scheduled."
             : type === "past"
-              ? "You don't have any past appointments."
-              : "You haven't scheduled any appointments yet."}
+            ? "You don't have any past appointments."
+            : "You haven't scheduled any appointments yet."}
         </p>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
@@ -389,7 +425,7 @@ export default function MyAppointments() {
         </Button>
       </CardContent>
     </Card>
-  )
+  );
 
   if (isLoading) {
     return (
@@ -397,12 +433,14 @@ export default function MyAppointments() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold">My Appointments</h1>
-            <p className="text-muted-foreground">Manage your healthcare appointments</p>
+            <p className="text-muted-foreground">
+              Manage your healthcare appointments
+            </p>
           </div>
         </div>
         {/* <LoadingSkeleton variant="appointment" count={3} /> */}
       </div>
-    )
+    );
   }
 
   return (
@@ -410,7 +448,9 @@ export default function MyAppointments() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">My Appointments</h1>
-          <p className="text-muted-foreground">Manage your healthcare appointments</p>
+          <p className="text-muted-foreground">
+            Manage your healthcare appointments
+          </p>
         </div>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
@@ -459,7 +499,9 @@ export default function MyAppointments() {
         </TabsContent>
 
         <TabsContent value="all" className="space-y-4">
-          {appointments.length > 0 ? appointments.map(renderAppointmentCard) : renderEmptyState("all")}
+          {appointments.length > 0
+            ? appointments.map(renderAppointmentCard)
+            : renderEmptyState("all")}
         </TabsContent>
       </Tabs>
 
@@ -468,13 +510,17 @@ export default function MyAppointments() {
           <AlertDialogHeader>
             <AlertDialogTitle>Cancel Appointment</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to cancel this appointment? This action cannot be undone.
+              Are you sure you want to cancel this appointment? This action
+              cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel>Keep Appointment</AlertDialogCancel>
             <AlertDialogAction
-              onClick={() => appointmentToCancel && handleAction(appointmentToCancel, "cancel")}
+              onClick={() =>
+                appointmentToCancel &&
+                handleAction(appointmentToCancel, "cancel")
+              }
               className="bg-red-600 hover:bg-red-700"
             >
               Cancel Appointment
@@ -483,5 +529,5 @@ export default function MyAppointments() {
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  )
+  );
 }

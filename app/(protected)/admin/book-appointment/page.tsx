@@ -1,8 +1,7 @@
-"use client"
+// "use client"
 
-import BookAppointment from "@/features/appointments/pages/book-appointment";
+// import BookAppointment from "@/features/appointments/pages/book-appointment";
 
-
-export default function BookAppointmentPage() {
-return <BookAppointment/>; 
-}
+// export default function BookAppointmentPage() {
+// return <BookAppointment/>;
+// }

@@ -155,15 +155,13 @@ function calculateSlotCount(formData: BulkSlotCreationInput): number {
   return dates.length * formData.timeSlots.length;
 }
 
-import type { UseFormReturn } from "react-hook-form";
-
 export default function BulkSlotCreationForm({
   doctorId,
   onSuccess,
 }: BulkSlotCreationFormProps) {
   const createBulkSlots = useCreateBulkSlots();
 
-  const form: UseFormReturn<BulkSlotCreationInput> = useForm<BulkSlotCreationInput>({
+  const form = useForm<BulkSlotCreationInput>({
     resolver: zodResolver(bulkSlotCreationSchema),
     defaultValues: {
       doctorId: doctorId,
@@ -322,7 +320,7 @@ export default function BulkSlotCreationForm({
                   />
 
                   <FormField
-                    control={form.control}
+                    // control={form.control}
                     name="endDate"
                     render={({ field }) => (
                       <FormItem>
@@ -361,7 +359,7 @@ export default function BulkSlotCreationForm({
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <FormField
-                    control={form.control}
+                    // control={form.control}
                     name="repeatEveryWeeks"
                     render={({ field }) => (
                       <FormItem>
@@ -419,7 +417,7 @@ export default function BulkSlotCreationForm({
 
                   {form.watch("ends.mode") === "date" ? (
                     <FormField
-                      control={form.control}
+                      // control={form.control}
                       name="ends.endDate"
                       render={({ field }) => (
                         <FormItem>
@@ -459,7 +457,7 @@ export default function BulkSlotCreationForm({
                     />
                   ) : (
                     <FormField
-                      control={form.control}
+                      // control={form.control}
                       name="ends.count"
                       render={({ field }) => (
                         <FormItem>
@@ -494,7 +492,7 @@ export default function BulkSlotCreationForm({
               </CardHeader>
               <CardContent>
                 <FormField
-                  control={form.control}
+                  // control={form.control}
                   name="workingDays"
                   render={() => (
                     <FormItem>
@@ -502,7 +500,7 @@ export default function BulkSlotCreationForm({
                         {DAYS_OF_WEEK.map((day) => (
                           <FormField
                             key={day.value}
-                            control={form.control}
+                            // control={form.control}
                             name="workingDays"
                             render={({ field }) => (
                               <FormItem className="flex flex-row items-center space-x-3 space-y-0">
@@ -513,7 +511,7 @@ export default function BulkSlotCreationForm({
                                       const updatedValue = checked
                                         ? [...(field.value || []), day.value]
                                         : field.value?.filter(
-                                            (value) => value !== day.value
+                                            (value: number) => value !== day.value
                                           ) || [];
                                       field.onChange(updatedValue);
                                     }}
@@ -585,7 +583,7 @@ export default function BulkSlotCreationForm({
 
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                     <FormField
-                      control={form.control}
+                      // control={form.control}
                       name={`timeSlots.${index}.startTime`}
                       render={({ field }) => (
                         <FormItem>
@@ -603,7 +601,7 @@ export default function BulkSlotCreationForm({
                     />
 
                     <FormField
-                      control={form.control}
+                      // control={form.control}
                       name={`timeSlots.${index}.endTime`}
                       render={({ field }) => (
                         <FormItem>
@@ -621,7 +619,7 @@ export default function BulkSlotCreationForm({
                     />
 
                     <FormField
-                      control={form.control}
+                      // control={form.control}
                       name={`timeSlots.${index}.slotType`}
                       render={({ field }) => (
                         <FormItem>
@@ -654,7 +652,7 @@ export default function BulkSlotCreationForm({
                     />
 
                     <FormField
-                      control={form.control}
+                      // control={form.control}
                       name={`timeSlots.${index}.duration`}
                       render={({ field }) => (
                         <FormItem>

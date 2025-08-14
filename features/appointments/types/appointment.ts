@@ -1,3 +1,5 @@
+import { ReactNode } from "react"
+
 export interface Doctor {
   id: string
   name: string
@@ -40,6 +42,9 @@ export type AppointmentType = "IN_PERSON" | "VIRTUAL" | "PHONE_CONSULTATION"
 export type AppointmentStatus = "SCHEDULED" | "CONFIRMED" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED" | "NO_SHOW"
 
 export interface Appointment {
+  date: any
+  time: any
+  fee: any
   id: string
   patientId: string
   doctorId: string
