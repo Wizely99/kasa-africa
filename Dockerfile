@@ -10,8 +10,8 @@ WORKDIR /app
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f package-lock.json ]; then npm ci --legacy-peer-deps; \
   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm i --frozen-lockfile; \
+  elif [ -f package-lock.json ]; then npm ci --legacy-peer-deps; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
@@ -29,8 +29,8 @@ ENV AUTH_SECRET=37ae0ab1d00b7e1629c94cca6184987ebf06
 
 RUN \
   if [ -f yarn.lock ]; then yarn run build; \
-  elif [ -f package-lock.json ]; then npm run build; \
   elif [ -f pnpm-lock.yaml ]; then corepack enable pnpm && pnpm run build; \
+  elif [ -f package-lock.json ]; then npm run build; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
