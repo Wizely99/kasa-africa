@@ -6,6 +6,7 @@ import HealthTips from "../components/HealthTips";
 import HeroBanner from "../components/HeroBanner";
 import MiniCalendar from "../components/MiniCalendar";
 import TopDoctors from "../components/TopDoctors";
+import CategoryGridView from "../components/category-grid-view";
 
 const Dashboard = () => {
   return (
@@ -21,26 +22,7 @@ const Dashboard = () => {
               <h2 className="text-xl font-semibold text-foreground mb-6">
                 Categories
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <CategoryCard
-                  icon={Users}
-                  title="General Consultation"
-                  description="For routine checkups, common illnesses, and general health concerns."
-                  variant="primary"
-                />
-                <CategoryCard
-                  icon={Stethoscope}
-                  title="Specialist Consultation"
-                  description="For specialist consultations including cardiologists, dermatologists, etc."
-                  variant="success"
-                />
-                <CategoryCard
-                  icon={Video}
-                  title="Online Consultation"
-                  description="Get online or text consultations for prescriptions."
-                  variant="info"
-                />
-              </div>
+             <CategoryGridView/>
             </div>
 
             <AppointmentsList />
