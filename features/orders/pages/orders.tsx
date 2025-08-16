@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  useState,
-  useEffect,
-  JSXElementConstructor,
-  Key,
-  ReactElement,
-  ReactNode,
-  ReactPortal,
-} from "react";
+import { useState, useEffect } from "react";
 import {
   Search,
   Package,
@@ -55,7 +47,7 @@ import {
   getOrderStatsAction,
   updateOrderStatusAction,
 } from "@/features/orders/actions/order-actions";
-import type { Order, OrderStats } from "@/features/orders/types/order";
+import { Order, OrderStats } from "../types";
 
 export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -92,9 +84,9 @@ export default function Orders() {
 
   const filteredOrders = orders.filter(
     (order) =>
-      order.patientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      order.patientName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
       order.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      order.patientEmail.toLowerCase().includes(searchQuery.toLowerCase())
+      order.patientEmail?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const getStatusColor = (status: string) => {
@@ -360,99 +352,37 @@ export default function Orders() {
                                   Order Items
                                 </h4>
                                 <div className="space-y-3">
-                                  {selectedOrder.items.map(
-                                    (item: {
-                                      id: Key | null | undefined;
-                                      productImage: any;
-                                      productName:
-                                        | string
-                                        | number
-                                        | bigint
-                                        | boolean
-                                        | ReactElement<
-                                            unknown,
-                                            string | JSXElementConstructor<any>
-                                          >
-                                        | Iterable<ReactNode>
-                                        | Promise<
-                                            | string
-                                            | number
-                                            | bigint
-                                            | boolean
-                                            | ReactPortal
-                                            | ReactElement<
-                                                unknown,
-                                                | string
-                                                | JSXElementConstructor<any>
-                                              >
-                                            | Iterable<ReactNode>
-                                            | null
-                                            | undefined
-                                          >
-                                        | null
-                                        | undefined;
-                                      quantity:
-                                        | string
-                                        | number
-                                        | bigint
-                                        | boolean
-                                        | ReactElement<
-                                            unknown,
-                                            string | JSXElementConstructor<any>
-                                          >
-                                        | Iterable<ReactNode>
-                                        | ReactPortal
-                                        | Promise<
-                                            | string
-                                            | number
-                                            | bigint
-                                            | boolean
-                                            | ReactPortal
-                                            | ReactElement<
-                                                unknown,
-                                                | string
-                                                | JSXElementConstructor<any>
-                                              >
-                                            | Iterable<ReactNode>
-                                            | null
-                                            | undefined
-                                          >
-                                        | null
-                                        | undefined;
-                                      unitPrice: number;
-                                      totalPrice: number;
-                                    }) => (
-                                      <div
-                                        key={item.id}
-                                        className="flex items-center gap-3 p-3 border rounded-lg"
-                                      >
-                                        <img
-                                          src={
-                                            item.productImage ||
-                                            "/placeholder.svg?height=50&width=50"
-                                          }
-                                          alt={
-                                            typeof item.productName === "string"
-                                              ? item.productName
-                                              : ""
-                                          }
-                                          className="h-12 w-12 rounded-md object-cover"
-                                        />
-                                        <div className="flex-1">
-                                          <div className="font-medium">
-                                            {item.productName}
-                                          </div>
-                                          <div className="text-sm text-muted-foreground">
-                                            Quantity: {item.quantity} × $
-                                            {item.unitPrice.toFixed(2)}
-                                          </div>
-                                        </div>
+                                  {selectedOrder.items.map((item) => (
+                                    <div
+                                      key={item.id}
+                                      className="flex items-center gap-3 p-3 border rounded-lg"
+                                    >
+                                      <img
+                                        src={
+                                          item.productImage ||
+                                          "/placeholder.svg?height=50&width=50"
+                                        }
+                                        alt={
+                                          typeof item.productName === "string"
+                                            ? item.productName
+                                            : ""
+                                        }
+                                        className="h-12 w-12 rounded-md object-cover"
+                                      />
+                                      <div className="flex-1">
                                         <div className="font-medium">
-                                          ${item.totalPrice.toFixed(2)}
+                                          {item.productName}
+                                        </div>
+                                        <div className="text-sm text-muted-foreground">
+                                          Quantity: {item.quantity} × $
+                                          {item.unitPrice.toFixed(2)}
                                         </div>
                                       </div>
-                                    )
-                                  )}
+                                      <div className="font-medium">
+                                        ${item.totalPrice.toFixed(2)}
+                                      </div>
+                                    </div>
+                                  ))}
                                 </div>
                               </div>
 

@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { CartItem } from "../../types";
 import Image from "next/image";
+import { formatTsh } from "@/utils/CurrencyFormatterHelper";
 
 interface CartItemsListProps {
   items: CartItem[];
@@ -38,11 +39,11 @@ export function CartItemsList({
               </p>
               <div className="flex items-center gap-2 mt-1">
                 <span className="font-medium text-lg">
-                  ${item.product.price}
+                  {formatTsh(item.product.price)}
                 </span>
                 {item.product.originalPrice && (
                   <span className="text-sm text-muted-foreground line-through">
-                    ${item.product.originalPrice}
+                    {formatTsh(item.product.originalPrice)}
                   </span>
                 )}
                 {item.product.requiresPrescription && (
@@ -82,7 +83,7 @@ export function CartItemsList({
 
               <div className="text-right min-w-[100px]">
                 <p className="font-bold text-lg">
-                  ${(item.product.price * item.quantity).toFixed(2)}
+                  {formatTsh(item.product.price * item.quantity)}
                 </p>
               </div>
 

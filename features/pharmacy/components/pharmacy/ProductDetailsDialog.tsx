@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { Star, Plus } from "lucide-react";
 import { PharmacyProduct } from "../../types";
 import Image from "next/image";
+import { formatTsh } from "@/utils/CurrencyFormatterHelper";
 
 interface ProductDetailsDialogProps {
   product: PharmacyProduct | null;
@@ -109,10 +110,12 @@ export function ProductDetailsDialog({
             </div>
 
             <div className="flex items-center gap-3">
-              <span className="text-3xl font-bold">${product.price}</span>
+              <span className="text-3xl font-bold">
+                {formatTsh(product.price)}
+              </span>
               {product.originalPrice && (
                 <span className="text-xl text-muted-foreground line-through">
-                  ${product.originalPrice}
+                  {formatTsh(product.originalPrice)}
                 </span>
               )}
               <Badge variant={product.inStock ? "default" : "secondary"}>

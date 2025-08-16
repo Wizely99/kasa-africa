@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
 import Image from "next/image";
 import { PharmacyProduct } from "../../types";
+import { formatTsh } from "@/utils/CurrencyFormatterHelper";
 
 interface ProductCardProps {
   product: PharmacyProduct;
@@ -93,10 +94,23 @@ export function ProductCard({
 
         <div className="flex items-center justify-between mt-4">
           <div className="flex items-center gap-2">
-            <span className="text-xl font-bold">${product.price}</span>
-            {"originalPrice" in product && product.originalPrice && (
-              <span className="text-sm text-muted-foreground line-through">
-                ${product.originalPrice}
+            {product.discount ? (
+              <>
+                {/* Discounted Price in Green */}
+                <span className="text-xl font-bold text-green-600">
+                  {formatTsh(
+                    product.price - (product.price * product.discount) / 100
+                  )}
+                </span>
+                {/* Original Price Struck Through */}
+                <span className="text-sm text-muted-foreground line-through">
+                  {formatTsh(product.price)}
+                </span>
+              </>
+            ) : (
+              // No discount, just show normal price
+              <span className="text-xl font-bold">
+                {formatTsh(product.price)}
               </span>
             )}
           </div>

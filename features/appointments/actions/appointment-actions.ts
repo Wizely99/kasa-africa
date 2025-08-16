@@ -347,6 +347,9 @@ export async function bookAppointmentAction(appointmentData: BookAppointmentRequ
       confirmationCode: `CONF${Math.random().toString(36).substr(2, 6).toUpperCase()}`,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
+      date: undefined,
+      time: undefined,
+      fee: undefined
     }
 
     // Add to mock data

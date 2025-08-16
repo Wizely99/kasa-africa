@@ -2,6 +2,7 @@ import React from "react";
 import { StatsCard } from "./pharmacy/StatsCard";
 import { mockProducts } from "../data";
 import { Package, DollarSign, Star, TrendingUp } from "lucide-react";
+import { formatTsh } from "@/utils/CurrencyFormatterHelper";
 
 // Mock total sales data (replace with API/orders data)
 const mockSales = [
@@ -32,7 +33,7 @@ const StatsCardView = () => {
         />
         <StatsCard
           title="Total Sales"
-          value={`$${totalSales.toFixed(2)}`}
+          value={` ${formatTsh(totalSales)}`}
           description="Overall revenue"
           icon={DollarSign}
         />

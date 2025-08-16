@@ -187,7 +187,7 @@ export function AddProductForm({ categories, onSuccess }: AddProductFormProps) {
             name="price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Price ($)</FormLabel>
+                <FormLabel>Price (Tsh)</FormLabel>
                 <FormControl>
                   <Input
                     type="number"

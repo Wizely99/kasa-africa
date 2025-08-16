@@ -1,6 +1,7 @@
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { CartItem } from "../../types";
+import { formatTsh } from "@/utils/CurrencyFormatterHelper";
 
 interface OrderSummaryProps {
   items: CartItem[];
@@ -24,7 +25,7 @@ export function OrderSummary({
       <div className="space-y-3">
         <div className="flex justify-between text-sm">
           <span>Subtotal ({totalItems} items)</span>
-          <span>${totalAmount.toFixed(2)}</span>
+          <span>{formatTsh(totalAmount)}</span>
         </div>
         <div className="flex justify-between text-sm">
           <span>Shipping</span>
@@ -32,12 +33,12 @@ export function OrderSummary({
         </div>
         <div className="flex justify-between text-sm">
           <span>Tax (8%)</span>
-          <span>${(totalAmount * 0.08).toFixed(2)}</span>
+          <span>{formatTsh(totalAmount * 0.08)}</span>
         </div>
         <Separator />
         <div className="flex justify-between font-bold text-lg">
           <span>Total</span>
-          <span>${(totalAmount * 1.08).toFixed(2)}</span>
+          <span>{formatTsh(totalAmount * 1.08)}</span>
         </div>
       </div>
 

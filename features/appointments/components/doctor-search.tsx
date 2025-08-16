@@ -31,13 +31,17 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { Doctor } from "../types/appointment";
+import { formatTsh } from "@/utils/CurrencyFormatterHelper";
 // import { getAllDoctorsAction } from "../actions/appointment-actions"
 
 interface DoctorSearchProps {
   onSelectDoctor: (doctor: Doctor) => void;
 }
 async function getAllDoctorsAction() {
-  return [];
+  return {
+    success: true,
+    data: [], // Replace with actual doctor data if available
+  };
 }
 export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
   const [doctors, setDoctors] = useState<Doctor[]>([]);
@@ -349,7 +353,7 @@ export function DoctorSearch({ onSelectDoctor }: DoctorSearchProps) {
                     <div className="flex items-center gap-1">
                       <DollarSign className="h-4 w-4 text-muted-foreground" />
                       <span className="font-semibold">
-                        ${doctor.consultationFee}
+                        {formatTsh(doctor.consultationFee)}
                       </span>
                       <span className="text-sm text-muted-foreground">
                         consultation

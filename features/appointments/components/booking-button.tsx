@@ -2,12 +2,16 @@
 
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import { Doctors } from "../types/data";
+interface BookingButtonProps {
+  doctor: Doctors;
+}
 
-export default function BookingButton() {
+export default function BookingButton({ doctor }: BookingButtonProps) {
   const router = useRouter();
 
   const handleClick = () => {
-    router.push("/patient/book-appointment/booking");
+    router.push(`/patient/book-appointment/booking?doctorId=${doctor.id}`);
   };
 
   return (

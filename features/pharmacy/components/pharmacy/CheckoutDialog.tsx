@@ -10,14 +10,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { CartItem } from "../../types";
+import { formatTsh } from "@/utils/CurrencyFormatterHelper";
+import { PaymentMethodForm } from "./PaymentForm";
+import { useState } from "react";
 
 interface CheckoutDialogProps {
   open: boolean;
@@ -55,7 +51,7 @@ export function CheckoutDialog({
   const hasPrescriptionItems = items.some(
     (item) => item.product.requiresPrescription
   );
-
+  const [isPaymentValid, setIsPaymentValid] = useState(false);
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -93,14 +89,14 @@ export function CheckoutDialog({
                       </span>
                     </div>
                     <span className="font-medium">
-                      ${(item.product.price * item.quantity).toFixed(2)}
+                      {formatTsh(item.product.price * item.quantity)}
                     </span>
                   </div>
                 ))}
                 <Separator />
                 <div className="flex justify-between text-sm">
                   <span>Subtotal</span>
-                  <span>${totalAmount.toFixed(2)}</span>
+                  <span>{formatTsh(totalAmount)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Shipping</span>
@@ -108,12 +104,12 @@ export function CheckoutDialog({
                 </div>
                 <div className="flex justify-between text-sm">
                   <span>Tax (8%)</span>
-                  <span>${(totalAmount * 0.08).toFixed(2)}</span>
+                  <span>{formatTsh(totalAmount * 0.08)}</span>
                 </div>
                 <Separator />
                 <div className="flex justify-between font-bold text-lg">
                   <span>Total</span>
-                  <span>${(totalAmount * 1.08).toFixed(2)}</span>
+                  <span>{formatTsh(totalAmount * 1.08)}</span>
                 </div>
               </div>
             </div>
@@ -198,29 +194,13 @@ export function CheckoutDialog({
             </div>
 
             {/* Payment Method */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-lg">Payment Method</h3>
-              <Select
-                value={orderData.paymentMethod}
-                onValueChange={(value) =>
-                  onOrderDataChange({
-                    ...orderData,
-                    paymentMethod: value,
-                  })
-                }
-              >
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="card">Credit/Debit Card</SelectItem>
-                  <SelectItem value="paypal">PayPal</SelectItem>
-                  <SelectItem value="apple">Apple Pay</SelectItem>
-                  <SelectItem value="google">Google Pay</SelectItem>
-                  <SelectItem value="cod">Cash on Delivery</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+            <PaymentMethodForm
+              value={orderData.paymentMethod}
+              onChange={(value) =>
+                onOrderDataChange({ ...orderData, paymentMethod: value })
+              }
+              onValidationChange={setIsPaymentValid}
+            />
 
             {/* Terms and Conditions */}
             <div className="space-y-4">
@@ -228,7 +208,7 @@ export function CheckoutDialog({
                 <h4 className="font-medium mb-2">Order Information</h4>
                 <ul className="text-sm text-muted-foreground space-y-1">
                   <li>• Estimated delivery: 2-3 business days</li>
-                  <li>• Free shipping on orders over $50</li>
+                  <li>• Free shipping on orders over {formatTsh(50000)}</li>
                   <li>• Prescription verification required for Rx items</li>
                   <li>• 30-day return policy for unopened items</li>
                 </ul>
@@ -246,7 +226,7 @@ export function CheckoutDialog({
             disabled={!orderData.deliveryAddress}
             size="lg"
           >
-            Place Order (${(totalAmount * 1.08).toFixed(2)})
+            Place Order ({formatTsh(totalAmount * 1.08)})
           </Button>
         </div>
       </DialogContent>

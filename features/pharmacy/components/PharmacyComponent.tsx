@@ -21,6 +21,7 @@ import { OrderSummary } from "../components/pharmacy/OrderSummary";
 import { CheckoutDialog } from "../components/pharmacy/CheckoutDialog";
 import { ProductCard } from "../components/pharmacy/ProductCard";
 import { OrderConfirmationDialog } from "./pharmacy/ConfirmOrderPaymentDialog";
+import { formatTsh } from "@/utils/CurrencyFormatterHelper";
 
 export default function PharmacyComponent() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -148,7 +149,7 @@ export default function PharmacyComponent() {
           {cartItems.length > 0 && (
             <Button onClick={() => setShowCheckout(true)} size="lg">
               <ShoppingCart className="h-4 w-4 mr-2" />
-              Checkout (${getTotalAmount().toFixed(2)})
+              Checkout ({formatTsh(getTotalAmount())})
             </Button>
           )}
         </div>

@@ -40,6 +40,8 @@ import { AppointmentSummary } from "../components/AppointmentSummary";
 import { PaymentMethods } from "../components/PaymentMethods";
 import { SlotButton } from "../components/SlotButton";
 import { Stepper } from "../components/Stepper";
+import { mockDoctors } from "@/features/appointments/types/data";
+import Image from "next/image";
 
 // Types
 type LocalTime = {
@@ -86,7 +88,7 @@ function timeObjToHHmm(t: LocalTime) {
 
 export default function BookingPage() {
   const searchParams = useSearchParams();
-
+  const doctorId = searchParams?.get("doctorId");
   // Step control
   const [step, setStep] = useState<number>(1);
 
@@ -94,9 +96,10 @@ export default function BookingPage() {
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(
     new Date()
   );
-  const [doctorId, setDoctorId] = useState<string>(
-    searchParams?.get("doctorId") || "3fa85f64-5717-4562-b3fc-2c963f66afa6"
-  );
+  const selectedDoctor = useMemo(() => {
+    return mockDoctors.find((doctor) => doctor.id === doctorId) || null;
+  }, [doctorId]);
+
   const [slots, setSlots] = useState<Slot[]>([]);
   const [loadingSlots, setLoadingSlots] = useState<boolean>(false);
   const [selectedSlotId, setSelectedSlotId] = useState<string | null>(null);
@@ -153,7 +156,10 @@ export default function BookingPage() {
       setLoadingSlots(true);
       setSelectedSlotId(null);
       try {
-        const query = new URLSearchParams({ date: selectedDateStr, doctorId });
+        const query = new URLSearchParams({
+          date: selectedDateStr,
+          doctorId: doctorId ?? "",
+        });
         const res = await fetch(`/api/slots?${query.toString()}`, {
           cache: "no-store",
         });
@@ -295,7 +301,7 @@ export default function BookingPage() {
     setSubmitting(true);
     const payload: AppointmentPayload = {
       patientId,
-      doctorId,
+      doctorId: doctorId ?? "",
       facilityId,
       appointmentDate: selectedDateStr,
       startTime: selectedSlot.startTime,
@@ -359,33 +365,39 @@ export default function BookingPage() {
           {step === 1 && (
             <section aria-labelledby="step-1">
               <div className="space-y-2">
-                <Label htmlFor="doctor">Select Doctor</Label>
-                <Select value={doctorId} onValueChange={setDoctorId}>
-                  <SelectTrigger id="doctor" className="w-full">
-                    <SelectValue placeholder="Choose a doctor" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="3fa85f64-5717-4562-b3fc-2c963f66afa6">
-                      Dr. Ada Lovelace
-                    </SelectItem>
-                    <SelectItem value="11111111-2222-3333-4444-555555555555">
-                      Dr. Kwame Nkrumah
-                    </SelectItem>
-                    <SelectItem value="aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee">
-                      Dr. Wangari Maathai
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label htmlFor="doctor">Doctor</Label>
+                <div className="flex items-center gap-3 p-3 border rounded-md">
+                  {selectedDoctor ? (
+                    <>
+                      <Image
+                        width={15}
+                        height={15}
+                        src={selectedDoctor.avatar}
+                        alt={selectedDoctor.name}
+                        className="size-15 rounded-full"
+                      />
+                      <div>
+                        <p className="font-medium">{selectedDoctor.name}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {selectedDoctor.specialization}
+                        </p>
+                      </div>
+                    </>
+                  ) : (
+                    <p className="text-muted-foreground">No doctor selected</p>
+                  )}
+                </div>
               </div>
+
               <div className="grid gap-6 grid-cols-1 mt-3 md:grid-cols-2">
                 <div className="space-y-2">
                   <Label>Select Date</Label>
-                  <div className="rounded-md border p-3 mt-3">
+                  <div className="rounded-md border mt-3 ">
                     <Calendar
                       mode="single"
                       selected={selectedDate}
                       onSelect={setSelectedDate}
-                      className="p-3 w-full"
+                      className="w-full rounded-md padding-2"
                       disabled={(date) =>
                         date < new Date(new Date().setHours(0, 0, 0, 0))
                       }
@@ -543,7 +555,7 @@ export default function BookingPage() {
                   </Badge>
                   <Badge variant="outline" className="gap-1">
                     <Stethoscope className="h-3.5 w-3.5" />
-                    Doctor: {doctorId.slice(0, 6)}...
+                    Doctor: {doctorId?.slice(0, 6)}...
                   </Badge>
                 </div>
               </div>
@@ -633,7 +645,7 @@ export default function BookingPage() {
                       <div>
                         <div className="text-sm font-medium">Doctor</div>
                         <div className="text-sm text-muted-foreground">
-                          {doctorId.slice(0, 8)}...
+                          {doctorId?.slice(0, 8)}...
                         </div>
                       </div>
                     </div>

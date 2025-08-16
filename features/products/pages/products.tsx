@@ -59,6 +59,7 @@ import type {
   Product,
   ProductCategory,
 } from "@/features/products/types/product";
+import { formatTsh } from "@/utils/CurrencyFormatterHelper";
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -299,7 +300,7 @@ export default function ProductsPage() {
                       </div>
                     </TableCell>
                     <TableCell>{product.category}</TableCell>
-                    <TableCell>${product.price.toFixed(2)}</TableCell>
+                    <TableCell>{formatTsh(product.price)}</TableCell>
                     <TableCell>
                       <div className="flex items-center gap-2">
                         <span>{product.stockQuantity}</span>

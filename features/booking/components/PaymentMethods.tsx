@@ -13,6 +13,7 @@ import {
 } from "@/components/ui/select";
 import { CreditCard, Loader2, Phone, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { formatTsh } from "@/utils/CurrencyFormatterHelper";
 
 type PaymentMethod = "CARD" | "MOBILE_MONEY" | "CASH";
 
@@ -68,7 +69,9 @@ export function PaymentMethods({
         </div>
         <div className="mt-2 text-sm text-muted-foreground">
           Consultation Fee:{" "}
-          <span className="font-semibold text-foreground">$50.00</span>
+          <span className="font-semibold text-foreground">
+            {formatTsh(50000)}
+          </span>
         </div>
       </div>
 

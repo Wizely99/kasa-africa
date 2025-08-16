@@ -1,6 +1,7 @@
 "use server"
 
-import type { Order, OrderStats } from "../types/order"
+import { Order, OrderStats } from "../types"
+
 
 // Mock orders data
 const mockOrders: Order[] = [
@@ -36,6 +37,10 @@ const mockOrders: Order[] = [
     prescriptionUploaded: false,
     trackingNumber: "TRK123456789",
     estimatedDelivery: "2024-01-18T00:00:00Z",
+    prescriptionVerified: false,
+    canCancel: false,
+    canReorder: false,
+    deliveryFee: 0
   },
   {
     id: "ORD-002",
@@ -60,6 +65,9 @@ const mockOrders: Order[] = [
     prescriptionUploaded: true,
     prescriptionVerified: true,
     estimatedDelivery: "2024-01-17T00:00:00Z",
+    canCancel: false,
+    canReorder: false,
+    deliveryFee: 0
   },
   {
     id: "ORD-003",
@@ -93,6 +101,9 @@ const mockOrders: Order[] = [
     prescriptionUploaded: true,
     prescriptionVerified: false,
     notes: "Patient requested expedited processing",
+    canCancel: false,
+    canReorder: false,
+    deliveryFee: 0
   },
 ]
 

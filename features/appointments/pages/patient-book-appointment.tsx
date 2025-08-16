@@ -19,119 +19,9 @@ import { Clock, DollarSign, MapPin, Star } from "lucide-react";
 import { useState } from "react";
 import SearchInput from "@/components/common/SearchInput";
 import BookingButton from "../components/booking-button";
-import Image from "next/image";
-import DoctorAvatar from "../components/DoctorAvatar";
-
-// Mock doctors data
-const mockDoctors = [
-  {
-    id: "1",
-    name: "Dr. Jonathan Nkwisawe",
-    specialization: "Dermatology",
-    experience: 8,
-    rating: 4.8,
-    consultationFee: 150,
-    location: "Downtown Medical Center",
-    avatar: "/pictures/doctors/male-1.jpg",
-    isAvailable: true,
-    nextAvailable: "Today 2:30 PM",
-    about:
-      "Specialized in skin disorders, acne treatment, and cosmetic dermatology with 8+ years of experience.",
-    education: "MD from Harvard Medical School",
-    languages: ["English", "Spanish"],
-  },
-  {
-    id: "2",
-    name: "Dr. Michael Smith",
-    specialization: "Cardiology",
-    experience: 12,
-    rating: 4.9,
-    consultationFee: 200,
-    location: "Heart Care Clinic",
-    avatar: "/pictures/doctors/male-2.jpg",
-    isAvailable: true,
-    nextAvailable: "Tomorrow 10:00 AM",
-    about:
-      "Expert in cardiovascular diseases, heart surgery, and preventive cardiology.",
-    education: "MD from Johns Hopkins University",
-    languages: ["English", "Mandarin"],
-  },
-  {
-    id: "3",
-    name: "Dr. John Mwakipasile",
-    specialization: "Pediatrics",
-    experience: 10,
-    rating: 4.7,
-    consultationFee: 120,
-    location: "Children's Health Center",
-    avatar: "/pictures/doctors/male-7.jpeg",
-    isAvailable: false,
-    nextAvailable: "Jan 20, 9:00 AM",
-    about:
-      "Dedicated pediatrician focusing on child development and family healthcare.",
-    education: "MD from Stanford University",
-    languages: ["English", "French"],
-  },
-  {
-    id: "4",
-    name: "Dr. James Wilson",
-    specialization: "Orthopedics",
-    experience: 15,
-    rating: 4.6,
-    consultationFee: 180,
-    location: "Bone & Joint Institute",
-    avatar: "/pictures/doctors/male-4.jpg",
-    isAvailable: true,
-    nextAvailable: "Today 4:00 PM",
-    about:
-      "Orthopedic surgeon specializing in sports injuries and joint replacement.",
-    education: "MD from Mayo Clinic",
-    languages: ["English"],
-  },
-
-  {
-    id: "5",
-    name: "Dr. Anna Mfugole",
-    specialization: "General Medicine",
-    experience: 6,
-    rating: 4.5,
-    consultationFee: 100,
-    location: "Family Health Clinic",
-    avatar: "/pictures/doctors/female-1.jpg",
-    isAvailable: true,
-    nextAvailable: "Today 11:30 AM",
-    about:
-      "General practitioner providing comprehensive primary care for all ages.",
-    education: "MD from University of Washington",
-    languages: ["English", "Korean"],
-  },
-  {
-    id: "6",
-    name: "Dr. Lisa Rodriguez",
-    specialization: "General Medicine",
-    experience: 6,
-    rating: 4.5,
-    consultationFee: 100,
-    location: "Family Health Clinic",
-    avatar: "/pictures/doctors/female-2.jpg",
-    isAvailable: true,
-    nextAvailable: "Today 11:30 AM",
-    about:
-      "General practitioner providing comprehensive primary care for all ages.",
-    education: "MD from University of Washington",
-    languages: ["English", "Korean"],
-  },
-];
-
-const specializations = [
-  "All Specializations",
-  "Cardiology",
-  "Dermatology",
-  "General Medicine",
-  "Neurology",
-  "Orthopedics",
-  "Pediatrics",
-];
+import DoctorAvatar from "../components/ImageView";
+import { mockDoctors, specializations } from "../types/data";
+import { formatTsh } from "@/utils/CurrencyFormatterHelper";
 
 export default function PatientBookAppointment() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -214,7 +104,8 @@ export default function PatientBookAppointment() {
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
-                  <span>${doctor.consultationFee} consultation fee</span>
+                  <span>
+                    {formatTsh(doctor.consultationFee)} consultation fee</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Clock className="h-4 w-4 text-muted-foreground" />
@@ -228,7 +119,7 @@ export default function PatientBookAppointment() {
                 </Badge>
 
                 {/* <BookingForm doctor={doctor} /> */}
-                <BookingButton />
+                <BookingButton doctor={doctor} />
               </div>
             </CardContent>
           </Card>

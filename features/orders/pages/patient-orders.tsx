@@ -32,128 +32,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-
-interface OrderItem {
-  id: string;
-  productName: string;
-  productImage?: string;
-  quantity: number;
-  unitPrice: number;
-  totalPrice: number;
-  requiresPrescription: boolean;
-}
-
-interface Order {
-  id: string;
-  orderDate: string;
-  items: OrderItem[];
-  totalAmount: number;
-  status:
-    | "pending"
-    | "confirmed"
-    | "processing"
-    | "shipped"
-    | "delivered"
-    | "cancelled";
-  deliveryAddress: string;
-  trackingNumber?: string;
-  estimatedDelivery?: string;
-  prescriptionUploaded: boolean;
-  prescriptionVerified: boolean;
-  notes?: string;
-  canCancel: boolean;
-  canReorder: boolean;
-  deliveryFee: number;
-  discountAmount?: number;
-}
-
-const mockOrders: Order[] = [
-  {
-    id: "ORD-2024-003",
-    orderDate: "2024-01-25",
-    items: [
-      {
-        id: "1",
-        productName: "Metformin 500mg",
-        quantity: 60,
-        unitPrice: 25.99,
-        totalPrice: 25.99,
-        requiresPrescription: true,
-      },
-      {
-        id: "2",
-        productName: "Blood Glucose Test Strips",
-        quantity: 1,
-        unitPrice: 45.5,
-        totalPrice: 45.5,
-        requiresPrescription: false,
-      },
-    ],
-    totalAmount: 76.49,
-    status: "processing",
-    deliveryAddress: "123 Main St, Dar es Salaam, Tanzania",
-    prescriptionUploaded: true,
-    prescriptionVerified: true,
-    canCancel: true,
-    canReorder: false,
-    deliveryFee: 5.0,
-    discountAmount: 0,
-  },
-  {
-    id: "ORD-2024-002",
-    orderDate: "2024-01-20",
-    items: [
-      {
-        id: "3",
-        productName: "Digital Thermometer",
-        quantity: 1,
-        unitPrice: 29.99,
-        totalPrice: 29.99,
-        requiresPrescription: false,
-      },
-    ],
-    totalAmount: 34.99,
-    status: "delivered",
-    deliveryAddress: "123 Main St, Dar es Salaam, Tanzania",
-    trackingNumber: "TZA987654321",
-    prescriptionUploaded: false,
-    prescriptionVerified: false,
-    canCancel: false,
-    canReorder: true,
-    deliveryFee: 5.0,
-  },
-  {
-    id: "ORD-2024-001",
-    orderDate: "2024-01-15",
-    items: [
-      {
-        id: "4",
-        productName: "Paracetamol 500mg",
-        quantity: 30,
-        unitPrice: 8.99,
-        totalPrice: 8.99,
-        requiresPrescription: false,
-      },
-      {
-        id: "5",
-        productName: "Vitamin D3 Supplements",
-        quantity: 1,
-        unitPrice: 19.99,
-        totalPrice: 19.99,
-        requiresPrescription: false,
-      },
-    ],
-    totalAmount: 33.98,
-    status: "delivered",
-    deliveryAddress: "123 Main St, Dar es Salaam, Tanzania",
-    trackingNumber: "TZA123456789",
-    prescriptionUploaded: false,
-    prescriptionVerified: false,
-    canCancel: false,
-    canReorder: true,
-    deliveryFee: 5.0,
-  },
-];
+import { mockOrders, Order } from "../types";
+import { formatTsh } from "@/utils/CurrencyFormatterHelper";
 
 export default function MyOrdersPage() {
   const [orders] = useState<Order[]>(mockOrders);
@@ -327,8 +207,8 @@ export default function MyOrdersPage() {
                           {order.id}
                         </div>
                         <div className="text-sm text-gray-600">
-                          {order.items.length} items • $
-                          {order.totalAmount.toFixed(2)}
+                          {order.items.length} items •
+                          {formatTsh(order.totalAmount)}
                         </div>
                         <div className="text-xs text-gray-500">
                           {new Date(order.orderDate).toLocaleDateString()}
@@ -410,8 +290,8 @@ export default function MyOrdersPage() {
                           </div>
                           <div className="text-sm text-gray-600">
                             {order.items.length} item
-                            {order.items.length > 1 ? "s" : ""} • Total: $
-                            {order.totalAmount.toFixed(2)}
+                            {order.items.length > 1 ? "s" : ""} • Total:
+                            {formatTsh(order.totalAmount)}
                           </div>
                           <div className="text-sm text-gray-500 flex items-center gap-4">
                             <span className="flex items-center gap-1">
@@ -533,8 +413,8 @@ export default function MyOrdersPage() {
                                             {item.productName}
                                           </div>
                                           <div className="text-sm text-gray-600">
-                                            Qty: {item.quantity} × $
-                                            {item.unitPrice.toFixed(2)}
+                                            Qty: {item.quantity} ×
+                                            {formatTsh(item.unitPrice)}
                                           </div>
                                           {item.requiresPrescription && (
                                             <Badge
@@ -547,7 +427,7 @@ export default function MyOrdersPage() {
                                           )}
                                         </div>
                                         <div className="font-semibold">
-                                          ${item.totalPrice.toFixed(2)}
+                                          {formatTsh(item.totalPrice)}
                                         </div>
                                       </div>
                                     ))}
@@ -559,26 +439,25 @@ export default function MyOrdersPage() {
                                     <div className="flex justify-between text-sm">
                                       <span>Subtotal:</span>
                                       <span>
-                                        $
-                                        {(
+                                        {formatTsh(
                                           selectedOrder.totalAmount -
-                                          selectedOrder.deliveryFee
-                                        ).toFixed(2)}
+                                            selectedOrder.deliveryFee
+                                        )}
                                       </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                       <span>Delivery Fee:</span>
                                       <span>
-                                        ${selectedOrder.deliveryFee.toFixed(2)}
+                                        {formatTsh(selectedOrder.deliveryFee)}
                                       </span>
                                     </div>
                                     {selectedOrder.discountAmount && (
                                       <div className="flex justify-between text-sm text-green-600">
                                         <span>Discount:</span>
                                         <span>
-                                          -$
-                                          {selectedOrder.discountAmount.toFixed(
-                                            2
+                                          -
+                                          {formatTsh(
+                                            selectedOrder.discountAmount
                                           )}
                                         </span>
                                       </div>
@@ -587,7 +466,7 @@ export default function MyOrdersPage() {
                                     <div className="flex justify-between font-semibold text-lg">
                                       <span>Total:</span>
                                       <span>
-                                        ${selectedOrder.totalAmount.toFixed(2)}
+                                        {formatTsh(selectedOrder.totalAmount)}
                                       </span>
                                     </div>
                                   </div>

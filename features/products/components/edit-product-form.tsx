@@ -220,7 +220,7 @@ export function EditProductForm({
             name="price"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Price ($)</FormLabel>
+                <FormLabel>Price (Tsh)</FormLabel>
                 <FormControl>
                   <Input
                     type="number"
