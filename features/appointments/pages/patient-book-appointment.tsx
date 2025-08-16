@@ -19,7 +19,7 @@ import { Clock, DollarSign, MapPin, Star } from "lucide-react";
 import { useState } from "react";
 import SearchInput from "@/components/common/SearchInput";
 import BookingButton from "../components/booking-button";
-import DoctorAvatar from "../components/ImageView";
+import DoctorAvatar from "../components/image-view";
 import { mockDoctors, specializations } from "../types/data";
 import { formatTsh } from "@/utils/CurrencyFormatterHelper";
 
@@ -105,7 +105,8 @@ export default function PatientBookAppointment() {
                 <div className="flex items-center gap-2 text-sm">
                   <DollarSign className="h-4 w-4 text-muted-foreground" />
                   <span>
-                    {formatTsh(doctor.consultationFee)} consultation fee</span>
+                    {formatTsh(doctor.consultationFee)} consultation fee
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <Clock className="h-4 w-4 text-muted-foreground" />

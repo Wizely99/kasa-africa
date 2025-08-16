@@ -38,7 +38,7 @@ export interface TimeSlot {
   nano: number
 }
 
-export type AppointmentType = "IN_PERSON" | "VIRTUAL" | "PHONE_CONSULTATION"
+export type AppointmentType = "IN_PERSON" | "VIRTUAL" | "MOBILE_CONSULTATION"
 export type AppointmentStatus = "SCHEDULED" | "CONFIRMED" | "IN_PROGRESS" | "COMPLETED" | "CANCELLED" | "NO_SHOW"
 
 export interface Appointment {

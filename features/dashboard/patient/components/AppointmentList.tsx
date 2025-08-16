@@ -3,42 +3,43 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar, Clock, MapPin } from "lucide-react";
-
-const appointmentsData = [
-  {
-    id: 1,
-    doctor: "Dr. Amaka",
-    specialty: "Cardiologist",
-    date: "6/7/18",
-    time: "11:30 AM",
-    duration: "30 mins",
-    status: "upcoming",
-    avatar: "/placeholder.svg",
-  },
-  {
-    id: 2,
-    doctor: "Dr. Kwame",
-    specialty: "Pediatrician",
-    date: "6/7/18",
-    time: "11:30 AM",
-    duration: "45 mins",
-    status: "upcoming",
-    avatar: "/placeholder.svg",
-  },
-  {
-    id: 3,
-    doctor: "Dr. Fatima",
-    specialty: "Dermatologist",
-    date: "6/7/18",
-    time: "11:30 AM",
-    duration: "30 mins",
-    status: "completed",
-    avatar: "/placeholder.svg",
-  },
-];
+import { mockAppointments } from "@/features/appointments/data/appointment-data";
 
 const AppointmentsList = () => {
-  const renderAppointment = (appointment: (typeof appointmentsData)[0]) => (
+  // Map mockAppointments to the format used in the UI
+  const mappedAppointments = mockAppointments.map((apt) => {
+    const startHour = apt.startTime.hour.toString().padStart(2, "0");
+    const startMinute = apt.startTime.minute.toString().padStart(2, "0");
+    const durationMinutes =
+      (apt.endTime.hour - apt.startTime.hour) * 60 +
+      (apt.endTime.minute - apt.startTime.minute);
+    const status =
+      apt.status === "SCHEDULED" || apt.status === "CONFIRMED"
+        ? "upcoming"
+        : "completed";
+
+    return {
+      id: apt.id,
+      doctor: apt.doctorName || "Unknown Doctor",
+      specialty: apt.doctorSpecialization || "",
+      date: new Date(apt.appointmentDate).toLocaleDateString(),
+      time: `${startHour}:${startMinute}`,
+      duration: `${durationMinutes} mins`,
+      status: status,
+      avatar: apt.doctorAvatar || "/placeholder.svg",
+      facility: apt.facilityName || "",
+      address: apt.facilityAddress || "",
+    };
+  });
+
+  const upcomingAppointments = mappedAppointments.filter(
+    (apt) => apt.status === "upcoming"
+  );
+  const completedAppointments = mappedAppointments.filter(
+    (apt) => apt.status === "completed"
+  );
+
+  const renderAppointment = (appointment: (typeof mappedAppointments)[0]) => (
     <Card key={appointment.id} className="p-4 mb-3">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
@@ -76,13 +77,6 @@ const AppointmentsList = () => {
         </div>
       </div>
     </Card>
-  );
-
-  const upcomingAppointments = appointmentsData.filter(
-    (apt) => apt.status === "upcoming"
-  );
-  const completedAppointments = appointmentsData.filter(
-    (apt) => apt.status === "completed"
   );
 
   return (
