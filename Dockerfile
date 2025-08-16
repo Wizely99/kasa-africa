@@ -38,4 +38,4 @@ COPY --from=builder --chown=nonroot:nonroot /app/.next/standalone ./
 COPY --from=builder --chown=nonroot:nonroot /app/.next/static ./.next/static
 
 EXPOSE 3000
-CMD ["server.js"]
+CMD ["node", "/app/server.js", "-H", "0.0.0.0", "-p", "3000"]

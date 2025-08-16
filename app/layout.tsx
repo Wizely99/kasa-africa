@@ -1,12 +1,12 @@
-import type React from "react";
+import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
+import { Providers } from "@/providers/auth";
 import QueryProvider from "@/providers/query-provider";
+import { retrieveServerSession } from "@/utils/auth/options";
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
+import type React from "react";
 import "./globals.css";
-import { Providers } from "@/providers/auth";
-import { retrieveServerSession } from "@/utils/auth/options";
-import { ThemeProvider } from "@/components/theme-provider";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -30,14 +30,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={poppins.variable}>
-        <ThemeProvider
-          // attribute="class"
-          defaultTheme="light"
-          // enableSystem
-          // disableTransitionOnChange={false}
-          // themes={["light", "dark", "system"]}
-          storageKey="kasaafrica-theme"
-        >
+        <ThemeProvider defaultTheme="light" storageKey="kasaafrica-theme">
           <Providers session={session}>
             <QueryProvider>
               <main className="min-h-screen bg-background font-sans antialiased">
