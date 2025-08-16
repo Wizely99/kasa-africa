@@ -44,6 +44,7 @@ export function CheckoutDialog({
   onPlaceOrder,
   onBackToCart,
 }: CheckoutDialogProps) {
+  // Calculate total amount and check for prescription items
   const totalAmount = items.reduce(
     (sum, item) => sum + item.product.price * item.quantity,
     0
@@ -52,6 +53,27 @@ export function CheckoutDialog({
     (item) => item.product.requiresPrescription
   );
   const [isPaymentValid, setIsPaymentValid] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState<
+    null | "success" | "failed"
+  >(null);
+
+  const handlePayment = () => {
+    setIsProcessing(true);
+
+    // simulate payment request
+    setTimeout(() => {
+      setIsProcessing(false);
+
+      // close checkout modal
+      onOpenChange(false);
+
+      // run parent logic (e.g. save order to DB)
+      onPlaceOrder();
+      // show confirmation dialog
+    }, 2000);
+  };
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
@@ -218,15 +240,24 @@ export function CheckoutDialog({
         </div>
 
         <div className="flex justify-end gap-3 pt-6 border-t">
-          <Button variant="outline" onClick={onBackToCart}>
+          <Button
+            variant="outline"
+            onClick={onBackToCart}
+            className="cursor-pointer"
+          >
             Back to Cart
           </Button>
           <Button
-            onClick={onPlaceOrder}
-            disabled={!orderData.deliveryAddress}
+            onClick={handlePayment}
+            disabled={
+              !orderData.deliveryAddress || !isPaymentValid || isProcessing
+            }
             size="lg"
+            className="cursor-pointer"
           >
-            Place Order ({formatTsh(totalAmount * 1.08)})
+            {isProcessing
+              ? "Processing..."
+              : `Place Order (${formatTsh(totalAmount * 1.08)})`}
           </Button>
         </div>
       </DialogContent>

@@ -123,9 +123,10 @@ export function ProductCard({
 
         <div className="flex gap-2 mt-4">
           <Button
-            className="flex-1"
+            className="flex-1 cursor-pointer"
             disabled={!product.inStock}
             onClick={() => onAddToCart(product)}
+            
           >
             <Plus className="h-4 w-4 mr-2" />
             Add to Cart
@@ -134,6 +135,7 @@ export function ProductCard({
             variant="outline"
             size="icon"
             onClick={() => onViewProduct(product)}
+            className="cursor-pointer"
           >
             <Eye className="h-4 w-4" />
           </Button>

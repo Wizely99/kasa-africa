@@ -133,12 +133,14 @@ export default function PharmacyComponent() {
       <Tabs
         value={activeTab}
         onValueChange={(value) => setActiveTab(value as "products" | "cart")}
-        className="space-y-4"
+        className="space-y-4 "
       >
         <div className="flex items-center justify-between gap-2">
           <TabsList>
-            <TabsTrigger value="products">Browse Products</TabsTrigger>
-            <TabsTrigger value="cart">
+            <TabsTrigger value="products" className="cursor-pointer">
+              Browse Products
+            </TabsTrigger>
+            <TabsTrigger value="cart" className="cursor-pointer">
               Cart ({cartItems.length})
               {cartItems.length > 0 && (
                 <Badge className="ml-2">{getTotalItems()}</Badge>
@@ -147,7 +149,11 @@ export default function PharmacyComponent() {
           </TabsList>
 
           {cartItems.length > 0 && (
-            <Button onClick={() => setShowCheckout(true)} size="lg">
+            <Button
+              onClick={() => setShowCheckout(true)}
+              size="lg"
+              className="cursor-pointer"
+            >
               <ShoppingCart className="h-4 w-4 mr-2" />
               Checkout ({formatTsh(getTotalAmount())})
             </Button>

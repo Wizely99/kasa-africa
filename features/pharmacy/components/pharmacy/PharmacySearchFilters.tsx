@@ -39,7 +39,7 @@ export function SearchFilters({
         />
       </div>
       <Select value={selectedCategory} onValueChange={onCategoryChange}>
-        <SelectTrigger className="w-[200px]">
+        <SelectTrigger className="w-[200px] cursor-pointer">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
@@ -51,7 +51,7 @@ export function SearchFilters({
         </SelectContent>
       </Select>
       <Select value={sortBy} onValueChange={onSortChange}>
-        <SelectTrigger className="w-[150px]">
+        <SelectTrigger className="w-[150px] cursor-pointer">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>
