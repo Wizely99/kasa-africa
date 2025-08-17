@@ -1,19 +1,15 @@
 "use client";
 
-import * as React from "react";
-import { format, isSameDay } from "date-fns";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar } from "@/components/ui/calendar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { mockAppointments } from "@/features/appointments/data/appointment-data";
-import { cn } from "@/lib/utils";
-import { on } from "events";
 import { Separator } from "@/components/ui/separator";
+import { mockAppointments } from "@/features/appointments/data/appointment-data";
+import { format, isSameDay } from "date-fns";
+import * as React from "react";
 
 export default function MiniCalendar() {
-  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(
-    new Date()
-  );
+  const [selectedDate, setSelectedDate] = React.useState<Date>(new Date());
 
   // Get all dates that have appointments
   const datesWithAppointments = React.useMemo(() => {
@@ -56,6 +52,7 @@ export default function MiniCalendar() {
         <CardContent>
           <Calendar
             mode="single"
+            required
             selected={selectedDate}
             onSelect={setSelectedDate}
             className="rounded-md border w-full"
@@ -74,23 +71,15 @@ export default function MiniCalendar() {
       {/* Appointments List */}
       <Card className="p-0">
         <CardHeader className="p-2 w-full">
-          <CardTitle>
-            {selectedDate ? (
-              <>
-                <span>
-                  Appointments on{" "}
-                  <span className="text-blue-600">
-                    {format(selectedDate, "yyyy/MM/dd")}
-                  </span>
-                </span>
-              </>
-            ) : (
-              <span className="text-gray-500">Select a date</span>
-            )}
+          <CardTitle className="text-base flex items-center py-1 gap-2 px-4">
+            Appointments on{" "}
+            <span className="text-blue-500 text-base">
+              {format(selectedDate, "yyyy/MM/dd")}
+            </span>
           </CardTitle>
         </CardHeader>
         <Separator className="my-2" />
-        <CardContent className="space-y-3">
+        <CardContent className="space-y-3 p-0">
           {appointmentsForDay.length === 0 ? (
             <p className="text-sm text-muted-foreground">
               No appointments for this day.
@@ -99,7 +88,7 @@ export default function MiniCalendar() {
             appointmentsForDay.map((appt) => (
               <div
                 key={appt.id}
-                className="flex items-center gap-2 rounded-lg border md:p-1 p-3"
+                className="flex items-center gap-2  rounded-lg border-0 px-4"
               >
                 <Avatar>
                   <AvatarImage src={appt.doctorAvatar} />
@@ -109,7 +98,8 @@ export default function MiniCalendar() {
                   <span className="font-medium">{appt.doctorName}</span>
                   <div className="flex gap-1 justify-between">
                     <span className="text-xs text-muted-foreground">
-                      {appt.doctorSpecialization} • {appt.appointmentType}
+                      {appt.doctorSpecialization} •{" "}
+                      {appt.appointmentType.split("_").join(" ")}
                     </span>
                     <span className="text-xs text-blue-500 font-semibold">
                       {appt.startTime.hour}:

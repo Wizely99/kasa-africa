@@ -1,8 +1,6 @@
 "use client";
 
-import type React from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -12,7 +10,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { ThemeToggle } from "@/components/theme-toggle";
 import {
   Sidebar,
   SidebarContent,
@@ -29,25 +26,10 @@ import {
   SidebarRail,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import {
-  LogOut,
-  User,
-  Settings,
-  Heart,
-  LucideIcon,
-  Home,
-  Calendar,
-  Pill,
-  FileText,
-  ShoppingCart,
-  Users,
-  MessageSquare,
-  BookOpen,
-  BarChart3,
-  UserPlus,
-  Archive,
-} from "lucide-react";
-import Image from "next/image";
+import { Heart, LogOut, LucideIcon, Settings, User } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import type React from "react";
 
 export interface NavigationItem {
   title: string;
@@ -115,8 +97,8 @@ export function SidebarLayout({
       <Sidebar variant="inset">
         <SidebarHeader>
           <div className="flex items-center gap-2 px-4 py-2">
-            <div className="flex aspect-square size-10 items-center justify-center rounded-full bg-white text-primary-foreground ">
-              <Image src="/logo.png" alt="App Logo" width={40} height={40} />
+            <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+              <Heart className="size-4" />
             </div>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-semibold">{appName}</span>

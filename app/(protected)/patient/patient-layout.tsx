@@ -1,11 +1,29 @@
-"use client"
-import { Home, Calendar, Pill, FileText, ShoppingCart, BookOpen, MessageSquare, Users, User } from "lucide-react"
-import type React from "react"
+"use client";
+import {
+  Home,
+  Calendar,
+  Pill,
+  FileText,
+  ShoppingCart,
+  BookOpen,
+  MessageSquare,
+  Users,
+  User,
+} from "lucide-react";
+import type React from "react";
 
-import { type NavigationGroup, SidebarLayout, type UserInfo } from "./sidebar-layout"
+import {
+  type NavigationGroup,
+  SidebarLayout,
+  type UserInfo,
+} from "./sidebar-layout";
 
 // Patient Layout
-export default function PatientLayoutClient({ children }: { children: React.ReactNode }) {
+export default function PatientLayoutClient({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const patientNavigation: NavigationGroup[] = [
     {
       title: "Overview",
@@ -55,21 +73,21 @@ export default function PatientLayoutClient({ children }: { children: React.Reac
           url: "/patient/orders",
           icon: ShoppingCart,
         },
-        {
-          title: "Shopping Cart",
-          url: "/patient/cart",
-          icon: ShoppingCart,
-        },
+        // {
+        //   title: "Shopping Cart",
+        //   url: "/patient/cart",
+        //   icon: ShoppingCart,
+        // },
       ],
     },
     {
       title: "Community",
       items: [
-        {
-          title: "Health Tips",
-          url: "/patient/health-tips",
-          icon: BookOpen,
-        },
+        // {
+        //   title: "Health Tips",
+        //   url: "/patient/health-tips",
+        //   icon: BookOpen,
+        // },
         {
           title: "Forums",
           url: "/patient/forums",
@@ -90,14 +108,14 @@ export default function PatientLayoutClient({ children }: { children: React.Reac
           url: "/patient/profile",
           icon: User,
         },
-        {
-          title: "Family Members",
-          url: "/patient/family",
-          icon: Users,
-        },
+        // {
+        //   title: "Family Members",
+        //   url: "/patient/family",
+        //   icon: Users,
+        // },
       ],
     },
-  ]
+  ];
 
   const userInfo: UserInfo = {
     name: "John Doe",
@@ -105,22 +123,22 @@ export default function PatientLayoutClient({ children }: { children: React.Reac
     role: "Patient",
     initials: "JD",
     avatarUrl: "/placeholder.svg?height=32&width=32&text=JD",
-  }
+  };
 
   const handleLogout = () => {
     // Implement logout logic
-    console.log("Logging out...")
-  }
+    console.log("Logging out...");
+  };
 
   const handleProfileClick = () => {
     // Navigate to profile page
-    console.log("Opening profile...")
-  }
+    console.log("Opening profile...");
+  };
 
   const handleSettingsClick = () => {
     // Navigate to settings page
-    console.log("Opening settings...")
-  }
+    console.log("Opening settings...");
+  };
 
   return (
     <SidebarLayout
@@ -134,5 +152,5 @@ export default function PatientLayoutClient({ children }: { children: React.Reac
     >
       {children}
     </SidebarLayout>
-  )
+  );
 }

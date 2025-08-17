@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import Image from "next/image";
+import Link from "next/link";
 const HeroBanner = () => {
   return (
     <Card className="bg-accent px-3 py-2 rounded-2xl ">
@@ -13,13 +14,16 @@ const HeroBanner = () => {
           <p className="text-gray-400 mb-6 max-w-md text-sm">
             We provide best care and response for your health needs.
           </p>
-          <Button
-            variant="secondary"
-            size="lg"
-            className="bg-blue-600 text-white hover:bg-blue-500 cursor-pointer"
-          >
-            Book Now
-          </Button>
+
+          <Link href="/patient/book-appointment">
+            <Button
+              variant="secondary"
+              size="lg"
+              className="bg-blue-600 text-white hover:bg-blue-500 cursor-pointer"
+            >
+              Book Now
+            </Button>
+          </Link>
         </div>
         <div className=" ">
           <div className="relative h-60 rounded-xl overflow-hidden flex-shrink-0">

@@ -45,7 +45,7 @@ export function MedicalRecordsList({
   patientId,
   doctorId,
   showPatientControls = false,
-}: MedicalRecordsListProps) {
+}: Readonly<MedicalRecordsListProps>) {
   const [records, setRecords] = useState<MedicalRecord[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");

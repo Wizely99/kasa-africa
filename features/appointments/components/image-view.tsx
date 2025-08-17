@@ -11,9 +11,9 @@ import {
 
 export default function DoctorAvatar({
   doctor,
-}: {
+}: Readonly<{
   doctor: { avatar?: string; name: string };
-}) {
+}>) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -22,13 +22,14 @@ export default function DoctorAvatar({
       <div className="inline-block">
         <Dialog open={isOpen} onOpenChange={setIsOpen}>
           <DialogTrigger asChild>
-            <Image
-              height={64}
-              width={64}
-              src={doctor.avatar || "/placeholder.svg"}
-              alt={doctor.name}
-              className="rounded-full size-16 transform transition duration-300 ease-in-out hover:scale-130 cursor-pointer"
-            />
+            <div className="relative w-16 h-16 md:w-20 md:h-20">
+              <Image
+                src={doctor.avatar || "/placeholder.svg"}
+                alt={doctor.name}
+                fill
+                className="rounded-full object-cover transform transition duration-300 ease-in-out hover:scale-110 cursor-pointer"
+              />
+            </div>
           </DialogTrigger>
 
           <DialogContent className="p-0 max-w-md">
