@@ -1,35 +1,29 @@
-import type { NextConfig } from "next";
-
-const nextConfig: NextConfig = {
+/** @type {import('next').NextConfig} */
+module.exports = {
   output: "standalone",
-  /* config options here */
-  // images: {
-  //   remotePatterns: [
-  //     {
-  //       protocol: 'https',
-  //       hostname: 'gasagency.com.au',
-  //       port: '',
-  //       pathname: '/account123/**',
-  //       search: '',
-  //     },
-  //   ],
-  // },
-
-  // TODO REMOVE THE SETTINGS BELOW IN PRODUCTION
-  typescript: {
-    ignoreBuildErrors: true, // Disables TypeScript checks during build
+  experimental: {
+    // optimizeCss: true,
+  },
+  compiler: {
+    removeConsole: true,
   },
   eslint: {
-    // Warning: This allows production builds to successfully complete even if
-    // your project has ESLint errors.
     ignoreDuringBuilds: true,
   },
-  //! END OF REMOVAL
-  pageExtensions: ["js", "jsx", "mdx", "ts", "tsx"],
-
-  images: {
-    domains: ["gasagency.com.au", "lh3.googleusercontent.com"],
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  async headers() {
+    return [
+      {
+        source: "/(.*)",
+        headers: [
+          { key: "X-Frame-Options", value: "DENY" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          { key: "X-XSS-Protection", value: "1; mode=block" },
+        ],
+      },
+    ];
   },
 };
-
-export default nextConfig;
