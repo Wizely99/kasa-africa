@@ -53,7 +53,7 @@ export const mockDoctors: Doctors[] = [
     specialization: "Pediatrics",
     experience: 10,
     rating: 4.7,
-    consultationFee: 120,
+    consultationFee: 75000,
     location: "Children's Health Center",
     avatar: "/pictures/doctors/male-7.jpeg",
     isAvailable: false,

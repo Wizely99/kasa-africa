@@ -185,3 +185,21 @@
     @apply bg-background text-foreground;
   }
 }
+
+
+.rdp-day_hasAppointment {
+  position: relative;
+}
+
+.rdp-day_hasAppointment::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 4px;
+  width: 4px;
+  background-color: #1a73e8;
+  /* Google-like blue dot */
+  border-radius: 50%;
+}

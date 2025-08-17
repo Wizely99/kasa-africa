@@ -1,7 +1,6 @@
-import { Users, Stethoscope, Video } from "lucide-react";
+"use client";
 import React from "react";
 import AppointmentsList from "../components/AppointmentList";
-import CategoryCard from "../components/CategoryCard";
 import HealthTips from "../components/HealthTips";
 import HeroBanner from "../components/HeroBanner";
 import MiniCalendar from "../components/MiniCalendar";
@@ -20,9 +19,9 @@ const Dashboard = () => {
             {/* Categories */}
             <div>
               <h2 className="text-xl font-semibold text-foreground mb-6">
-                Categories
+                Services
               </h2>
-             <CategoryGridView/>
+              <CategoryGridView />
             </div>
 
             <AppointmentsList />
@@ -30,13 +29,7 @@ const Dashboard = () => {
 
           {/* Sidebar */}
           <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-foreground mb-4">
-                Appointments
-              </h3>
-              <MiniCalendar />
-            </div>
-
+            <MiniCalendar />
             <TopDoctors />
             <HealthTips />
           </div>

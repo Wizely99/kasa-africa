@@ -1,106 +1,129 @@
-import { Card } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
+"use client";
 
-const MiniCalendar = () => {
-  const currentDate = new Date();
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
+import * as React from "react";
+import { format, isSameDay } from "date-fns";
+import { Calendar } from "@/components/ui/calendar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { mockAppointments } from "@/features/appointments/data/appointment-data";
+import { cn } from "@/lib/utils";
+import { on } from "events";
+import { Separator } from "@/components/ui/separator";
 
-  const daysOfWeek = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
-
-  // Generate calendar days for current month
-  const firstDay = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth(),
-    1
+export default function MiniCalendar() {
+  const [selectedDate, setSelectedDate] = React.useState<Date | undefined>(
+    new Date()
   );
-  const lastDay = new Date(
-    currentDate.getFullYear(),
-    currentDate.getMonth() + 1,
-    0
-  );
-  const daysInMonth = lastDay.getDate();
-  const startingDayOfWeek = firstDay.getDay();
 
-  const calendarDays = [];
+  // Get all dates that have appointments
+  const datesWithAppointments = React.useMemo(() => {
+    return mockAppointments.map((appt) => new Date(appt.appointmentDate));
+  }, [mockAppointments]);
 
-  // Add empty cells for days before the first day of the month
-  for (let i = 0; i < startingDayOfWeek; i++) {
-    calendarDays.push(null);
-  }
+  const isPastDate = (date: Date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  };
 
-  // Add days of the month
-  for (let day = 1; day <= daysInMonth; day++) {
-    calendarDays.push(day);
-  }
+  // Styles for the modifiers
+  const modifiersStyles = {
+    selected: {
+      backgroundColor: "rgba(0, 123, 255, 1)", // solid blue
+      color: "white",
+      borderRadius: "50%",
+    },
+    day: {
+      // Base style for all days
+      position: "relative" as const,
+    },
+  };
 
-  const appointmentDays = [15, 22, 28]; // Days with appointments
+  // Filter appointments for the selected day
+  const appointmentsForDay = selectedDate
+    ? mockAppointments.filter((appt) =>
+        isSameDay(new Date(appt.appointmentDate), selectedDate)
+      )
+    : [];
 
   return (
-    <Card className="p-4">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="font-semibold text-foreground">
-          {monthNames[currentDate.getMonth()]} {currentDate.getFullYear()}
-        </h3>
-        <div className="flex gap-1">
-          <Button variant="ghost" size="icon" className="h-6 w-6">
-            <ChevronLeft className="h-3 w-3" />
-          </Button>
-          <Button variant="ghost" size="icon" className="h-6 w-6">
-            <ChevronRight className="h-3 w-3" />
-          </Button>
-        </div>
-      </div>
+    <div className="grid md:gap-8 gap-3 grid-cols-1">
+      {/* Calendar */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Appointments</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <Calendar
+            mode="single"
+            selected={selectedDate}
+            onSelect={setSelectedDate}
+            className="rounded-md border w-full"
+            disabled={isPastDate}
+            modifiers={{
+              hasAppointment: datesWithAppointments,
+            }}
+            modifiersClassNames={{
+              hasAppointment: "rdp-day_hasAppointment",
+            }}
+            modifiersStyles={modifiersStyles}
+          />
+        </CardContent>
+      </Card>
 
-      <div className="grid grid-cols-7 gap-1 mb-2">
-        {daysOfWeek.map((day) => (
-          <div
-            key={day}
-            className="text-xs font-medium text-muted-foreground text-center p-1"
-          >
-            {day}
-          </div>
-        ))}
-      </div>
-
-      <div className="grid grid-cols-7 gap-1">
-        {calendarDays.map((day, index) => (
-          <div
-            key={index}
-            className={`
-              h-8 w-8 flex items-center justify-center text-sm rounded cursor-pointer
-              ${day === null ? "" : "hover:bg-muted"}
-              ${
-                day === currentDate.getDate()
-                  ? "bg-primary text-primary-foreground"
-                  : ""
-              }
-              ${
-                day && appointmentDays.includes(day)
-                  ? "bg-success/20 text-success font-semibold"
-                  : ""
-              }
-            `}
-          >
-            {day}
-          </div>
-        ))}
-      </div>
-    </Card>
+      {/* Appointments List */}
+      <Card className="p-0">
+        <CardHeader className="p-2 w-full">
+          <CardTitle>
+            {selectedDate ? (
+              <>
+                <span>
+                  Appointments on{" "}
+                  <span className="text-blue-600">
+                    {format(selectedDate, "yyyy/MM/dd")}
+                  </span>
+                </span>
+              </>
+            ) : (
+              <span className="text-gray-500">Select a date</span>
+            )}
+          </CardTitle>
+        </CardHeader>
+        <Separator className="my-2" />
+        <CardContent className="space-y-3">
+          {appointmentsForDay.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No appointments for this day.
+            </p>
+          ) : (
+            appointmentsForDay.map((appt) => (
+              <div
+                key={appt.id}
+                className="flex items-center gap-2 rounded-lg border md:p-1 p-3"
+              >
+                <Avatar>
+                  <AvatarImage src={appt.doctorAvatar} />
+                  <AvatarFallback>{appt.doctorName?.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col w-full p-2">
+                  <span className="font-medium">{appt.doctorName}</span>
+                  <div className="flex gap-1 justify-between">
+                    <span className="text-xs text-muted-foreground">
+                      {appt.doctorSpecialization} • {appt.appointmentType}
+                    </span>
+                    <span className="text-xs text-blue-500 font-semibold">
+                      {appt.startTime.hour}:
+                      {appt.startTime.minute.toString().padStart(2, "0")} -{" "}
+                      {appt.endTime.hour}:
+                      {appt.endTime.minute.toString().padStart(2, "0")}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </CardContent>
+      </Card>
+    </div>
   );
-};
-
-export default MiniCalendar;
+}

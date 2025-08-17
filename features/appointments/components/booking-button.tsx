@@ -17,9 +17,15 @@ export default function BookingButton({ doctor }: BookingButtonProps) {
   return (
     <Button
       onClick={handleClick}
-      className="px-2 py-1 bg-blue-600 text-white rounded-md cursor-pointer"
+      disabled={!doctor.isAvailable}
+      className={`px-2 py-1 rounded-md text-white ${
+        doctor.isAvailable
+          ? "bg-blue-600 cursor-pointer"
+          : "bg-gray-400 cursor-not-allowed"
+      }`}
+      size="sm"
     >
-      Book Appointment
+      {doctor.isAvailable ? "Book now" : "Unavailable"}
     </Button>
   );
 }

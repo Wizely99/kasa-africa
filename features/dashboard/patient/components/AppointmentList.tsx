@@ -4,6 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar, Clock, MapPin } from "lucide-react";
 import { mockAppointments } from "@/features/appointments/data/appointment-data";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const AppointmentsList = () => {
   // Map mockAppointments to the format used in the UI
@@ -13,6 +15,12 @@ const AppointmentsList = () => {
     const durationMinutes =
       (apt.endTime.hour - apt.startTime.hour) * 60 +
       (apt.endTime.minute - apt.startTime.minute);
+
+    // Convert appointment date + time to timestamp
+    const appointmentTimestamp = new Date(
+      `${apt.appointmentDate}T${startHour}:${startMinute}:00`
+    ).getTime();
+
     const status =
       apt.status === "SCHEDULED" || apt.status === "CONFIRMED"
         ? "upcoming"
@@ -25,27 +33,33 @@ const AppointmentsList = () => {
       date: new Date(apt.appointmentDate).toLocaleDateString(),
       time: `${startHour}:${startMinute}`,
       duration: `${durationMinutes} mins`,
-      status: status,
+      status,
       avatar: apt.doctorAvatar || "/placeholder.svg",
       facility: apt.facilityName || "",
       address: apt.facilityAddress || "",
+      timestamp: appointmentTimestamp,
     };
   });
 
-  const upcomingAppointments = mappedAppointments.filter(
-    (apt) => apt.status === "upcoming"
-  );
-  const completedAppointments = mappedAppointments.filter(
-    (apt) => apt.status === "completed"
-  );
+  // Get upcoming appointments: next 3 soonest
+  const upcomingAppointments = mappedAppointments
+    .filter((apt) => apt.status === "upcoming")
+    .sort((a, b) => a.timestamp - b.timestamp)
+    .slice(0, 3);
+
+  // Get recently completed appointments: latest first
+  const completedAppointments = mappedAppointments
+    .filter((apt) => apt.status === "completed")
+    .sort((a, b) => b.timestamp - a.timestamp); // newest first
 
   const renderAppointment = (appointment: (typeof mappedAppointments)[0]) => (
     <Card key={appointment.id} className="p-4 mb-3">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        {/* Left: Avatar + Doctor Info */}
         <div className="flex items-center gap-4">
           <Avatar>
             <AvatarImage src={appointment.avatar} />
-            <AvatarFallback>{appointment.doctor.charAt(3)}</AvatarFallback>
+            <AvatarFallback>{appointment.doctor.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
             <h4 className="font-semibold text-foreground">
@@ -56,7 +70,9 @@ const AppointmentsList = () => {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-6 text-sm text-muted-foreground">
+
+        {/* Right: Appointment Info */}
+        <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground md:gap-6">
           <div className="flex items-center gap-1">
             <Calendar className="h-4 w-4" />
             {appointment.date}
@@ -70,7 +86,11 @@ const AppointmentsList = () => {
             variant={
               appointment.status === "upcoming" ? "default" : "secondary"
             }
-            className={appointment.status === "upcoming" ? "bg-success" : ""}
+            className={`${
+              appointment.status === "upcoming"
+                ? "bg-blue-500 ml-auto"
+                : "bg-emerald-500 hover:bg-emerald-600 text-white ml-auto"
+            }`}
           >
             {appointment.status}
           </Badge>
@@ -79,21 +99,33 @@ const AppointmentsList = () => {
     </Card>
   );
 
+  const router = useRouter();
+
+  const handleClick = () => {
+    router.push("/patient/appointments");
+  };
   return (
     <Card className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-foreground">
           Appointments Lists
         </h3>
-        <button className="text-primary text-sm hover:underline">
+        <Button
+          className="text-white bg-blue-500 hover:bg-blue-600 cursor-pointer"
+          onClick={handleClick}
+        >
           See All
-        </button>
+        </Button>
       </div>
 
       <Tabs defaultValue="future" className="w-full">
-        <TabsList className="grid w-full grid-cols-2">
-          <TabsTrigger value="future">Future Appointments</TabsTrigger>
-          <TabsTrigger value="history">Appointments History</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-2 gap-1">
+          <TabsTrigger value="future" className="cursor-pointer">
+            Future Appointments
+          </TabsTrigger>
+          <TabsTrigger value="history" className="cursor-pointer">
+            Appointments History
+          </TabsTrigger>
         </TabsList>
         <TabsContent value="future" className="mt-6">
           {upcomingAppointments.map(renderAppointment)}
