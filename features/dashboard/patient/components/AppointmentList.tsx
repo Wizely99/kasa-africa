@@ -50,7 +50,8 @@ const AppointmentsList = () => {
   // Get recently completed appointments: latest first
   const completedAppointments = mappedAppointments
     .filter((apt) => apt.status === "completed")
-    .sort((a, b) => b.timestamp - a.timestamp); // newest first
+    .sort((a, b) => b.timestamp - a.timestamp)
+    .slice(0, 3); // newest first
 
   const renderAppointment = (appointment: (typeof mappedAppointments)[0]) => (
     <Card key={appointment.id} className="p-4 mb-3">
@@ -105,7 +106,7 @@ const AppointmentsList = () => {
     router.push("/patient/appointments");
   };
   return (
-    <Card className="p-6">
+    <Card className="p-6 ">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-lg font-semibold text-foreground">
           Appointments Lists

@@ -26,197 +26,138 @@ export interface Appointment {
   facilityAddress?: string;
 }
 
-// Utility to get upcoming Friday from today
-function getUpcomingFriday() {
-  const today = new Date();
-  const day = today.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
-  const diff = (5 - day + 7) % 7; // 5 = Friday
-  const friday = new Date(today);
-  friday.setDate(today.getDate() + diff);
-  return friday;
+// Utility
+function addDays(date: Date, days: number) {
+  const newDate = new Date(date);
+  newDate.setDate(newDate.getDate() + days);
+  return newDate;
 }
 
-// Generate dates between today and Friday
-function generateDateBetweenTodayAndFriday(index: number) {
-  const today = new Date();
-  const friday = getUpcomingFriday();
-  const diffDays = Math.ceil((friday.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-  const date = new Date(today);
-  date.setDate(today.getDate() + Math.min(index, diffDays));
+function formatDate(date: Date) {
   return date.toISOString().split("T")[0];
 }
 
-export const mockAppointments: Appointment[] = [
-  {
-    id: "1",
-    patientId: "patient-1",
-    doctorId: mockDoctors[0].id,
+const today = new Date();
+
+// Create appointment helper
+function createAppointment(
+  id: number,
+  patientId: string,
+  doctorId: string,
+  date: Date,
+  status: AppointmentStatus,
+  type: AppointmentType,
+  startHour: number,
+  durationHours: number,
+  chiefComplaint: string
+) {
+  const endHour = startHour + durationHours;
+  const doctorIndex = parseInt(doctorId.split("-")[1], 10) - 1;
+
+  return {
+    id: String(id),
+    patientId,
+    doctorId,
     facilityId: "facility-1",
-    appointmentDate: generateDateBetweenTodayAndFriday(0),
-    startTime: { hour: 9, minute: 0, second: 0, nano: 0 },
-    endTime: { hour: 10, minute: 30, second: 0, nano: 0 },
-    appointmentType: "IN_PERSON",
-    status: "COMPLETED",
-    chiefComplaint: "Routine blood pressure check",
-    notes: "Patient arrived on time and examination completed",
-    confirmationCode: "KA-2025-001",
-    actualStartTime: new Date().toISOString(),
-    actualEndTime: new Date().toISOString(),
+    appointmentDate: formatDate(date),
+    startTime: { hour: startHour, minute: 0, second: 0, nano: 0 },
+    endTime: { hour: endHour, minute: 30, second: 0, nano: 0 },
+    appointmentType: type,
+    status,
+    chiefComplaint,
+    notes: "Mock appointment",
+    confirmationCode: `KA-2025-${String(id).padStart(3, "0")}`,
+    actualStartTime: status !== "SCHEDULED" ? date.toISOString() : undefined,
+    actualEndTime: status !== "SCHEDULED" ? addDays(date, 0).toISOString() : undefined,
+    cancellationReason: undefined,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    doctorName: mockDoctors[0].name,
-    doctorSpecialization: mockDoctors[0].specialization,
-    doctorAvatar: mockDoctors[0].avatar,
+    doctorName: mockDoctors[doctorIndex].name,
+    doctorSpecialization: mockDoctors[doctorIndex].specialization,
+    doctorAvatar: mockDoctors[doctorIndex].avatar,
     facilityName: "KasaAfrica Medical Center",
     facilityAddress: "123 Health Street, Lagos, Nigeria",
-  },
-  {
-    id: "2",
-    patientId: "patient-2",
-    doctorId: mockDoctors[1].id,
-    facilityId: "facility-2",
-    appointmentDate: generateDateBetweenTodayAndFriday(1),
-    startTime: { hour: 8, minute: 0, second: 0, nano: 0 },
-    endTime: { hour: 9, minute: 15, second: 0, nano: 0 },
-    appointmentType: "VIRTUAL",
-    status: "COMPLETED",
-    chiefComplaint: "Follow-up for diabetes management",
-    notes: "Reviewed blood sugar levels and adjusted medication",
-    confirmationCode: "KA-2025-002",
-    actualStartTime: new Date().toISOString(),
-    actualEndTime: new Date().toISOString(),
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    doctorName: mockDoctors[1].name,
-    doctorSpecialization: mockDoctors[1].specialization,
-    doctorAvatar: mockDoctors[1].avatar,
-    facilityName: "KasaAfrica Medical Center",
-    facilityAddress: "123 Health Street, Lagos, Nigeria",
-  },
-  {
-    id: "3",
-    patientId: "patient-3",
-    doctorId: mockDoctors[2].id,
-    facilityId: "facility-1",
-    appointmentDate: generateDateBetweenTodayAndFriday(2),
-    startTime: { hour: 11, minute: 0, second: 0, nano: 0 },
-    endTime: { hour: 13, minute: 30, second: 0, nano: 0 },
-    appointmentType: "IN_PERSON",
-    status: "CONFIRMED",
-    chiefComplaint: "Chest pain and shortness of breath",
-    notes: "Patient reports mild pain over last 2 days",
-    confirmationCode: "KA-2025-003",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    doctorName: mockDoctors[2].name,
-    doctorSpecialization: mockDoctors[2].specialization,
-    doctorAvatar: mockDoctors[2].avatar,
-    facilityName: "KasaAfrica Medical Center",
-    facilityAddress: "123 Health Street, Lagos, Nigeria",
-  },
-  {
-    id: "4",
-    patientId: "patient-4",
-    doctorId: mockDoctors[3].id,
-    facilityId: "facility-2",
-    appointmentDate: generateDateBetweenTodayAndFriday(3),
-    startTime: { hour: 13, minute: 0, second: 0, nano: 0 },
-    endTime: { hour: 18, minute: 30, second: 0, nano: 0 },
-    appointmentType: "VIRTUAL",
-    status: "CONFIRMED",
-    chiefComplaint: "Annual physical examination",
-    notes: "Patient scheduled for routine annual checkup",
-    confirmationCode: "KA-2025-004",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    doctorName: mockDoctors[3].name,
-    doctorSpecialization: mockDoctors[3].specialization,
-    doctorAvatar: mockDoctors[3].avatar,
-    facilityName: "KasaAfrica Medical Center",
-    facilityAddress: "123 Health Street, Lagos, Nigeria",
-  },
-  {
-    id: "5",
-    patientId: "patient-5",
-    doctorId: mockDoctors[4].id,
-    facilityId: "facility-1",
-    appointmentDate: generateDateBetweenTodayAndFriday(4),
-    startTime: { hour: 15, minute: 0, second: 0, nano: 0 },
-    endTime: { hour: 17, minute: 30, second: 0, nano: 0 },
-    appointmentType: "IN_PERSON",
-    status: "SCHEDULED",
-    chiefComplaint: "Consultation for migraine headaches",
-    notes: "Patient requested appointment for ongoing headache issues",
-    confirmationCode: "KA-2025-005",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    doctorName: mockDoctors[4].name,
-    doctorSpecialization: mockDoctors[4].specialization,
-    doctorAvatar: mockDoctors[4].avatar,
-    facilityName: "KasaAfrica Medical Center",
-    facilityAddress: "123 Health Street, Lagos, Nigeria",
-  },
-   {
-    id: "6",
-    patientId: "patient-6",
-    doctorId: mockDoctors[5].id,
-    facilityId: "facility-1",
-    appointmentDate: generateDateBetweenTodayAndFriday(0),
-    startTime: { hour: 9, minute: 0, second: 0, nano: 0 },
-    endTime: { hour: 10, minute: 30, second: 0, nano: 0 },
-    appointmentType: "IN_PERSON",
-    status: "SCHEDULED",
-    chiefComplaint: "Skin rash consultation",
-    notes: "Patient wants evaluation of persistent rash",
-    confirmationCode: "KA-2025-006",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    doctorName: mockDoctors[5].name,
-    doctorSpecialization: mockDoctors[5].specialization,
-    doctorAvatar: mockDoctors[5].avatar,
-    facilityName: "KasaAfrica Medical Center",
-    facilityAddress: "123 Health Street, Lagos, Nigeria",
-  },
-  {
-    id: "7",
-    patientId: "patient-7",
-    doctorId: mockDoctors[1].id,
-    facilityId: "facility-2",
-    appointmentDate: generateDateBetweenTodayAndFriday(2),
-    startTime: { hour: 11, minute: 0, second: 0, nano: 0 },
-    endTime: { hour: 13, minute: 30, second: 0, nano: 0 },
-    appointmentType: "VIRTUAL",
-    status: "SCHEDULED",
-    chiefComplaint: "Eye check-up",
-    notes: "Patient scheduled for routine eye examination",
-    confirmationCode: "KA-2025-007",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    doctorName: mockDoctors[1].name,
-    doctorSpecialization: mockDoctors[1].specialization,
-    doctorAvatar: mockDoctors[1].avatar,
-    facilityName: "KasaAfrica Medical Center",
-    facilityAddress: "123 Health Street, Lagos, Nigeria",
-  },
-  {
-    id: "8",
-    patientId: "patient-8",
-    doctorId: mockDoctors[3].id,
-    facilityId: "facility-1",
-    appointmentDate: generateDateBetweenTodayAndFriday(1),
-    startTime: { hour: 15, minute: 0, second: 0, nano: 0 },
-    endTime: { hour: 17, minute: 0, second: 0, nano: 0 },
-    appointmentType: "IN_PERSON",
-    status: "COMPLETED",
-    chiefComplaint: "Back pain consultation",
-    notes: "Patient experiencing chronic lower back pain",
-    confirmationCode: "KA-2025-008",
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    doctorName: mockDoctors[3].name,
-    doctorSpecialization: mockDoctors[3].specialization,
-    doctorAvatar: mockDoctors[1].avatar,
-    facilityName: "KasaAfrica Medical Center",
-    facilityAddress: "123 Health Street, Lagos, Nigeria",
-  }
-];
+  } as Appointment;
+}
+
+// Generate appointments
+export const mockAppointments: Appointment[] = [];
+
+// --- Past 4 ---
+[-4, -3, -2, -1].forEach((offset, idx) => {
+  const date = addDays(today, offset);
+  const doctorId = `doctor-${(idx % 6) + 1}`;
+  mockAppointments.push(
+    createAppointment(
+      idx + 1,
+      `patient-${idx + 1}`,
+      doctorId,
+      date,
+      "COMPLETED",
+      idx % 2 === 0 ? "IN_PERSON" : "VIRTUAL",
+      9 + idx,
+      1 + (idx % 2),
+      "Past appointment check"
+    )
+  );
+});
+
+// --- This week 6 upcoming ---
+[0, 0, 1, 2, 4, 4].forEach((offset, idx) => {
+  const date = addDays(today, offset);
+  const doctorId = `doctor-${(idx % 6) + 1}`;
+  mockAppointments.push(
+    createAppointment(
+      idx + 5,
+      `patient-${idx + 5}`,
+      doctorId,
+      date,
+      "SCHEDULED",
+      idx % 2 === 0 ? "IN_PERSON" : "VIRTUAL",
+      10 + idx,
+      1,
+      "Upcoming this week"
+    )
+  );
+});
+
+// --- Next week 4 upcoming ---
+[7, 8, 9, 10].forEach((offset, idx) => {
+  const date = addDays(today, offset);
+  const doctorId = `doctor-${(idx % 6) + 1}`;
+  mockAppointments.push(
+    createAppointment(
+      idx + 11,
+      `patient-${idx + 11}`,
+      doctorId,
+      date,
+      "SCHEDULED",
+      idx % 2 === 0 ? "IN_PERSON" : "VIRTUAL",
+      9 + idx,
+      1,
+      "Next week appointment"
+    )
+  );
+});
+
+// --- Week after next 2 upcoming ---
+[14, 15].forEach((offset, idx) => {
+  const date = addDays(today, offset);
+  const doctorId = `doctor-${(idx % 6) + 1}`;
+  mockAppointments.push(
+    createAppointment(
+      idx + 15,
+      `patient-${idx + 15}`,
+      doctorId,
+      date,
+      "SCHEDULED",
+      idx % 2 === 0 ? "IN_PERSON" : "VIRTUAL",
+      10,
+      1,
+      "Week after next appointment"
+    )
+  );
+});
+
+console.log(mockAppointments);
+

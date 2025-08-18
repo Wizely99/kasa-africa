@@ -75,51 +75,59 @@ export default function MyAppointments() {
       day: "numeric",
     });
   };
-
-  const getStatusBadge = (status: Appointment["status"]) => {
-    const statusConfig = {
-      SCHEDULED: {
-        variant: "secondary" as const,
-        icon: Clock,
-        color: "text-blue-600",
-      },
-      CONFIRMED: {
-        variant: "default" as const,
-        icon: CheckCircle,
-        color: "text-green-600",
-      },
-      IN_PROGRESS: {
-        variant: "default" as const,
-        icon: AlertCircle,
-        color: "text-orange-600",
-      },
-      COMPLETED: {
-        variant: "secondary" as const,
-        icon: CheckCircle,
-        color: "text-green-600",
-      },
-      CANCELLED: {
-        variant: "destructive" as const,
-        icon: XCircle,
-        color: "text-red-600",
-      },
-      NO_SHOW: {
-        variant: "destructive" as const,
-        icon: XCircle,
-        color: "text-red-600",
-      },
-    };
-
-    const config = statusConfig[status];
-    const Icon = config.icon;
-
-    return (
-      <Badge variant={config.variant} className="flex items-center gap-1">
-        <Icon className="h-3 w-3" />
-        {status.replace("_", " ")}
-      </Badge>
-    );
+const getStatusBadge = (status: Appointment["status"]) => {
+  const statusConfig = {
+    SCHEDULED: {
+      variant: "secondary" as const,
+      icon: Clock,
+      color: "text-blue-600",
+      bgColor: "bg-blue-100",
+    },
+    CONFIRMED: {
+      variant: "default" as const,
+      icon: CheckCircle,
+      color: "text-green-600",
+      bgColor: "bg-green-100", // Add a green background class here
+    },
+    IN_PROGRESS: {
+      variant: "secondary" as const,
+      icon: AlertCircle,
+      color: "text-orange-600",
+      bgColor: "bg-orange-100",
+    },
+    COMPLETED: {
+      variant: "secondary" as const,
+      icon: CheckCircle,
+      color: "text-green-600",
+      bgColor: "bg-green-100",
+    },
+    CANCELLED: {
+      variant: "destructive" as const,
+      icon: XCircle,
+      color: "text-red-600",
+      bgColor: "bg-red-100",
+    },
+    NO_SHOW: {
+      variant: "destructive" as const,
+      icon: XCircle,
+      color: "text-red-600",
+      bgColor: "bg-red-100",
+    },
   };
+
+  const config = statusConfig[status];
+  const Icon = config.icon;
+
+  return (
+    <Badge
+      variant={config.variant}
+      className={`flex items-center gap-1 rounded-full md:rounded-md ${config.color} ${config.bgColor}`}
+    >
+      <Icon className={`size-3 ${config.color}`} />
+      <span className="hidden md:inline">{status.replace("_", " ")}</span>
+    </Badge>
+  );
+};
 
   const getAppointmentTypeIcon = (type: Appointment["appointmentType"]) => {
     switch (type) {
@@ -127,7 +135,7 @@ export default function MyAppointments() {
         return <MapPin className="h-4 w-4 text-blue-600" />;
       case "VIRTUAL":
         return <Video className="h-4 w-4 text-green-600" />;
-      case "PHONE_CONSULTATION":
+      case "MOBILE_CONSULTATION":
         return <Phone className="h-4 w-4 text-purple-600" />;
       default:
         return <Calendar className="h-4 w-4" />;
@@ -188,10 +196,10 @@ export default function MyAppointments() {
   const renderAppointmentCard = (appointment: Appointment) => (
     // <LoadingOverlay key={appointment.id} isLoading={actionLoading === appointment.id} message="Processing...">
     <Card className="hover:shadow-md transition-shadow">
-      <CardContent className="p-6">
-        <div className="flex items-start justify-between mb-4">
-          <div className="flex items-center space-x-3">
-            <Avatar className="h-12 w-12">
+      <CardContent className="md:p-6 p-2">
+        <div className="flex items-start justify-between mb-4 gap-1">
+          <div className="flex items-center space-x-3 ">
+            <Avatar className="size-12">
               <AvatarImage
                 src={appointment.doctorAvatar || "/placeholder.svg"}
                 alt={appointment.doctorName}
@@ -212,7 +220,7 @@ export default function MyAppointments() {
               </p>
             </div>
           </div>
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center md:space-x-2 space-x-1 ">
             {getStatusBadge(appointment.status)}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -291,7 +299,11 @@ export default function MyAppointments() {
           </div>
           {appointment.appointmentType === "VIRTUAL" &&
             appointment.status === "CONFIRMED" && (
-              <Button size="sm" variant="outline">
+              <Button
+                size="sm"
+                variant="outline"
+                className="text-green-600 border-green-600 hover:bg-green-50 cursor-pointer"
+              >
                 <Video className="h-4 w-4 mr-2" />
                 Join Meeting
               </Button>
@@ -305,7 +317,7 @@ export default function MyAppointments() {
   const renderEmptyState = (type: string) => (
     <Card className="text-center py-12">
       <CardContent>
-        <Calendar className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+        <Calendar className="size-12 text-muted-foreground mx-auto mb-4" />
         <h3 className="text-lg font-semibold mb-2">No {type} appointments</h3>
         <p className="text-muted-foreground mb-4">
           {type === "upcoming"
@@ -315,7 +327,7 @@ export default function MyAppointments() {
             : "You haven't scheduled any appointments yet."}
         </p>
         <Button>
-          <Plus className="h-4 w-4 mr-2" />
+          <Plus className="size-4 mr-2" />
           Book New Appointment
         </Button>
       </CardContent>
@@ -339,17 +351,18 @@ export default function MyAppointments() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="container mx-auto md:p-6 p-2 space-y-6">
+      <div className="flex items-center justify-between flex-wrap">
         <div>
           <h1 className="text-3xl font-bold">My Appointments</h1>
           <p className="text-muted-foreground">
             Manage your healthcare appointments
           </p>
         </div>
-        <Button>
-          <Plus className="h-4 w-4 mr-2" />
-          Book New Appointment
+
+        <Button className="flex items-center">
+          <Plus className="size-4" />
+          <span className="hidden md:inline ml-2">Book New Appointment</span>
         </Button>
       </div>
 

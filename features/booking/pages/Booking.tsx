@@ -413,13 +413,14 @@ export default function BookingPage() {
                 <div className="flex items-center gap-3 p-3 border rounded-md">
                   {selectedDoctor ? (
                     <>
-                      <Image
-                        width={15}
-                        height={15}
-                        src={selectedDoctor.avatar}
-                        alt={selectedDoctor.name}
-                        className="size-15 rounded-full"
-                      />
+                      <div className="relative size-15 rounded-full overflow-hidden">
+                        <Image
+                          src={selectedDoctor.avatar}
+                          alt={selectedDoctor.name}
+                          fill
+                          style={{ objectFit: "cover" }}
+                        />
+                      </div>
                       <div>
                         <p className="font-medium">{selectedDoctor.name}</p>
                         <p className="text-sm text-muted-foreground">
@@ -776,22 +777,30 @@ export default function BookingPage() {
             variant="outline"
             onClick={goBack}
             disabled={step === 1}
+            className={cn(step === 1 ? "cursor-not-allowed" : "cursor-pointer")}
           >
             Back
           </Button>
-          <Button
-            type="button"
-            onClick={goNext}
-            disabled={
-              (step === 1 && !canGoNextFromStep1) ||
-              (step === 2 && !canGoNextFromStep2) ||
-              (step === 3 && !canGoNextFromStep3) ||
-              step === 4
-            }
-            className={cn(step < 4 ? "" : "pointer-events-none opacity-50")}
-          >
-            Next
-          </Button>
+          {step !== 4 && (
+            <Button
+              type="button"
+              onClick={goNext}
+              disabled={
+                (step === 1 && !canGoNextFromStep1) ||
+                (step === 2 && !canGoNextFromStep2) ||
+                (step === 3 && !canGoNextFromStep3)
+              }
+              className={cn(
+                (step === 1 && !canGoNextFromStep1) ||
+                  (step === 2 && !canGoNextFromStep2) ||
+                  (step === 3 && !canGoNextFromStep3)
+                  ? "cursor-not-allowed opacity-50"
+                  : "cursor-pointer"
+              )}
+            >
+              Next
+            </Button>
+          )}
         </CardFooter>
       </Card>
     </main>

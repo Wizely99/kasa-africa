@@ -1,50 +1,61 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Pill, User, FileText, Clock } from "lucide-react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useState, useEffect } from "react";
+import { Pill, User, FileText, Clock } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   getPatientPrescriptionsAction,
   getPatientLabResultsAction,
   getPatientDiagnosesAction,
-} from "@/features/prescriptions/actions/prescription-actions"
+} from "@/features/prescriptions/actions/prescription-actions";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export default function PatientPrescriptions() {
-  const [prescriptions, setPrescriptions] = useState<any[]>([])
-  const [labResults, setLabResults] = useState<any[]>([])
-  const [diagnoses, setDiagnoses] = useState<any[]>([])
-  const [loading, setLoading] = useState(true)
+  const [prescriptions, setPrescriptions] = useState<any[]>([]);
+  const [labResults, setLabResults] = useState<any[]>([]);
+  const [diagnoses, setDiagnoses] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [prescriptionsRes, labResultsRes, diagnosesRes] = await Promise.all([
-          getPatientPrescriptionsAction("patient-1"),
-          getPatientLabResultsAction("patient-1"),
-          getPatientDiagnosesAction("patient-1"),
-        ])
+        const [prescriptionsRes, labResultsRes, diagnosesRes] =
+          await Promise.all([
+            getPatientPrescriptionsAction("1"),
+            getPatientLabResultsAction("1"),
+            getPatientDiagnosesAction("1"),
+          ]);
 
-        if (prescriptionsRes.success) setPrescriptions(prescriptionsRes.data)
-        if (labResultsRes.success) setLabResults(labResultsRes.data)
-        if (diagnosesRes.success) setDiagnoses(diagnosesRes.data)
+        if (prescriptionsRes.success) setPrescriptions(prescriptionsRes.data);
+        if (labResultsRes.success) setLabResults(labResultsRes.data);
+        if (diagnosesRes.success) setDiagnoses(diagnosesRes.data);
       } catch (error) {
-        console.error("Error fetching data:", error)
+        console.error("Error fetching data:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    fetchData()
-  }, [])
+    fetchData();
+  }, []);
 
   if (loading) {
     return (
       <div className="space-y-6">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Medical Records</h1>
-          <p className="text-muted-foreground">Loading your medical information...</p>
+          <p className="text-muted-foreground">
+            Loading your medical information...
+          </p>
         </div>
         <div className="grid gap-4 md:grid-cols-3">
           {[1, 2, 3].map((i) => (
@@ -59,21 +70,29 @@ export default function PatientPrescriptions() {
           ))}
         </div>
       </div>
-    )
+    );
   }
 
   return (
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Medical Records</h1>
-        <p className="text-muted-foreground">View your prescriptions, lab results, and diagnoses</p>
+        <p className="text-muted-foreground">
+          View your prescriptions, lab results, and diagnoses
+        </p>
       </div>
 
       <Tabs defaultValue="prescriptions" className="space-y-4">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="prescriptions">Prescriptions ({prescriptions.length})</TabsTrigger>
-          <TabsTrigger value="lab-results">Lab Results ({labResults.length})</TabsTrigger>
-          <TabsTrigger value="diagnoses">Diagnoses ({diagnoses.length})</TabsTrigger>
+          <TabsTrigger value="prescriptions">
+            Prescriptions ({prescriptions.length})
+          </TabsTrigger>
+          <TabsTrigger value="lab-results">
+            Lab Results ({labResults.length})
+          </TabsTrigger>
+          <TabsTrigger value="diagnoses">
+            Diagnoses ({diagnoses.length})
+          </TabsTrigger>
         </TabsList>
 
         {/* Prescriptions Tab */}
@@ -97,34 +116,54 @@ export default function PatientPrescriptions() {
                           Prescription from {prescription.doctorName}
                         </CardTitle>
                         <CardDescription>
-                          Issued on {new Date(prescription.dateIssued).toLocaleDateString()}
+                          Issued on{" "}
+                          {new Date(
+                            prescription.dateIssued
+                          ).toLocaleDateString()}
                         </CardDescription>
                       </div>
-                      <Badge variant={prescription.status === "active" ? "default" : "secondary"}>
-                        {prescription.status.toUpperCase()}
+                      <Badge
+                        variant={
+                          prescription.status === "active"
+                            ? "default"
+                            : "secondary"
+                        }
+                      >
+                        {prescription.status
+                          ? prescription.status.toUpperCase()
+                          : "UNKNOWN"}
                       </Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
                       <h4 className="font-semibold mb-2">Diagnosis</h4>
-                      <p className="text-sm text-muted-foreground">{prescription.diagnosis}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {prescription.diagnosis}
+                      </p>
                     </div>
 
                     <div>
                       <h4 className="font-semibold mb-2">Medications</h4>
                       <div className="space-y-3">
                         {prescription.medications.map((medication: any) => (
-                          <div key={medication.id} className="p-3 border rounded-lg">
+                          <div
+                            key={medication.id}
+                            className="p-3 border rounded-lg"
+                          >
                             <div className="flex items-start justify-between">
                               <div>
-                                <h5 className="font-medium">{medication.medicationName}</h5>
+                                <h5 className="font-medium">
+                                  {medication.medicationName}
+                                </h5>
                                 <p className="text-sm text-muted-foreground">
-                                  {medication.dosage} • {medication.frequency} • {medication.duration}
+                                  {medication.dosage} • {medication.frequency} •{" "}
+                                  {medication.duration}
                                 </p>
                                 {medication.instructions && (
                                   <p className="text-sm text-muted-foreground mt-1">
-                                    <strong>Instructions:</strong> {medication.instructions}
+                                    <strong>Instructions:</strong>{" "}
+                                    {medication.instructions}
                                   </p>
                                 )}
                               </div>
@@ -140,13 +179,20 @@ export default function PatientPrescriptions() {
 
                     {prescription.instructions && (
                       <div>
-                        <h4 className="font-semibold mb-2">General Instructions</h4>
-                        <p className="text-sm text-muted-foreground">{prescription.instructions}</p>
+                        <h4 className="font-semibold mb-2">
+                          General Instructions
+                        </h4>
+                        <p className="text-sm text-muted-foreground">
+                          {prescription.instructions}
+                        </p>
                       </div>
                     )}
 
                     <div className="flex items-center justify-between text-sm text-muted-foreground">
-                      <span>Valid until: {new Date(prescription.validUntil).toLocaleDateString()}</span>
+                      <span>
+                        Valid until:{" "}
+                        {new Date(prescription.validUntil).toLocaleDateString()}
+                      </span>
                       {prescription.refillsRemaining && (
                         <span className="flex items-center gap-1">
                           <Clock className="h-4 w-4" />
@@ -175,30 +221,82 @@ export default function PatientPrescriptions() {
               {labResults.map((labResult) => (
                 <Card key={labResult.id}>
                   <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
+                    {isMobile ? (
+                      // ✅ Mobile Layout
+                      <div className="flex flex-col gap-2">
+                        {/* Test Name */}
                         <CardTitle className="flex items-center gap-2">
                           <FileText className="h-5 w-5" />
                           {labResult.testName}
                         </CardTitle>
+
+                        {/* Test Type + Date */}
                         <CardDescription>
-                          {labResult.testType} • Completed on {new Date(labResult.dateCompleted).toLocaleDateString()}
+                          {labResult.testType} • Completed on{" "}
+                          {new Date(
+                            labResult.dateCompleted
+                          ).toLocaleDateString()}
                         </CardDescription>
+
+                        {/* Status Badge */}
+                        <Badge
+                          variant={
+                            labResult.status === "completed"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
+                          {labResult.status
+                            ? labResult.status.toUpperCase()
+                            : "UNKNOWN"}
+                        </Badge>
                       </div>
-                      <Badge variant={labResult.status === "completed" ? "default" : "secondary"}>
-                        {labResult.status.toUpperCase()}
-                      </Badge>
-                    </div>
+                    ) : (
+                      // ✅ Desktop Layout (original)
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <CardTitle className="flex items-center gap-2">
+                            <FileText className="h-5 w-5" />
+                            {labResult.testName}
+                          </CardTitle>
+                          <CardDescription>
+                            {labResult.testType} • Completed on{" "}
+                            {new Date(
+                              labResult.dateCompleted
+                            ).toLocaleDateString()}
+                          </CardDescription>
+                        </div>
+                        <Badge
+                          variant={
+                            labResult.status === "completed"
+                              ? "default"
+                              : "secondary"
+                          }
+                        >
+                          {labResult.status
+                            ? labResult.status.toUpperCase()
+                            : "UNKNOWN"}
+                        </Badge>
+                      </div>
+                    )}
                   </CardHeader>
+
                   <CardContent className="space-y-4">
                     <div>
                       <h4 className="font-semibold mb-3">Test Results</h4>
                       <div className="space-y-2">
                         {labResult.results.map((result: any, index: number) => (
-                          <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                          <div
+                            key={index}
+                            className="flex items-center justify-between p-3 border rounded-lg"
+                          >
                             <div>
-                              <h5 className="font-medium">{result.parameter}</h5>
-                              <p className="text-sm text-muted-foreground">Reference: {result.referenceRange}</p>
+                              <h5 className="font-medium">
+                                {result.parameter}
+                              </h5>
+                              <p className="text-sm text-muted-foreground">
+                                Reference: {result.referenceRange}
+                              </p>
                             </div>
                             <div className="text-right">
                               <p className="font-medium">
@@ -209,12 +307,14 @@ export default function PatientPrescriptions() {
                                   result.status === "normal"
                                     ? "default"
                                     : result.status === "critical"
-                                      ? "destructive"
-                                      : "secondary"
+                                    ? "destructive"
+                                    : "secondary"
                                 }
                                 className="mt-1"
                               >
-                                {result.status.toUpperCase()}
+                                {result.status
+                                  ? result.status.toUpperCase()
+                                  : "N/A"}
                               </Badge>
                             </div>
                           </div>
@@ -225,12 +325,15 @@ export default function PatientPrescriptions() {
                     {labResult.notes && (
                       <div>
                         <h4 className="font-semibold mb-2">Notes</h4>
-                        <p className="text-sm text-muted-foreground">{labResult.notes}</p>
+                        <p className="text-sm text-muted-foreground">
+                          {labResult.notes}
+                        </p>
                       </div>
                     )}
 
                     <div className="text-sm text-muted-foreground">
-                      Ordered on: {new Date(labResult.dateOrdered).toLocaleDateString()}
+                      Ordered on:{" "}
+                      {new Date(labResult.dateOrdered).toLocaleDateString()}
                     </div>
                   </CardContent>
                 </Card>
@@ -253,42 +356,90 @@ export default function PatientPrescriptions() {
               {diagnoses.map((diagnosis) => (
                 <Card key={diagnosis.id}>
                   <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="flex items-center gap-2">
+                    {isMobile ? (
+                      // ✅ Mobile Layout
+                      <div className="flex flex-col">
+                        {/* First row: Primary Diagnosis */}
+                        <CardTitle className="flex items-center gap-2 mb-2">
                           <User className="h-5 w-5" />
                           {diagnosis.primaryDiagnosis}
                         </CardTitle>
-                        <CardDescription>
-                          Diagnosed on {new Date(diagnosis.dateCreated).toLocaleDateString()}
-                        </CardDescription>
+
+                        {/* Second row: Date + Badges */}
+                        <div className="flex flex-col gap-2 ">
+                          <CardDescription>
+                            Diagnosed on{" "}
+                            {new Date(
+                              diagnosis.dateCreated
+                            ).toLocaleDateString()}
+                          </CardDescription>
+                          <div className="flex gap-2">
+                            <Badge
+                              variant={
+                                diagnosis.severity === "mild"
+                                  ? "default"
+                                  : diagnosis.severity === "moderate"
+                                  ? "secondary"
+                                  : "destructive"
+                              }
+                            >
+                              {diagnosis.severity?.toUpperCase() ?? "UNKNOWN"}
+                            </Badge>
+                            <Badge variant="outline">
+                              {diagnosis.status?.toUpperCase() ?? "UNKNOWN"}
+                            </Badge>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex gap-2">
-                        <Badge
-                          variant={
-                            diagnosis.severity === "mild"
-                              ? "default"
-                              : diagnosis.severity === "moderate"
+                    ) : (
+                      // ✅ Desktop Layout (your original)
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <CardTitle className="flex items-center gap-2">
+                            <User className="h-5 w-5" />
+                            {diagnosis.primaryDiagnosis}
+                          </CardTitle>
+                          <CardDescription>
+                            Diagnosed on{" "}
+                            {new Date(
+                              diagnosis.dateCreated
+                            ).toLocaleDateString()}
+                          </CardDescription>
+                        </div>
+                        <div className="flex gap-2">
+                          <Badge
+                            variant={
+                              diagnosis.severity === "mild"
+                                ? "default"
+                                : diagnosis.severity === "moderate"
                                 ? "secondary"
                                 : "destructive"
-                          }
-                        >
-                          {diagnosis.severity.toUpperCase()}
-                        </Badge>
-                        <Badge variant="outline">{diagnosis.status.toUpperCase()}</Badge>
+                            }
+                          >
+                            {diagnosis.severity?.toUpperCase() ?? "UNKNOWN"}
+                          </Badge>
+                          <Badge variant="outline">
+                            {diagnosis.status?.toUpperCase() ?? "UNKNOWN"}
+                          </Badge>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </CardHeader>
+
                   <CardContent className="space-y-4">
                     {diagnosis.secondaryDiagnoses.length > 0 && (
                       <div>
-                        <h4 className="font-semibold mb-2">Secondary Diagnoses</h4>
+                        <h4 className="font-semibold mb-2">
+                          Secondary Diagnoses
+                        </h4>
                         <div className="flex flex-wrap gap-2">
-                          {diagnosis.secondaryDiagnoses.map((secondary: string, index: number) => (
-                            <Badge key={index} variant="outline">
-                              {secondary}
-                            </Badge>
-                          ))}
+                          {diagnosis.secondaryDiagnoses.map(
+                            (secondary: string, index: number) => (
+                              <Badge key={index} variant="outline">
+                                {secondary}
+                              </Badge>
+                            )
+                          )}
                         </div>
                       </div>
                     )}
@@ -296,22 +447,30 @@ export default function PatientPrescriptions() {
                     <div>
                       <h4 className="font-semibold mb-2">Symptoms</h4>
                       <div className="flex flex-wrap gap-2">
-                        {diagnosis.symptoms.map((symptom: string, index: number) => (
-                          <Badge key={index} variant="secondary">
-                            {symptom}
-                          </Badge>
-                        ))}
+                        {diagnosis.symptoms.map(
+                          (symptom: string, index: number) => (
+                            <Badge key={index} variant="secondary">
+                              {symptom}
+                            </Badge>
+                          )
+                        )}
                       </div>
                     </div>
 
                     <div>
                       <h4 className="font-semibold mb-2">Treatment Plan</h4>
-                      <p className="text-sm text-muted-foreground">{diagnosis.treatmentPlan}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {diagnosis.treatmentPlan}
+                      </p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold mb-2">Follow-up Instructions</h4>
-                      <p className="text-sm text-muted-foreground">{diagnosis.followUpInstructions}</p>
+                      <h4 className="font-semibold mb-2">
+                        Follow-up Instructions
+                      </h4>
+                      <p className="text-sm text-muted-foreground">
+                        {diagnosis.followUpInstructions}
+                      </p>
                     </div>
                   </CardContent>
                 </Card>
@@ -321,5 +480,5 @@ export default function PatientPrescriptions() {
         </TabsContent>
       </Tabs>
     </div>
-  )
+  );
 }

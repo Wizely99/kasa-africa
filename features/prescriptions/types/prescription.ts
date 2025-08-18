@@ -8,6 +8,7 @@ export interface Prescription {
   symptoms: string[]
   treatmentPlan: string
   followUpInstructions: string
+  dateIssued?: Date
   validUntil: string
   status: "Active" | "Completed" | "Cancelled"
   createdAt: string
@@ -33,11 +34,12 @@ export interface LabResult {
   testName: string
   testType: string
   results: LabTestResult[]
-  overallStatus: "Normal" | "Abnormal" | "Critical"
+  status: "Normal" | "Abnormal" | "Critical"
   notes: string
   testDate: string
   reportDate: string
   labName: string
+  dateCompleted?: Date
   attachments?: LabAttachment[]
 }
 
@@ -66,7 +68,9 @@ export interface Diagnosis {
   primaryDiagnosis: string
   secondaryDiagnoses: string[]
   symptoms: string[]
+  dateCreated?: Date
   severity: "Mild" | "Moderate" | "Severe" | "Critical"
+  status: "Active" | "Resolved" | "Cancelled"
   treatmentPlan: string
   followUpRequired: boolean
   followUpDate?: string

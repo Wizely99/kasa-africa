@@ -17,6 +17,7 @@ const mockPrescriptions: Prescription[] = [
     patientId: "1",
     doctorId: "doc-1",
     appointmentId: "apt-1",
+    dateIssued: new Date("2024-01-15"),
     medications: [
       {
         id: "med-1",
@@ -48,6 +49,8 @@ const mockLabResults: LabResult[] = [
     appointmentId: "apt-1",
     testName: "Complete Blood Count",
     testType: "Blood Test",
+    dateCompleted: new Date("2024-01-15"),
+    status: "Normal",
     results: [
       {
         parameter: "White Blood Cells",
@@ -94,11 +97,13 @@ const mockDiagnoses: Diagnosis[] = [
     id: "diag-1",
     patientId: "1",
     doctorId: "doc-1",
+    dateCreated: new Date("2024-01-15"),
     appointmentId: "apt-1",
     primaryDiagnosis: "Essential Hypertension",
     secondaryDiagnoses: ["Mild anxiety"],
     symptoms: ["Elevated blood pressure", "Occasional headaches", "Mild fatigue"],
     severity: "Moderate",
+    status: "Active",
     treatmentPlan: "Antihypertensive medication, lifestyle modifications, stress management",
     followUpRequired: true,
     followUpDate: "2024-02-15",
