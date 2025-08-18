@@ -14,11 +14,11 @@ export default async function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  // const session = await retrieveServerSession();
+  const session = await retrieveServerSession();
 
-  // if (!session || session.error) {
-  //   redirect("/");
-  // }
+  if (!session || session.error) {
+    redirect("/");
+  }
   return (
     <ThemeProvider
       attribute="class"
