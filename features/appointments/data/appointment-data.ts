@@ -26,8 +26,6 @@ export interface Appointment {
   facilityAddress?: string;
 }
 
-// Mock data for demonstration
-
 // Utility to get upcoming Friday from today
 function getUpcomingFriday() {
   const today = new Date();

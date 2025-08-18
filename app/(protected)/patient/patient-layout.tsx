@@ -118,11 +118,11 @@ export default function PatientLayoutClient({
   ];
 
   const userInfo: UserInfo = {
-    name: "John Doe",
-    email: "john.doe@example.com",
+    name: "Alice M. Ndabiye",
+    email: "alice.ndabiye@gmail.com",
     role: "Patient",
-    initials: "JD",
-    avatarUrl: "/placeholder.svg?height=32&width=32&text=JD",
+    initials: "AN",
+    avatarUrl: "/pictures/doctors/female-1.jpg", // example custom avatar path
   };
 
   const handleLogout = () => {

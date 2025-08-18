@@ -23,7 +23,7 @@ export const mockDoctors: Doctors[] = [
     rating: 4.8,
     consultationFee: 45000,
     location: "Downtown Medical Center",
-    avatar: "/pictures/doctors/male-1.jpg",
+    avatar: "/pictures/doctors/male-1.avif",
     isAvailable: true,
     nextAvailable: "Today 2:30 PM",
     about:
@@ -39,7 +39,7 @@ export const mockDoctors: Doctors[] = [
     rating: 4.9,
     consultationFee: 20000,
     location: "Heart Care Clinic",
-    avatar: "/pictures/doctors/male-2.jpg",
+    avatar: "/pictures/doctors/male-2.avif",
     isAvailable: true,
     nextAvailable: "Tomorrow 10:00 AM",
     about:
@@ -55,7 +55,7 @@ export const mockDoctors: Doctors[] = [
     rating: 4.7,
     consultationFee: 75000,
     location: "Children's Health Center",
-    avatar: "/pictures/doctors/male-7.jpeg",
+    avatar: "/pictures/doctors/male-7.avif",
     isAvailable: false,
     nextAvailable: "Jan 20, 9:00 AM",
     about:
@@ -71,7 +71,7 @@ export const mockDoctors: Doctors[] = [
     rating: 4.6,
     consultationFee: 30000,
     location: "Bone & Joint Institute",
-    avatar: "/pictures/doctors/male-4.jpg",
+    avatar: "/pictures/doctors/male-4.avif",
     isAvailable: true,
     nextAvailable: "Today 4:00 PM",
     about:

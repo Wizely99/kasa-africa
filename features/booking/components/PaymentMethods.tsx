@@ -37,6 +37,7 @@ type paymentMethodsProps = {
   setMmNetwork: (value: string) => void;
   mmPhone: string;
   setMmPhone: (value: string) => void;
+  consultationFee: number;
 };
 
 export function PaymentMethods({
@@ -59,6 +60,7 @@ export function PaymentMethods({
   setMmNetwork,
   mmPhone,
   setMmPhone,
+  consultationFee,
 }: paymentMethodsProps) {
   return (
     <div className="space-y-4">
@@ -68,9 +70,9 @@ export function PaymentMethods({
           <div className="font-medium">Payment Details</div>
         </div>
         <div className="mt-2 text-sm text-muted-foreground">
-          Consultation Fee:{" "}
+          Consultation Fee:
           <span className="font-semibold text-foreground">
-            {formatTsh(50000)}
+            {formatTsh(consultationFee)}
           </span>
         </div>
       </div>

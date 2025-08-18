@@ -8,51 +8,52 @@ const mockPatientProfile: PatientProfile = {
   userProfileId: "3fa85f64-5717-4562-b3fc-2c963f66afa6",
 
   // Personal Information
-  firstName: "Jane",
-  lastName: "Doe",
-  email: "jane.doe@example.com",
-  phone: "(555) 123-4567",
+  firstName: "Alice M.",
+  lastName: "Ndabiye",
+  email: "alice.ndabiye@gmail.com",
+  phone: "+255 755 123 456", // TZ phone format
   dateOfBirth: "1990-05-15",
   gender: "Female",
   maritalStatus: "Single",
-  address: "123 Health Street",
-  city: "Wellness City",
-  state: "California",
-  zipCode: "90210",
+  address: "Goldstar Street, Bagamoyo Road",
+  city: "Dar es Salaam",
+  state: "Dar es Salaam",
+  zipCode: "14128",
 
   // Medical Information
   bloodType: "A_POSITIVE",
-  height: "5'6\"",
-  weight: "140 lbs",
+  height: "167 cm", // TZ uses metric
+  weight: "63 kg",
 
   // Emergency Contact
-  emergencyContact: "John Doe",
-  emergencyPhone: "(555) 987-6543",
-  emergencyRelationship: "Brother",
+  emergencyContact: "Neema Ndabiye",
+  emergencyPhone: "+255 754 987 654",
+  emergencyRelationship: "Sister",
 
   // Insurance Information
-  insuranceProvider: "Blue Cross Blue Shield",
-  insuranceNumber: "BC123456789",
-  insurancePolicyHolder: "Jane Doe",
+  insuranceProvider: "NHIF Tanzania", // National Health Insurance Fund
+  insuranceNumber: "TZ-NHIF-123456",
+  insurancePolicyHolder: "Alice M. Ndabiye",
 
   // Medical Details
   allergies: ["Penicillin", "Peanuts"],
-  medications: ["Lisinopril 10mg", "Metformin 500mg"],
+  medications: ["Metformin 500mg", "Lisinopril 10mg"],
   medicalHistory: ["Type 2 Diabetes", "Hypertension"],
-  familyHistory: ["Heart Disease (Father)", "Diabetes (Mother)"],
+  familyHistory: ["Hypertension (Father)", "Diabetes (Mother)"],
 
   // Lifestyle Information
   smokingStatus: "Never",
-  alcoholConsumption: "Occasionally",
-  exerciseFrequency: "Often",
+  alcoholConsumption: "Rarely",
+  exerciseFrequency: "Occasionally",
 
   // Preferences
-  preferredLanguage: "English",
+  preferredLanguage: "Swahili",
   communicationPreferences: ["Email", "SMS"],
 
   createdAt: "2024-01-15T10:00:00Z",
   updatedAt: "2024-01-20T14:30:00Z",
-}
+};
+
 
 export async function getPatientProfile(userProfileId: string): Promise<PatientProfile | null> {
   // Simulate API delay

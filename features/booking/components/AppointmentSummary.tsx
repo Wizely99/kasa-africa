@@ -16,18 +16,20 @@ type AppointmentSummaryProps = {
     endTime: { hour: number; minute: number };
   } | null;
   doctorId: string;
-  facilityId: string;
-  patientId: string;
+  doctorName?: string;
+  facilityName?: string;
+  patientName: string;
   paymentMethod: string;
   mmNetwork?: string;
+  facilityAddress?: string;
 };
 
 export function AppointmentSummary({
   selectedDateStr,
   selectedSlot,
-  doctorId,
-  facilityId,
-  patientId,
+  doctorName,
+  facilityAddress,
+  facilityName,
   paymentMethod,
   mmNetwork,
 }: AppointmentSummaryProps) {
@@ -67,30 +69,35 @@ export function AppointmentSummary({
         <div className="flex items-center gap-3">
           <Stethoscope className="h-4 w-4 text-blue-600" />
           <div>
-            <div className="font-medium">Doctor</div>
-            <div className="text-muted-foreground">
-              {doctorId.slice(0, 8)}...
-            </div>
+            <div className="font-medium">Doctor Name</div>
+
+            <div className="text-muted-foreground">{doctorName}</div>
           </div>
         </div>
         <div className="flex items-center gap-3">
           <Building2 className="h-4 w-4 text-blue-600" />
           <div>
             <div className="font-medium">Facility</div>
-            <div className="text-muted-foreground">
+            {/* <div className="text-muted-foreground">
               {facilityId.slice(0, 8)}...
-            </div>
+            </div> */}
+            <div className="text-muted-foreground">{facilityName}</div>
+            {facilityAddress && (
+              <div className="text-xs text-muted-foreground">
+                {facilityAddress}
+              </div>
+            )}
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        {/* <div className="flex items-center gap-3">
           <User className="h-4 w-4 text-blue-600" />
           <div>
             <div className="font-medium">Patient</div>
-            <div className="text-muted-foreground">
+             <div className="text-muted-foreground">
               {patientId.slice(0, 8)}...
-            </div>
+            </div> 
           </div>
-        </div>
+        </div> */}
         <div className="flex items-center gap-3">
           <CreditCard className="h-4 w-4 text-blue-600" />
           <div>

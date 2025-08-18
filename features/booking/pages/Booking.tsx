@@ -42,6 +42,7 @@ import { SlotButton } from "../components/SlotButton";
 import { Stepper } from "../components/Stepper";
 import { mockDoctors } from "@/features/appointments/types/data";
 import Image from "next/image";
+import { formatTsh } from "@/utils/CurrencyFormatterHelper";
 
 // Types
 type LocalTime = {
@@ -86,6 +87,45 @@ function timeObjToHHmm(t: LocalTime) {
   return `${pad2(t.hour)}:${pad2(t.minute)}`;
 }
 
+const facilities = [
+  {
+    id: "1",
+    name: "Muhimbili National Hospital",
+    address: "Upanga Rd, Dar es Salaam",
+    phone: "+255 22 215 0305",
+  },
+  {
+    id: "2",
+    name: "Amana Regional Hospital",
+    address: "Amana Rd, Dar es Salaam",
+    phone: "+255 22 277 2001",
+  },
+  {
+    id: "3",
+    name: "Kilimanjaro Christian Medical Centre",
+    address: "Moshi, Kilimanjaro",
+    phone: "+255 27 275 0606",
+  },
+  {
+    id: "4",
+    name: "Bugando Medical Centre",
+    address: "Mwanza, Lake Zone",
+    phone: "+255 28 250 2001",
+  },
+  {
+    id: "5",
+    name: "Mbeya Zonal Referral Hospital",
+    address: "Mbeya, Southern Highlands",
+    phone: "+255 25 250 3001",
+  },
+  {
+    id: "6",
+    name: "Temeke Regional Hospital",
+    address: "Temeke, Dar es Salaam",
+    phone: "+255 22 265 4001",
+  },
+];
+
 export default function BookingPage() {
   const searchParams = useSearchParams();
   const doctorId = searchParams?.get("doctorId");
@@ -108,8 +148,12 @@ export default function BookingPage() {
   const [patientId, setPatientId] = useState<string>(
     "3fa85f64-5717-4562-b3fc-2c963f66afa6"
   );
-  const [facilityId, setFacilityId] = useState<string>(
-    "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+  const [patientName, setPatientName] = useState<string>("Alice M. Ndabiye");
+
+  const [facilityId, setFacilityId] = useState<string>(facilities[0].id); // default first hospital
+  const selectedFacility = useMemo(
+    () => facilities.find((f) => f.id === facilityId),
+    [facilityId]
   );
   const [appointmentType, setAppointmentType] =
     useState<AppointmentType>("IN_PERSON");
@@ -467,7 +511,7 @@ export default function BookingPage() {
               className="grid gap-6 md:grid-cols-2"
             >
               <div className="space-y-4">
-                <div className="space-y-2">
+                {/* <div className="space-y-2">
                   <Label htmlFor="patient-id">Patient ID</Label>
                   <Input
                     id="patient-id"
@@ -475,7 +519,7 @@ export default function BookingPage() {
                     value={patientId}
                     onChange={(e) => setPatientId(e.target.value)}
                   />
-                </div>
+                </div> */}
                 <div className="space-y-2">
                   <Label htmlFor="facility">Facility</Label>
                   <Select value={facilityId} onValueChange={setFacilityId}>
@@ -483,15 +527,11 @@ export default function BookingPage() {
                       <SelectValue placeholder="Choose facility" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="3fa85f64-5717-4562-b3fc-2c963f66afa6">
-                        Main Hospital
-                      </SelectItem>
-                      <SelectItem value="f2f2f2f2-1234-5678-9999-121212121212">
-                        Satellite Clinic
-                      </SelectItem>
-                      <SelectItem value="0a0a0a0a-bb11-cc22-dd33-ee44ee44ee44">
-                        Telehealth
-                      </SelectItem>
+                      {facilities.map((facility) => (
+                        <SelectItem key={facility.id} value={facility.id}>
+                          {facility.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -589,17 +629,24 @@ export default function BookingPage() {
                 setPaymentConfirmed={function (): void {
                   throw new Error("Function not implemented.");
                 }}
+                consultationFee={selectedDoctor?.consultationFee || 0}
               />
 
-              <AppointmentSummary
-                selectedDateStr={selectedDateStr}
-                selectedSlot={selectedSlot}
-                doctorId={doctorId}
-                facilityId={facilityId}
-                patientId={patientId}
-                paymentMethod={paymentMethod}
-                mmNetwork={mmNetwork}
-              />
+              {selectedDoctor ? (
+                <AppointmentSummary
+                  selectedDateStr={selectedDateStr}
+                  selectedSlot={selectedSlot}
+                  doctorId={selectedDoctor.id}
+                  doctorName={selectedDoctor.name}
+                  facilityName={selectedFacility?.name || ""}
+                  facilityAddress={selectedFacility?.address || ""}
+                  patientName={patientName}
+                  paymentMethod={paymentMethod}
+                  mmNetwork={mmNetwork}
+                />
+              ) : (
+                <div>No doctor selected</div>
+              )}
             </section>
           )}
 
@@ -616,57 +663,21 @@ export default function BookingPage() {
                     </CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
-                    <div className="flex items-start gap-3">
-                      <CalendarDays className="mt-0.5 h-4 w-4 text-blue-600" />
-                      <div>
-                        <div className="text-sm font-medium">Date</div>
-                        <div className="text-sm text-muted-foreground">
-                          {selectedDateStr
-                            ? format(new Date(selectedDateStr), "yyyy,MM,dd")
-                            : "-"}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Clock className="mt-0.5 h-4 w-4 text-blue-600" />
-                      <div>
-                        <div className="text-sm font-medium">Time</div>
-                        <div className="text-sm text-muted-foreground">
-                          {selectedSlot
-                            ? `${timeObjToHHmm(
-                                selectedSlot.startTime
-                              )} - ${timeObjToHHmm(selectedSlot.endTime)}`
-                            : "-"}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Stethoscope className="mt-0.5 h-4 w-4 text-blue-600" />
-                      <div>
-                        <div className="text-sm font-medium">Doctor</div>
-                        <div className="text-sm text-muted-foreground">
-                          {doctorId?.slice(0, 8)}...
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <Building2 className="mt-0.5 h-4 w-4 text-blue-600" />
-                      <div>
-                        <div className="text-sm font-medium">Facility</div>
-                        <div className="text-sm text-muted-foreground">
-                          {facilityId.slice(0, 8)}...
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex items-start gap-3">
-                      <User className="mt-0.5 h-4 w-4 text-blue-600" />
-                      <div>
-                        <div className="text-sm font-medium">Patient</div>
-                        <div className="text-sm text-muted-foreground">
-                          {patientId.slice(0, 8)}...
-                        </div>
-                      </div>
-                    </div>
+                    {selectedDoctor ? (
+                      <AppointmentSummary
+                        selectedDateStr={selectedDateStr}
+                        selectedSlot={selectedSlot}
+                        doctorId={selectedDoctor.id}
+                        doctorName={selectedDoctor.name}
+                        facilityName={selectedFacility?.name || ""}
+                        facilityAddress={selectedFacility?.address || ""}
+                        patientName={patientName}
+                        paymentMethod={paymentMethod}
+                        mmNetwork={mmNetwork}
+                      />
+                    ) : (
+                      <div>No doctor selected</div>
+                    )}
                   </CardContent>
                 </Card>
 
@@ -678,7 +689,9 @@ export default function BookingPage() {
                   <CardContent className="space-y-3">
                     <div className="flex items-center justify-between text-sm">
                       <span>Consultation Fee</span>
-                      <span className="font-medium">$50.00</span>
+                      <span className="font-medium">
+                        {formatTsh(selectedDoctor?.consultationFee || 0)}
+                      </span>
                     </div>
                     <div className="flex items-center justify-between text-sm">
                       <span>Payment Method</span>
@@ -692,10 +705,18 @@ export default function BookingPage() {
                     <div className="flex items-center justify-between text-sm">
                       <span>Status</span>
                       <Badge
-                        variant={paymentConfirmed ? "outline" : "destructive"}
+                        variant={
+                          paymentMethod === "CASH"
+                            ? "secondary" // reserved style
+                            : paymentConfirmed
+                            ? "outline"
+                            : "destructive"
+                        }
                         className="gap-1"
                       >
-                        {paymentConfirmed ? (
+                        {paymentMethod === "CASH" ? (
+                          "Reserved"
+                        ) : paymentConfirmed ? (
                           <>
                             <ShieldCheck className="h-3.5 w-3.5" /> Paid
                           </>
