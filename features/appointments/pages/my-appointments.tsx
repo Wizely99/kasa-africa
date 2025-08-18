@@ -53,7 +53,7 @@ export default function MyAppointments() {
     const fetchAppointments = async () => {
       setIsLoading(true);
       // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       setAppointments(mockAppointments);
       setIsLoading(false);
     };
@@ -75,59 +75,59 @@ export default function MyAppointments() {
       day: "numeric",
     });
   };
-const getStatusBadge = (status: Appointment["status"]) => {
-  const statusConfig = {
-    SCHEDULED: {
-      variant: "secondary" as const,
-      icon: Clock,
-      color: "text-blue-600",
-      bgColor: "bg-blue-100",
-    },
-    CONFIRMED: {
-      variant: "default" as const,
-      icon: CheckCircle,
-      color: "text-green-600",
-      bgColor: "bg-green-100", // Add a green background class here
-    },
-    IN_PROGRESS: {
-      variant: "secondary" as const,
-      icon: AlertCircle,
-      color: "text-orange-600",
-      bgColor: "bg-orange-100",
-    },
-    COMPLETED: {
-      variant: "secondary" as const,
-      icon: CheckCircle,
-      color: "text-green-600",
-      bgColor: "bg-green-100",
-    },
-    CANCELLED: {
-      variant: "destructive" as const,
-      icon: XCircle,
-      color: "text-red-600",
-      bgColor: "bg-red-100",
-    },
-    NO_SHOW: {
-      variant: "destructive" as const,
-      icon: XCircle,
-      color: "text-red-600",
-      bgColor: "bg-red-100",
-    },
+  const getStatusBadge = (status: Appointment["status"]) => {
+    const statusConfig = {
+      SCHEDULED: {
+        variant: "secondary" as const,
+        icon: Clock,
+        color: "text-blue-600",
+        bgColor: "bg-blue-100",
+      },
+      CONFIRMED: {
+        variant: "default" as const,
+        icon: CheckCircle,
+        color: "text-green-600",
+        bgColor: "bg-green-100", // Add a green background class here
+      },
+      IN_PROGRESS: {
+        variant: "secondary" as const,
+        icon: AlertCircle,
+        color: "text-orange-600",
+        bgColor: "bg-orange-100",
+      },
+      COMPLETED: {
+        variant: "secondary" as const,
+        icon: CheckCircle,
+        color: "text-green-600",
+        bgColor: "bg-green-100",
+      },
+      CANCELLED: {
+        variant: "destructive" as const,
+        icon: XCircle,
+        color: "text-red-600",
+        bgColor: "bg-red-100",
+      },
+      NO_SHOW: {
+        variant: "destructive" as const,
+        icon: XCircle,
+        color: "text-red-600",
+        bgColor: "bg-red-100",
+      },
+    };
+
+    const config = statusConfig[status];
+    const Icon = config.icon;
+
+    return (
+      <Badge
+        variant={config.variant}
+        className={`flex items-center gap-1 rounded-full md:rounded-md ${config.color} ${config.bgColor}`}
+      >
+        <Icon className={`size-3 ${config.color}`} />
+        <span className="hidden md:inline">{status.replace("_", " ")}</span>
+      </Badge>
+    );
   };
-
-  const config = statusConfig[status];
-  const Icon = config.icon;
-
-  return (
-    <Badge
-      variant={config.variant}
-      className={`flex items-center gap-1 rounded-full md:rounded-md ${config.color} ${config.bgColor}`}
-    >
-      <Icon className={`size-3 ${config.color}`} />
-      <span className="hidden md:inline">{status.replace("_", " ")}</span>
-    </Badge>
-  );
-};
 
   const getAppointmentTypeIcon = (type: Appointment["appointmentType"]) => {
     switch (type) {
@@ -168,25 +168,33 @@ const getStatusBadge = (status: Appointment["status"]) => {
 
   const filterAppointments = (filter: "upcoming" | "past" | "all") => {
     const now = new Date();
-    return appointments.filter((apt) => {
-      const aptDate = new Date(apt.appointmentDate);
+    const todayStr = now.toISOString().split("T")[0];
 
-      switch (filter) {
-        case "upcoming":
-          return (
-            aptDate >= now &&
-            !["COMPLETED", "CANCELLED", "NO_SHOW"].includes(apt.status)
-          );
-        case "past":
-          return (
-            aptDate < now ||
-            ["COMPLETED", "CANCELLED", "NO_SHOW"].includes(apt.status)
-          );
-        case "all":
-        default:
-          return true;
-      }
-    });
+    return appointments
+      .map((apt) => {
+        const aptDateStr = apt.appointmentDate;
+
+        // Mark past appointments automatically
+        if (
+          aptDateStr < todayStr &&
+          !["COMPLETED", "CANCELLED", "NO_SHOW"].includes(apt.status)
+        ) {
+          apt.status = "COMPLETED";
+        }
+
+        return apt;
+      })
+      .filter((apt) => {
+        switch (filter) {
+          case "upcoming":
+            return !["COMPLETED", "CANCELLED", "NO_SHOW"].includes(apt.status);
+          case "past":
+            return ["COMPLETED", "CANCELLED", "NO_SHOW"].includes(apt.status);
+          case "all":
+          default:
+            return true;
+        }
+      });
   };
 
   const upcomingCount = filterAppointments("upcoming").length;
